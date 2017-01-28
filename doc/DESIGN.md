@@ -34,5 +34,13 @@ We have also considered different solutions for how the cells figure out their n
 
 Team Responsibilities
 ===
-
+#####Jay
+Primary Responsibilities:
+Secondary Responsibilities:
+#####Tahia
+Primary Responsibilities:
+Secondary Responsibilities:
+#####Belal
+Primary Responsibilities:
+Secondary Responsibilities:
 
