@@ -19,9 +19,11 @@ The primary functions of the user interface are to provide a means of loading th
 Design Details
 ===
 
-The visualization component of the design will include the input and output. For output, we will have a Display class that contains methods to print out the grid given a data structure holding all the cells. 
+The visualization component of the design will include the input and output. For output, we will have a Display class that contains the method printGrid().
+printGrid() will print out the current state of the grid by getting that information from the Grid class.
 
-For input, we will have a button class that can trigger events when clicked. Both of these objects will be instantiated in a GUIController class that connects them to the rest of the program. 
+For input, we will have a Button class that can trigger events when clicked. Both of these objects will be instantiated in a GUIController class that connects them to the rest of the program. Button will probably be an abstract class with the abstract method onMouseClick().
+Every extension of Button will have different functionality by implementing onMouseClick() differently.
 
 We will have a FileReader class that is responsible for translating the XML input files. This class will read in the data from the XML file and hand it off to the classes that need it. Specifically, the name and title of the simulation will be handed to the display, the configuration parameters will be handed to the grid and display, and the initial configuration of states will also be handed to the grid class. The rule will be handed to the cell class. 
 
@@ -32,11 +34,17 @@ getGrid() which will allow for the current state of the grid to be passed to the
 
 The Cell class will contain the current and next states of each cell, coordinates of said cell and methods to update the state of the cell based on the rule: computeNextState(), advanceState() and getNeighbors(). As the Grid class iterates through the grid data structure, it will call cell.getNeighbors(), which will return coordinates of each neighboring cell in a data structure. This data structure will then be passed to cell.computeNextState(), where the rule will be applied based on the neighbors to calculate the cell's next state. The advanceState() method will then take this computed next state and update the current and next states of each cell accordingly. Once this has been done for every cell, the grid has essentially been updated to contain the next state of every cell and the new grid will be passed to the display. 
 
-Use Cases:
+#####Use Cases:
 1. Apply the rules to a middle cell 
-	To apply the rules to a middle cell, the Grid class will call cell.getNeighbors(), which will return a data structure of the coordinates of the cell's neighbors. These coordinates will then be passed to cell.computeNext() which will use the coordinates to get the states of the cells at those coordinates and compute the new state. This new state will become that cell's next state and the cell's existing next cell will become the cell's current state. 
+	To apply the rules to a middle cell, the Grid class will call cell.getNeighbors(), which will return a data structure of the coordinates of the cell's neighbors. The Grid will use this information to determine the states of all the neighbors. These states will then be passed to cell.computeNext() which will use the states to compute the new state. This new state will become that cell's next state but the current state will remain unaffected for now.
 2. Apply the rules to an edge cell
 	Because we plan to use the coordinates of neighbors to update the state of any given cell, the process should be the same for the edge cells as the middle cells. We plan to ignore any null coordinates and just use the neighbors given to compute the next state of the given edge cell. 
+3. Move to the next generation
+	This starts by the user pressing a button to start the simulation. This will trigger the Grid to iterate over every Cell and call advanceState() to switch all of the cells to the next state that they have already calculated. Grid will then pass this information to the Display to be printed.
+4. Set a simulation parameter
+	This will be done by the FileReader. When the user loads a file, it will set an instance variable that the Cells can get later on when they are trying to determine how often to follow the rule.
+5. Switch Simulations:
+	This should be entirely done by the FileReader. Hopefully the simulations will be entirely described in XML so that when the input file is loaded, the simulation will be completely set up.
 
 Design Considerations
 ===
