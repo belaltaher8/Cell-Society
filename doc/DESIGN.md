@@ -11,6 +11,7 @@ The design is split into three broad categories: visualization, simulation, and 
 
 User Interface
 ===
+![Figure 1-1](cellsociety_UI.png)
 
 The primary functions of the user interface are to provide a means of loading the configuration file and to give the user control over stepping through the simulation. To select a configuration file, the user will specify the file by name and press a button to load it. Then the user will have options to run the simulation continuously or to step through it frame-by-frame. As the simulation progresses, the display should give feedback on how many steps have passed to reach the current state. To start over, the user can reset the simulation to its initial state. 
 
