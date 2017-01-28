@@ -17,7 +17,7 @@ The primary functions of the user interface are to provide a means of loading th
 Design Details
 ===
 
-
+The visualization component of the design will include the input and output. For output, we will have a Display class that contains methods to print out the grid given a data structure holding all the cells. For input, we will have a button class that can trigger events when clicked. Both of these objects will be instantiated in a GUIController class that connects them to the rest of the program. The state of the Cell Society will be kept in a Grid class that contains a data structure holding Cells. The Cell class will contain the state of each cell, and methods to update the state of the cells. Finally, we will have a FileReader class that is responsible for translating the XML input files.
 
 Design Considerations
 ===
