@@ -1,4 +1,4 @@
-package cellsociety_team09;
+package cellsociety_team09.model;
 
 public class Point {
 	private int myX;

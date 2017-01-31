@@ -1,4 +1,4 @@
-package cellsociety_team09;
+package cellsociety_team09.model;
 
 import java.util.List;
 
