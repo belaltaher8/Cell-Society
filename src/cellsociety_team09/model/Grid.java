@@ -9,9 +9,25 @@ public class Grid {
 	Cell[][] myGrid;
 	int amountOfRows;
 	int amountOfCols;
+	Rule myRule;
 
-
-	public Cell getCellAtGrid(Point myPoint){
+	public Grid(XMLReader myReader){
+		amountOfRows = myReader.getHeight();
+		amountOfCols = myReader.getWidth(); 
+		myRule = myReader.getRule();
+		Integer[][] initialStates = myReader.getInitialGrid();
+		
+		for(int col = 0; col < amountOfCols; col++){
+			for(int row = 0; row < amountOfRows; row++){
+				Integer initialState = initialStates[col][row];
+				Point myPoint = new Point(col, row);
+				myGrid[col][row] = new Cell(initialState, myPoint, myRule);
+			}
+		}
+	}
+			
+	
+	public Cell getCellAtPoint(Point myPoint){
 		int myX = myPoint.getX();
 		int myY = myPoint.getY();
 		return myGrid[myY][myX];
@@ -43,7 +59,7 @@ public class Grid {
 				
 				for(int k = 0; k < myPoints.size(); k++){
 					Point currentPoint = myPoints.get(k);
-					myNeighbors.add(getCellAtGrid(currentPoint));
+					myNeighbors.add(getCellAtPoint(currentPoint));
 				}
 				
 				for(int k = 0; k < myNeighbors.size(); k++){
@@ -61,6 +77,10 @@ public class Grid {
 				myGrid[currentCol][currentRow].advanceState();
 			}
 		}
+	}
+	
+	public Cell[][] getGrid(){
+		return myGrid;
 	}
 	
 }
