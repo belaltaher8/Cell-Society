@@ -54,9 +54,9 @@ public class Grid {
 				//gets coordinates of currentCell
 				List<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
 				//points of all neighbors
-				List<Point>  myPoints = new ArrayList<Point>();
+				List<Point>  myPoints = new ArrayList<Point>(); //TODO: just use myCellNeighborsCoords (you don't need this list too) 
 				//creates list to store all neighbors
-				List<Cell> myNeighbors = new ArrayList<Cell>();
+				List<Cell> myNeighbors = new ArrayList<Cell>();	//TODO: this could be removed by combining some of the loops below
 				//creates list to store all neighbor states
 				List<Integer> myNeighborStates = new ArrayList<Integer>();
 				//Stores points of all neighbors
