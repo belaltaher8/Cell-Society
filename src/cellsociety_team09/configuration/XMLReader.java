@@ -49,10 +49,18 @@ public class XMLReader {
     	}
     	*/
     	
-    	int myNumStates = getInt("myNumStates", 0);
+    	int myNumStates = getInt("NUM_STATES", 0);
     	List<ArrayList< HashMap<Integer,Integer> >> myNextStateMap = new ArrayList<ArrayList<HashMap<Integer,Integer>>>();
     	
     	return null;
+    }
+    
+    public int getWidth() {
+    	return getInt("GRID_WIDTH", 0);
+    }
+    
+    public int getHeight() {
+    	return getInt("GRID_HEIGHT", 0);
     }
     
     private double getDouble(String field, int index) {
