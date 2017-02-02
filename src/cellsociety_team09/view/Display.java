@@ -2,6 +2,11 @@ package cellsociety_team09.view;
 
 import javafx.scene.Group;
 import javafx.scene.layout.HBox;
+<<<<<<< HEAD
+=======
+import javafx.scene.layout.StackPane;
+
+>>>>>>> master
 public class Display {
 	Group root; 
 	private final int displayX = 600; 
@@ -19,7 +24,10 @@ public class Display {
 		HBox controlPane = new HBox(); 
 		controlPane.setPrefWidth(displayX);
 		controlPane.setPrefHeight(controlY);
+<<<<<<< HEAD
 		StartButton start = new StartButton();
+=======
+>>>>>>> master
 		return controlPane;
 	}
 	// create Grid part + Animate 

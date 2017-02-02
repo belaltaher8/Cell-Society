@@ -24,7 +24,7 @@ public class Cell {
 	}
 	
 	public List<Point> getNeighborCoords() {
-		return myRule.getNeighbors(myCoords);
+		return myRule.getNeighborCoords(myCoords);
 	}
 	
 	public int getState() {

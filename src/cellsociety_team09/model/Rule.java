@@ -1,21 +1,29 @@
 package cellsociety_team09.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Rule {
+	public static final List<String> DATA_FIELDS = Arrays.asList(new String[] {
+        "myNumStates",
+        "myNextStateMap",
+        "myNeighborOffsets",
+    });
+	
 	private int myNumStates;
-	private Map<Integer, Integer>[][] myNextStateMap;
+	private Map<Triple, Integer> myNextStateMap;
 	private List<Point> myNeighborOffsets;
 	
-	public Rule(int numStates, Map<Integer, Integer>[][] stateRules, List<Point> neighborRules) {
+	public Rule(int numStates, Map<Triple, Integer> stateRules, List<Point> neighborRules) {
 		myNumStates = numStates;
 		myNextStateMap = stateRules;
 		myNeighborOffsets = neighborRules;
 	}
 	
-	public List<Point> getNeighbors(Point coords) {
+	public List<Point> getNeighborCoords(Point coords) {
 		List<Point> neighbors = new ArrayList<Point>();
 		for(int i = 0; i < myNeighborOffsets.size(); i++) {
 			Point neighbor = new Point(coords.getX() + myNeighborOffsets.get(i).getX(),
@@ -27,12 +35,16 @@ public class Rule {
 	}
 	
 	public int getNextState(int myState, List<Integer> neighborStates) {
+		int nextState = myState;
+		
 		int[] neighborCounts = getStateCounts(neighborStates);
 		
-		int nextState = myState;
-		for(int neighborState = 0; neighborState < myNumStates; neighborState++){
-			if(myNextStateMap[myState][neighborState].containsKey(neighborCounts[neighborState])) {
-				nextState = myNextStateMap[myState][neighborState].get(neighborCounts[neighborState]);
+		for(int stateX = 0; stateX < myNumStates; stateX++){
+			int numNeighborsWithStateX = neighborCounts[stateX];
+			Triple condition = new Triple(myState, stateX, numNeighborsWithStateX);
+			
+			if(transitionShouldOccur(myNextStateMap, condition)) {
+				nextState = myNextStateMap.get(condition);
 				break;
 			}
 		}
@@ -54,5 +66,9 @@ public class Rule {
 			stateCounts[states.get(i)]++;
 		}
 		return stateCounts;
+	}
+	
+	private boolean transitionShouldOccur(Map<Triple, Integer> transitions, Triple key) {
+		return transitions.containsKey(key);
 	}
 }
