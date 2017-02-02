@@ -5,22 +5,24 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Rule {
-	public static final List<String> DATA_FIELDS = Arrays.asList(new String[] {
-        "myNumStates",
-        "myNextStateMap",
-        "myNeighborOffsets",
-    });
-	
+	private Random myRNG;
 	private int myNumStates;
-	private Map<Triple, Integer> myNextStateMap;
-	private List<Point> myNeighborOffsets;
 	
-	public Rule(int numStates, Map<Triple, Integer> stateRules, List<Point> neighborRules) {
+	private List<Point> myNeighborOffsets;
+	private List<Double> myProbOfTransition;
+	private Map<Triple, Integer> myNextStateMap;
+	
+	
+	public Rule(int numStates, List<Point> neighborRules, List<Double> transitionProbabilities, Map<Triple, Integer> stateRules) {
+		myRNG = new Random();
 		myNumStates = numStates;
-		myNextStateMap = stateRules;
+		
 		myNeighborOffsets = neighborRules;
+		myProbOfTransition = transitionProbabilities;
+		myNextStateMap = stateRules;
 	}
 	
 	public List<Point> getNeighborCoords(Point coords) {
@@ -43,8 +45,11 @@ public class Rule {
 			int numNeighborsWithStateX = neighborCounts[stateX];
 			Triple condition = new Triple(myState, stateX, numNeighborsWithStateX);
 			
-			if(transitionShouldOccur(myNextStateMap, condition)) {
+			if(transitionCanOccur(myNextStateMap, condition)) {
 				nextState = myNextStateMap.get(condition);
+				if(!transitionSucceeds(nextState)) {
+					nextState = myState;
+				}
 				break;
 			}
 		}
@@ -68,7 +73,11 @@ public class Rule {
 		return stateCounts;
 	}
 	
-	private boolean transitionShouldOccur(Map<Triple, Integer> transitions, Triple key) {
+	private boolean transitionCanOccur(Map<Triple, Integer> transitions, Triple key) {
 		return transitions.containsKey(key);
+	}
+	
+	private boolean transitionSucceeds(int state) {
+		return (myRNG.nextDouble() <= myProbOfTransition.get(state));
 	}
 }

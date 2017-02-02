@@ -71,8 +71,11 @@ public class XMLReader {
     	myNeighborOffsets.add(new Point(-1,1));
     	myNeighborOffsets.add(new Point(-1,0));
     	myNeighborOffsets.add(new Point(-1,-1));
+    	List<Double> transitionProbabilities = new ArrayList<Double>();
+    	transitionProbabilities.add(1.0);
+    	transitionProbabilities.add(1.0);
     	
-    	return new Rule(myNumStates, myNextStateMap, myNeighborOffsets);
+    	return new Rule(myNumStates, myNeighborOffsets, transitionProbabilities, myNextStateMap);
     }
     
     public int getWidth() {
@@ -83,7 +86,7 @@ public class XMLReader {
     	return getInt("GRID_HEIGHT", 0);
     }
     
-    public int[][] getInitialGrid() {
+    public Integer[][] getInitialGrid() {
     	//TODO
     	return null;
     }
