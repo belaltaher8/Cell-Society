@@ -55,12 +55,17 @@ We have also considered different solutions for how the cells figure out their n
 Team Responsibilities
 ===
 #####Jay
-Primary Responsibilities:
-Secondary Responsibilities:
+Primary Responsibilities: file reading + cell 
+
+Secondary Responsibilities: working on communication between different parts 
+
 #####Tahia
-Primary Responsibilities:
-Secondary Responsibilities:
+Primary Responsibilities: GUI controller, display 
+
+Secondary Responsibilities: helping out with cell
+
 #####Belal
-Primary Responsibilities:
-Secondary Responsibilities:
+Primary Responsibilities: grid, button class 
+
+Secondary Responsibilities: helping out with cell, GUIcontroller 
 
