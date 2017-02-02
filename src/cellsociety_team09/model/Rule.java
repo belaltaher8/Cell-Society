@@ -15,10 +15,10 @@ public class Rule {
 	
 	
 	private int myNumStates;
-	private List<ArrayList< HashMap<Integer, Integer> >> myNextStateMap;
+	private Map<Triple, Integer> myNextStateMap;
 	private List<Point> myNeighborOffsets;
 	
-	public Rule(int numStates, List<ArrayList< HashMap<Integer, Integer> >> stateRules, List<Point> neighborRules) {
+	public Rule(int numStates, Map<Triple, Integer> stateRules, List<Point> neighborRules) {
 		myNumStates = numStates;
 		myNextStateMap = stateRules;
 		myNeighborOffsets = neighborRules;
@@ -42,9 +42,9 @@ public class Rule {
 		
 		for(int stateX = 0; stateX < myNumStates; stateX++){
 			int numNeighborsWithStateX = neighborCounts[stateX];
-			Map<Integer, Integer> transitionsForStateX = myNextStateMap.get(myState).get(stateX);
+			Map<Triple, Integer> transitionsForStateX = new HashMap<Triple, Integer>();
 			
-			if(transitionShouldOccur(transitionsForStateX, numNeighborsWithStateX)) {
+			if(transitionShouldOccur(transitionsForStateX, new Triple(myState, stateX, numNeighborsWithStateX))) {
 				nextState = transitionsForStateX.get(numNeighborsWithStateX);
 				break;
 			}
@@ -69,7 +69,7 @@ public class Rule {
 		return stateCounts;
 	}
 	
-	private boolean transitionShouldOccur(Map<Integer, Integer> transitions, int key) {
+	private boolean transitionShouldOccur(Map<Triple, Integer> transitions, Triple key) {
 		return transitions.containsKey(key);
 	}
 }

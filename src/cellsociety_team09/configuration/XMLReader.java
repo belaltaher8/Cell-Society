@@ -63,6 +63,11 @@ public class XMLReader {
     	return getInt("GRID_HEIGHT", 0);
     }
     
+    public int[][] getInitialGrid() {
+    	//TODO
+    	return null;
+    }
+    
     private double getDouble(String field, int index) {
     	NodeList myDouble = rootElement.getElementsByTagName(field);
     	return Double.parseDouble(myDouble.item(index).getTextContent());

@@ -5,6 +5,8 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import java.io.File;
 
 import cellsociety_team09.configuration.XMLReader;
+import cellsociety_team09.model.Grid;
+
 
 public class Main extends Application {
 	public static final String DATA_FILE_EXTENSION = "*.xml";
@@ -19,6 +21,7 @@ public class Main extends Application {
 		
 		if(dataFile != null) {
 			XMLReader fileReader = new XMLReader(dataFile);
+			Grid theGrid = new Grid(fileReader);
 		}
 	}
 	
