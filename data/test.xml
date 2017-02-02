@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<data type="Music">
+<data type="CellSociety">
+	<Grid>
+		<width>10</width>
+		<height>10</height>
+	</Grid>
+	<Rule>
+		<myNumStates type="int">2</myNumStates>
+		<myNextStateMap type="Map" elem="int">TODO</myNextStateMap>
+		<myNeighborOffsets type="List" elem="Point">(1,0);(0,1);(-1,0);(0,-1)</myNeighborOffsets>
+	</Rule>
+	
+	
     <artist>Adele</artist>
     <title>25</title>
     <year>2015</year>

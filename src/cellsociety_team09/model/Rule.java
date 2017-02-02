@@ -1,15 +1,24 @@
 package cellsociety_team09.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Rule {
+	public static final List<String> DATA_FIELDS = Arrays.asList(new String[] {
+        "myNumStates",
+        "myNextStateMap",
+        "myNeighborOffsets",
+    });
+	
+	
 	private int myNumStates;
-	private Map<Integer, Integer>[][] myNextStateMap;
+	private List<ArrayList< HashMap<Integer, Integer> >> myNextStateMap;
 	private List<Point> myNeighborOffsets;
 	
-	public Rule(int numStates, Map<Integer, Integer>[][] stateRules, List<Point> neighborRules) {
+	public Rule(int numStates, List<ArrayList< HashMap<Integer, Integer> >> stateRules, List<Point> neighborRules) {
 		myNumStates = numStates;
 		myNextStateMap = stateRules;
 		myNeighborOffsets = neighborRules;
@@ -33,7 +42,7 @@ public class Rule {
 		
 		for(int stateX = 0; stateX < myNumStates; stateX++){
 			int numNeighborsWithStateX = neighborCounts[stateX];
-			Map<Integer, Integer> transitionsForStateX = myNextStateMap[myState][stateX];
+			Map<Integer, Integer> transitionsForStateX = myNextStateMap.get(myState).get(stateX);
 			
 			if(transitionShouldOccur(transitionsForStateX, numNeighborsWithStateX)) {
 				nextState = transitionsForStateX.get(numNeighborsWithStateX);
