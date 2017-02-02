@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import cellsociety_team09.configuration.XMLReader;
+
 public class Grid {	
 
 	Cell[][] myGrid;
