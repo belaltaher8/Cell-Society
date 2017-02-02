@@ -13,7 +13,6 @@ public class Rule {
         "myNeighborOffsets",
     });
 	
-	
 	private int myNumStates;
 	private Map<Triple, Integer> myNextStateMap;
 	private List<Point> myNeighborOffsets;
@@ -42,10 +41,10 @@ public class Rule {
 		
 		for(int stateX = 0; stateX < myNumStates; stateX++){
 			int numNeighborsWithStateX = neighborCounts[stateX];
-			Map<Triple, Integer> transitionsForStateX = new HashMap<Triple, Integer>();
+			Triple condition = new Triple(myState, stateX, numNeighborsWithStateX);
 			
-			if(transitionShouldOccur(transitionsForStateX, new Triple(myState, stateX, numNeighborsWithStateX))) {
-				nextState = transitionsForStateX.get(numNeighborsWithStateX);
+			if(transitionShouldOccur(myNextStateMap, condition)) {
+				nextState = myNextStateMap.get(condition);
 				break;
 			}
 		}

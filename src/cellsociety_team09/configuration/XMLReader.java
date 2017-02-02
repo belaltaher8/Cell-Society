@@ -1,6 +1,9 @@
 package cellsociety_team09.configuration;
 
+import cellsociety_team09.model.Point;
 import cellsociety_team09.model.Rule;
+import cellsociety_team09.model.Triple;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -50,9 +53,26 @@ public class XMLReader {
     	*/
     	
     	int myNumStates = getInt("NUM_STATES", 0);
-    	List<ArrayList< HashMap<Integer,Integer> >> myNextStateMap = new ArrayList<ArrayList<HashMap<Integer,Integer>>>();
+    	Map<Triple,Integer> myNextStateMap = new HashMap<Triple,Integer>();
+    	myNextStateMap.put(new Triple(0,1,3), 1);
+    	myNextStateMap.put(new Triple(1,1,0), 0);
+    	myNextStateMap.put(new Triple(1,1,1), 0);
+    	myNextStateMap.put(new Triple(1,1,4), 0);
+    	myNextStateMap.put(new Triple(1,1,5), 0);
+    	myNextStateMap.put(new Triple(1,1,6), 0);
+    	myNextStateMap.put(new Triple(1,1,7), 0);
+    	myNextStateMap.put(new Triple(1,1,8), 0);
+    	List<Point> myNeighborOffsets = new ArrayList<Point>();
+    	myNeighborOffsets.add(new Point(1,1));
+    	myNeighborOffsets.add(new Point(1,0));
+    	myNeighborOffsets.add(new Point(1,-1));
+    	myNeighborOffsets.add(new Point(0,1));
+    	myNeighborOffsets.add(new Point(0,-1));
+    	myNeighborOffsets.add(new Point(-1,1));
+    	myNeighborOffsets.add(new Point(-1,0));
+    	myNeighborOffsets.add(new Point(-1,-1));
     	
-    	return null;
+    	return new Rule(myNumStates, myNextStateMap, myNeighborOffsets);
     }
     
     public int getWidth() {
