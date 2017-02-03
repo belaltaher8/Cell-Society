@@ -33,12 +33,12 @@ public class GUIController{
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
 	public GUIController(){
 		societyView = new GridDisplay(); 
+		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 		createControls();
 		BorderPane b = configureDisplay();
 		sceneRoot = new Group(); 
 		sceneRoot.getChildren().addAll(b);
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
-		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 	}
 	public Scene getScene(){
 		return myScene;

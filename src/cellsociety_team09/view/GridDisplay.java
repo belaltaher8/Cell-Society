@@ -20,7 +20,7 @@ import javafx.scene.shape.Shape;
  * @author tahiaemran
  * Display class creates control pane and grid view 
  */
-public class GridDisplay extends Parent {
+public class GridDisplay {
 	Shape cellShape; 
 	private Group gridRoot; 
 	private final int displayX = 600; 
