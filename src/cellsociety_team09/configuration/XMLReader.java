@@ -53,6 +53,8 @@ public class XMLReader {
     	*/
     	
     	int myNumStates = getInt("NUM_STATES", 0);
+    	int gridWidth = getWidth();
+    	int gridHeight = getHeight();
     	Map<Triple,Integer> myNextStateMap = new HashMap<Triple,Integer>();
     	myNextStateMap.put(new Triple(0,1,3), 1);
     	myNextStateMap.put(new Triple(1,1,0), 0);
@@ -71,8 +73,11 @@ public class XMLReader {
     	myNeighborOffsets.add(new Point(-1,1));
     	myNeighborOffsets.add(new Point(-1,0));
     	myNeighborOffsets.add(new Point(-1,-1));
+    	Map<Integer, Double> transitionProbabilities = new HashMap<Integer, Double>();
+    	transitionProbabilities.put(0, 1.0);
+    	transitionProbabilities.put(1, 1.0);
     	
-    	return new Rule(myNumStates, myNextStateMap, myNeighborOffsets);
+    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
     }
     
     public int getWidth() {
@@ -83,7 +88,7 @@ public class XMLReader {
     	return getInt("GRID_HEIGHT", 0);
     }
     
-    public int[][] getInitialGrid() {
+    public Integer[][] getInitialGrid() {
     	//TODO
     	return null;
     }

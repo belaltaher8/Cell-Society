@@ -1,6 +1,7 @@
 package cellsociety_team09.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -18,6 +19,7 @@ public class Grid {
 		amountOfRows = myReader.getHeight();
 		amountOfCols = myReader.getWidth(); 
 		myRule = myReader.getRule();
+		myGrid = new Cell[amountOfCols][amountOfRows];
 		Integer[][] initialStates = myReader.getInitialGrid();
 		//creates cells based on info from XMLreader
 		for(int col = 0; col < amountOfCols; col++){
@@ -52,7 +54,7 @@ public class Grid {
 				//records current cell
 				Cell myCell = myGrid[currentCol][currentRow];
 				//gets coordinates of currentCell
-				List<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
+				List<Point> myCellNeighborsCoords = (List<Point>) myCell.getNeighborCoords();	//TODO: iterate over this as a Collection
 				//points of all neighbors
 				List<Point>  myPoints = new ArrayList<Point>(); //TODO: just use myCellNeighborsCoords (you don't need this list too) 
 				//creates list to store all neighbors

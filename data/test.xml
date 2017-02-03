@@ -5,9 +5,9 @@
 		<GRID_HEIGHT>10</GRID_HEIGHT>
 	</Grid>
 	<Rule>
-		<NUM_STATES type="int">2</NUM_STATES>
-		<myNextStateList type="Map" elem="int"></myNextStateList>
-		<myNeighborOffsets type="List" elem="Point">(1,0);(0,1);(-1,0);(0,-1)</myNeighborOffsets>
+		<NUM_STATES>2</NUM_STATES>
+		<myNextStateList></myNextStateList>
+		<myNeighborOffsets>(1,0);(0,1);(-1,0);(0,-1)</myNeighborOffsets>
 	</Rule>
 	
 	
