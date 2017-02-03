@@ -32,15 +32,14 @@ public class GUIController{
 	private HBox controlPane; 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
-	
-	public GUIController(Grid grid){
-		societyView = new GridDisplay(grid); 
+	public GUIController(){
+		societyView = new GridDisplay(); 
+		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 		createControls();
 		BorderPane b = configureDisplay();
 		sceneRoot = new Group(); 
 		sceneRoot.getChildren().addAll(b);
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
-		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 	}
 	
 	public Scene getScene(){
@@ -94,6 +93,7 @@ public class GUIController{
 	private void animate() {
 		animation = new Timeline();
 		animation.setCycleCount(Timeline.INDEFINITE);
+		// should this return a KeyFrame
 		KeyFrame frame = new KeyFrame(Duration.millis(2000), e->societyView.update()); // will update every two seconds, until stop is presssed 
 		animation.getKeyFrames().add(frame);
 		animation.play();
