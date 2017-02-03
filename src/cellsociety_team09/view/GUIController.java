@@ -1,6 +1,7 @@
 package cellsociety_team09.view;
 import java.util.ResourceBundle;
 
+import cellsociety_team09.model.Grid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -31,8 +32,9 @@ public class GUIController{
 	private HBox controlPane; 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
-	public GUIController(){
-		societyView = new GridDisplay(); 
+	
+	public GUIController(Grid grid){
+		societyView = new GridDisplay(grid); 
 		createControls();
 		BorderPane b = configureDisplay();
 		sceneRoot = new Group(); 
@@ -40,6 +42,7 @@ public class GUIController{
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 	}
+	
 	public Scene getScene(){
 		return myScene;
 	}
