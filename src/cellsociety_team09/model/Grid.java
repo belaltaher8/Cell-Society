@@ -8,7 +8,7 @@ import cellsociety_team09.configuration.XMLReader;
 
 public class Grid {	
 
-	Cell[][] myGrid;
+	List<Cell> myGrid;
 	int amountOfRows;
 	int amountOfCols;
 	Rule myRule;
@@ -24,7 +24,7 @@ public class Grid {
 			for(int row = 0; row < amountOfRows; row++){
 				Integer initialState = initialStates[col][row];
 				Point myPoint = new Point(col, row);
-				myGrid[col][row] = new Cell(initialState, myPoint, myRule);
+				myGrid.add(new Cell(initialState, myPoint, myRule));
 			}
 		}
 	}
@@ -33,9 +33,13 @@ public class Grid {
 	public Cell getCellAtPoint(Point myPoint){
 		//finds x and y of given point and locates the cell in the grid 
 		//at that point
-		int myX = myPoint.getX();
-		int myY = myPoint.getY();
-		return myGrid[myY][myX];
+		for(int i = 0; i < myGrid.size(); i++){
+			Cell currentCell = myGrid.get(i);
+			if(currentCell.getCoords().equals(myPoint)){
+				return currentCell;
+			}	
+		}
+		return null;
 	}
 	
 	public void stepGrid(){
