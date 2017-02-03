@@ -33,10 +33,12 @@ public class GridDisplay {
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
 	private Grid current; 
-	public GridDisplay(){
-		current = new Grid();
+	
+	public GridDisplay(Grid grid){
+		current = grid;
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
 	}
+	
 	/**
 	 * @param cellsPerRow 
 	 * @param cellsPerColumn

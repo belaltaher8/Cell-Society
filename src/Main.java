@@ -6,6 +6,7 @@ import java.io.File;
 
 import cellsociety_team09.configuration.XMLReader;
 import cellsociety_team09.model.Grid;
+import cellsociety_team09.view.GUIController;
 
 
 public class Main extends Application {
@@ -22,6 +23,7 @@ public class Main extends Application {
 		if(dataFile != null) {
 			XMLReader fileReader = new XMLReader(dataFile);
 			Grid theGrid = new Grid(fileReader);
+			GUIController theController = new GUIController(theGrid);
 		}
 	}
 	
