@@ -2,6 +2,8 @@ package cellsociety_team09.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,28 +12,34 @@ import java.util.Random;
 public class Rule {
 	private Random myRNG;
 	private int myNumStates;
+	private int myGridWidth;
+	private int myGridHeight;
 	
-	private List<Point> myNeighborOffsets;
-	private List<Double> myProbOfTransition;
+	private Collection<Point> myNeighborOffsets;
+	private Map<Integer, Double> myProbOfTransition;
 	private Map<Triple, Integer> myNextStateMap;
 	
 	
-	public Rule(int numStates, List<Point> neighborRules, List<Double> transitionProbabilities, Map<Triple, Integer> stateRules) {
+	public Rule(int numStates, int gridWidth, int gridHeight, Collection<Point> neighborRules, Map<Integer, Double> transitionProbabilities, Map<Triple, Integer> stateRules) {
 		myRNG = new Random();
 		myNumStates = numStates;
+		myGridWidth = gridWidth;
+		myGridHeight = gridHeight;
 		
 		myNeighborOffsets = neighborRules;
 		myProbOfTransition = transitionProbabilities;
 		myNextStateMap = stateRules;
 	}
 	
-	public List<Point> getNeighborCoords(Point coords) {
-		List<Point> neighbors = new ArrayList<Point>();
-		for(int i = 0; i < myNeighborOffsets.size(); i++) {
-			Point neighbor = new Point(coords.getX() + myNeighborOffsets.get(i).getX(),
-									   coords.getY() + myNeighborOffsets.get(i).getY());
-			//TODO: do bounds checking
-			neighbors.add(neighbor);
+	public Collection<Point> getNeighborCoords(Point cellCoords) {
+		Collection<Point> neighbors = new ArrayList<Point>();
+		for(Point offset : myNeighborOffsets) {
+			Point neighbor = new Point(cellCoords.getX() + offset.getX(),
+									   cellCoords.getY() + offset.getY());
+			
+			if(isWithinBounds(neighbor)) {
+				neighbors.add(neighbor);
+			}
 		}
 		return neighbors;
 	}
@@ -39,17 +47,14 @@ public class Rule {
 	public int getNextState(int myState, List<Integer> neighborStates) {
 		int nextState = myState;
 		
-		int[] neighborCounts = getStateCounts(neighborStates);
+		List<Integer> neighborCounts = getStateCounts(neighborStates);
 		
 		for(int stateX = 0; stateX < myNumStates; stateX++){
-			int numNeighborsWithStateX = neighborCounts[stateX];
+			int numNeighborsWithStateX = neighborCounts.get(stateX);
 			Triple condition = new Triple(myState, stateX, numNeighborsWithStateX);
 			
-			if(transitionCanOccur(myNextStateMap, condition)) {
+			if(transitionShouldOccur(myNextStateMap, condition)) {
 				nextState = myNextStateMap.get(condition);
-				if(!transitionSucceeds(nextState)) {
-					nextState = myState;
-				}
 				break;
 			}
 		}
@@ -58,26 +63,33 @@ public class Rule {
 	}
 	
 	/**
-	 * Given a List of states, counts the number of times each state appears, and
-	 * returns the result as an array. (stateCounts[0] is the the number of times 
-	 * '0' appears in the List)
+	 * Given a collection of states, counts the number of times each state appears, and
+	 * returns the result as a List. (stateCounts[0] is the the number of times 
+	 * '0' appears in the collection)
 	 * 
-	 * @param states : List of cell states
+	 * @param states : collection of cell states
 	 * @return array whose entries are the number of times each state appears 
 	 */
-	private int[] getStateCounts(List<Integer> states) {
-		int[] stateCounts = new int[myNumStates];
-		for(int i = 0; i < states.size(); i++) {
-			stateCounts[states.get(i)]++;
+	private List<Integer> getStateCounts(Collection<Integer> states) {
+		List<Integer> stateCounts = new ArrayList<Integer>(Collections.nCopies(myNumStates, 0));
+		for(Integer st : states) {
+			//Increments the counter for each state
+			stateCounts.set(st, (stateCounts.get(st) + 1));
 		}
 		return stateCounts;
 	}
 	
-	private boolean transitionCanOccur(Map<Triple, Integer> transitions, Triple key) {
-		return transitions.containsKey(key);
+	private boolean transitionShouldOccur(Map<Triple, Integer> transitionRules, Triple key) {
+		return transitionRules.containsKey(key) && 
+			   transitionSucceeds(transitionRules.get(key));
 	}
 	
-	private boolean transitionSucceeds(int state) {
-		return (myRNG.nextDouble() <= myProbOfTransition.get(state));
+	private boolean transitionSucceeds(int newState) {
+		return (myRNG.nextDouble() <= myProbOfTransition.get(newState));
+	}
+	
+	private boolean isWithinBounds(Point point) {
+		return (point.getX() >= 0 && point.getX() < myGridWidth &&
+				point.getY() >= 0 && point.getY() < myGridHeight);
 	}
 }

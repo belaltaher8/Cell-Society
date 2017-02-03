@@ -9,19 +9,18 @@ public class Point {
 		myY = y;
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		return (o != null &&
+				o instanceof Point &&
+				myX == ((Point)o).getX() &&
+				myY == ((Point)o).getY());
+	}
+	
 	public int getX() {
 		return myX;
 	}
-	
 	public int getY() {
 		return myY;
-	}
-	
-	public void setX(int x) {
-		myX = x;
-	}
-	
-	public void setY(int y) {
-		myY = y;
 	}
 }
