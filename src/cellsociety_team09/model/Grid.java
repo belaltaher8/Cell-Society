@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 import cellsociety_team09.configuration.XMLReader;
 
@@ -13,17 +12,18 @@ public class Grid {
 
 	XMLReader myReader;
 	Map<Point, Cell> myGrid;
-	int amountOfRows;
-	int amountOfCols;
+	int gridWidth;
+	int gridHeight;
 	Rule myRule;
 
 	public Grid(XMLReader reader){
 		//uses XML reader to store important information
 		myReader = reader;
 		
-		amountOfRows = myReader.getHeight();
-		amountOfCols = myReader.getWidth(); 
+		gridWidth = myReader.getHeight();
+		gridHeight = myReader.getWidth(); 
 		myRule = myReader.getRule();
+		
 		myGrid = new HashMap<Point, Cell>();
 		
 		intialize();
@@ -51,21 +51,15 @@ public class Grid {
 	}
 	
 	public void computeNextGrid(){
-		for(int currentCol = 0; currentCol < amountOfCols; currentCol++){
-			for(int currentRow = 0; currentRow < amountOfRows; currentRow++){
-				//records current cell
-				Point point = new Point(currentRow, currentCol);
-				Cell myCell = myGrid.get(point);
-				//gets coordinates of currentCell
-				List<Point> myCellNeighborsCoords = (List<Point>) myCell.getNeighborCoords();	//TODO: iterate over this as a Collection
-				//points of all neighbors
+		for(int x = 0; x < gridWidth; x++){
+			for(int y = 0; y < gridHeight; y++){
+				Cell myCell = myGrid.get(new Point(x, y));
 				
-				//creates list to store all neighbor states
+				Collection<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
 				List<Integer> myNeighborStates = new ArrayList<Integer>();
 				
 				//locates all neighbors by stored points
-				for(int k = 0; k < myCellNeighborsCoords.size(); k++){
-					Point currentPoint = myCellNeighborsCoords.get(k);
+				for(Point currentPoint : myCellNeighborsCoords) {
 					Cell cell = getCellAtPoint(currentPoint);
 					myNeighborStates.add(cell.getState());
 				}
@@ -77,22 +71,22 @@ public class Grid {
 	}
 	
 	public void advanceGrid(){
-		for(int currentCol = 0; currentCol < amountOfCols; currentCol++){
-			for(int currentRow = 0; currentRow < amountOfRows; currentRow++){
+		for(int x = 0; x < gridWidth; x++){
+			for(int y = 0; y < gridHeight; y++){
 				//advances state of each individual cell
-				Point point = new Point(currentRow, currentCol);
+				Point point = new Point(x, y);
 				myGrid.get(point).advanceState();
 			}
 		}
 	}
 	
 	private void intialize() {
-		for(int r = 0; r < amountOfRows; r++) {
-			for(int c = 0; c < amountOfCols; c++) {
-				Point point = new Point(r,c);
+		for(int x = 0; x < gridWidth; x++) {
+			for(int y = 0; y < gridHeight; y++) {
+				Point point = new Point(x, y);
 				int initialState = myReader.getInitialState(point);
 				Cell cell = new Cell(initialState, point, myRule);
-				myGrid.put(new Point(r,c), cell);
+				myGrid.put(point, cell);
 			}
 		}
 	}

@@ -53,7 +53,6 @@ public class XMLReader {
     	int gridWidth = getWidth();
     	int gridHeight = getHeight();
     	Map<Triple,Integer> myNextStateMap = new HashMap<Triple,Integer>();
-    	
     	myNextStateMap.put(new Triple(0,1,3), 1);
     	myNextStateMap.put(new Triple(1,1,0), 0);
     	myNextStateMap.put(new Triple(1,1,1), 0);
@@ -62,6 +61,8 @@ public class XMLReader {
     	myNextStateMap.put(new Triple(1,1,6), 0);
     	myNextStateMap.put(new Triple(1,1,7), 0);
     	myNextStateMap.put(new Triple(1,1,8), 0);
+    	//Map<Triple,Integer> myNextStateMap = getNextStateMap();
+    	
     	Collection<Point> myNeighborOffsets = new ArrayList<Point>();
     	myNeighborOffsets.add(new Point(1,1));
     	myNeighborOffsets.add(new Point(1,0));
@@ -96,15 +97,17 @@ public class XMLReader {
     }
     
     private Map<Triple, Integer> getNextStateMap() {
-    	NodeList mappings = getNodes("nextStateMap");
+    	NodeList mapFromFile = getNodes("nextStateMap");
     	Map<Triple, Integer> result = new HashMap<Triple, Integer>();
-    	for(int i = 0; i < mappings.getLength(); i++) {
-    		String entry = mappings.item(i).getTextContent();
+    	
+    	for(int i = 0; i < mapFromFile.getLength(); i++) {
+    		String entry = mapFromFile.item(i).getTextContent();
     		String[] pair = getKeyValuePair(entry);
     		Triple key = parseTriple(pair[0]);
     		Integer val = Integer.parseInt(pair[1]);
     		result.put(key, val);
     	}
+    	
     	return result;
     }
     
