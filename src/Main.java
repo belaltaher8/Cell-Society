@@ -24,6 +24,7 @@ public class Main extends Application {
 			XMLReader fileReader = new XMLReader(dataFile);
 			Grid theGrid = new Grid(fileReader);
 			GUIController theController = new GUIController(theGrid);
+			primaryStage.setScene(theController.getScene());
 		}
 	}
 	

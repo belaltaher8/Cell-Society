@@ -17,6 +17,11 @@ public class Point {
 				myY == ((Point)o).getY());
 	}
 	
+	@Override
+	public int hashCode() {
+		return (myX ^ myY);
+	}
+	
 	public int getX() {
 		return myX;
 	}
