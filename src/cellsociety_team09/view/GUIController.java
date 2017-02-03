@@ -91,6 +91,7 @@ public class GUIController{
 	private void animate() {
 		animation = new Timeline();
 		animation.setCycleCount(Timeline.INDEFINITE);
+		// should this return a KeyFrame
 		KeyFrame frame = new KeyFrame(Duration.millis(2000), e->societyView.update()); // will update every two seconds, until stop is presssed 
 		animation.getKeyFrames().add(frame);
 		animation.play();
