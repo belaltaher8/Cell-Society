@@ -1,5 +1,6 @@
 package cellsociety_team09.model;
 
+import java.util.Collection;
 import java.util.List;
 
 public class Cell {
@@ -23,7 +24,7 @@ public class Cell {
 		nextState = myRule.getNextState(currentState, neighborStates);
 	}
 	
-	public List<Point> getNeighborCoords() {
+	public Collection<Point> getNeighborCoords() {
 		return myRule.getNeighborCoords(myCoords);
 	}
 	
