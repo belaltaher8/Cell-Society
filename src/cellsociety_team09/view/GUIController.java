@@ -34,8 +34,15 @@ public class GUIController{
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
 
 	public GUIController(Grid grid){
-		societyView = new GridDisplay(grid); 
-	public GUIController(){
+		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
+		societyView = new GridDisplay(grid);
+		createControls();
+		BorderPane b = configureDisplay();
+		sceneRoot = new Group(); 
+		sceneRoot.getChildren().addAll(b);
+		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
+	} 
+	/*public GUIController(){
 		societyView = new GridDisplay(); 
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 		createControls();
@@ -43,7 +50,7 @@ public class GUIController{
 		sceneRoot = new Group(); 
 		sceneRoot.getChildren().addAll(b);
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
-	}
+	}*/
 	
 	public Scene getScene(){
 		return myScene;
@@ -68,13 +75,17 @@ public class GUIController{
 	}
 
 	private void configureControls() {
-		startButton = new Button(myResources.getString("StartLabel"));
+		//startButton = new Button(myResources.getString("StartLabel"));
+		startButton = new Button("Start");
 		startButton.setOnMouseClicked(e->animate());
-		stopButton = new Button(myResources.getString("StopLabel"));
+		//stopButton = new Button(myResources.getString("StopLabel"));
+		stopButton = new Button("Stop");
 		stopButton.setOnMouseClicked(e->stopAnimation());
-		stepButton = new Button(myResources.getString("StepLabel"));
+		//stepButton = new Button(myResources.getString("StepLabel"));
+		stepButton = new Button("Step");
 		stepButton.setOnMouseClicked(e->stepAnimation());
-		resetButton = new Button(myResources.getString("ResetLabel"));
+		//resetButton = new Button(myResources.getString("ResetLabel"));
+		resetButton = new Button("Reset");
 		resetButton.setOnMouseClicked(e->resetAnimation());
 		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton);
 
