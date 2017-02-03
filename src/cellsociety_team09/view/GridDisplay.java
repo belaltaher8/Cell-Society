@@ -44,8 +44,10 @@ public class GridDisplay {
 		gridRoot = new Group(); 
 		int cellWidth =displayX/myWidth; // equivalent to columnWidth
 		int cellHeight = gridY/myHeight; // equivalent to rowHeight
+		/// use width and height + multiply by a scale factor 
 		for (int i=0; i<gridY; i+=cellHeight){
 			for (int j=0; j<displayX;j+=cellWidth){
+				System.out.println(j + " " + i);
 				Point p = new Point(j,i);
 				Cell c = current.getCellAtPoint(p); 
 				Shape gridCell = setColor(new Rectangle(i,j), c);
@@ -62,8 +64,8 @@ public class GridDisplay {
 	private Shape setColor(Shape gridCell, Cell c) { 
 		// PASS AS PARAMETER
 		// assuming two possible states here
-		if (c.getState()==0){
-			gridCell.setFill(Color.DEEPPINK);
+		if (c.getState()==0){// ERROR
+			gridCell.setFill(Color.DEEPPINK); 
 			//gridCell.setFill(Paint.valueOf(myResources.getString("State0")));
 		}
 		else{
