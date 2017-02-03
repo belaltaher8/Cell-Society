@@ -32,15 +32,12 @@ public class GUIController{
 	private HBox controlPane; 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
-<<<<<<< HEAD
+
+	public GUIController(Grid grid){
+		societyView = new GridDisplay(grid); 
 	public GUIController(){
 		societyView = new GridDisplay(); 
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
-=======
-	
-	public GUIController(Grid grid){
-		societyView = new GridDisplay(grid); 
->>>>>>> master
 		createControls();
 		BorderPane b = configureDisplay();
 		sceneRoot = new Group(); 
