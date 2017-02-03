@@ -25,6 +25,7 @@ public class Main extends Application {
 			Grid theGrid = new Grid(fileReader);
 			GUIController theController = new GUIController(theGrid);
 			primaryStage.setScene(theController.getScene());
+			primaryStage.show();
 		}
 	}
 	

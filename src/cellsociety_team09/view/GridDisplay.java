@@ -42,15 +42,14 @@ public class GridDisplay {
 	 */
 	private void createGridDisplay(){  
 		gridRoot = new Group(); 
-		int cellWidth =displayX/myWidth; // equivalent to columnWidth
+		int cellWidth = displayX/myWidth; // equivalent to columnWidth
 		int cellHeight = gridY/myHeight; // equivalent to rowHeight
-		/// use width and height + multiply by a scale factor 
-		for (int i=0; i<gridY; i+=cellHeight){
-			for (int j=0; j<displayX;j+=cellWidth){
-				System.out.println(j + " " + i);
-				Point p = new Point(j,i);
+
+		for (int x = 0; x < myWidth; x++){
+			for (int y = 0; y < myHeight; y++){
+				Point p = new Point(x,y);
 				Cell c = current.getCellAtPoint(p); 
-				Shape gridCell = setColor(new Rectangle(i,j), c);
+				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
 				gridRoot.getChildren().add(gridCell);
 			}
 		}
