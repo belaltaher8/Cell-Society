@@ -22,8 +22,8 @@ public class GridDisplay {
 	private final int displayX = 600; 
 	private final int displayY = 800;
 	public final int gridY = 600;
-	private int numCols; // number cells per row 
-	private int numRows; // number cells col 
+	private int myWidth; // number cells per row 
+	private int myHeight; // number cells col 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
 	private Grid current; 
@@ -31,8 +31,8 @@ public class GridDisplay {
 	public GridDisplay(Grid grid){
 		current = grid;
 		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
-		numCols = grid.getNumCols();
-		numRows = grid.getNumRows();
+		myWidth = grid.getWidth();
+		myHeight = grid.getHeight();
 	}
 	
 	/**
@@ -42,8 +42,8 @@ public class GridDisplay {
 	 */
 	private void createGridDisplay(){  
 		gridRoot = new Group(); 
-		int cellWidth =displayX/numCols; // equivalent to columnWidth
-		int cellHeight = gridY/numRows; // equivalent to rowHeight
+		int cellWidth =displayX/myWidth; // equivalent to columnWidth
+		int cellHeight = gridY/myHeight; // equivalent to rowHeight
 		for (int i=0; i<gridY; i+=cellHeight){
 			for (int j=0; j<displayX;j+=cellWidth){
 				Point p = new Point(j,i);

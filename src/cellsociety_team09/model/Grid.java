@@ -29,11 +29,11 @@ public class Grid {
 		intialize();
 	}
 			
-	public int getNumRows(){
-		return amountOfRows; 
+	public int getWidth(){
+		return gridWidth; 
 	}
-	public int getNumCols(){
-		return amountOfCols;
+	public int getHeight(){
+		return gridHeight;
 	}
 	public Cell getCellAtPoint(Point myPoint){
 		if(!myGrid.containsKey(myPoint)) {
