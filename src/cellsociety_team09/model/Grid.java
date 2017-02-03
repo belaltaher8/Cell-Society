@@ -29,7 +29,12 @@ public class Grid {
 		intialize();
 	}
 			
-	
+	public int getNumRows(){
+		return amountOfRows; 
+	}
+	public int getNumCols(){
+		return amountOfCols;
+	}
 	public Cell getCellAtPoint(Point myPoint){
 		if(!myGrid.containsKey(myPoint)) {
 			//TODO: add exceptions

@@ -6,11 +6,7 @@ import java.util.ResourceBundle;
 
 import cellsociety_team09.model.Cell;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -26,17 +22,17 @@ public class GridDisplay {
 	private final int displayX = 600; 
 	private final int displayY = 800;
 	public final int gridY = 600;
-	////////PLACEHOLDERS////////
-	private int rowCell = 10; 
-	private int colCell = 10; 
-	///////////////////////////
+	private int numCols; // number cells per row 
+	private int numRows; // number cells col 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
 	private Grid current; 
 	
 	public GridDisplay(Grid grid){
 		current = grid;
-		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
+		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
+		numCols = grid.getNumCols();
+		numRows = grid.getNumRows();
 	}
 	
 	/**
@@ -44,13 +40,13 @@ public class GridDisplay {
 	 * @param cellsPerColumn
 	 * creates the grid part of the display 
 	 */
-	private void createGridDisplay(int cellsPerRow, int cellsPerColumn){  
+	private void createGridDisplay(){  
 		gridRoot = new Group(); 
-		int cellWidth =displayX/ cellsPerRow; // equivalent to columnWidth
-		int cellHeight = gridY/cellsPerColumn; // equivalent to rowHeight
+		int cellWidth =displayX/numCols; // equivalent to columnWidth
+		int cellHeight = gridY/numRows; // equivalent to rowHeight
 		for (int i=0; i<gridY; i+=cellHeight){
 			for (int j=0; j<displayX;j+=cellWidth){
-				Point p = new Point(i,j);
+				Point p = new Point(j,i);
 				Cell c = current.getCellAtPoint(p); 
 				Shape gridCell = setColor(new Rectangle(i,j), c);
 				gridRoot.getChildren().add(gridCell);
@@ -67,11 +63,12 @@ public class GridDisplay {
 		// PASS AS PARAMETER
 		// assuming two possible states here
 		if (c.getState()==0){
-			gridCell.setFill(Paint.valueOf(myResources.getString("State0")));
+			gridCell.setFill(Color.DEEPPINK);
+			//gridCell.setFill(Paint.valueOf(myResources.getString("State0")));
 		}
 		else{
-			gridCell.setFill(Paint.valueOf(myResources.getString("State1")));
-
+			gridCell.setFill(Color.AQUA);
+			//gridCell.setFill(Paint.valueOf(myResources.getString("State1")));
 		}
 		return gridCell; 
 	}
@@ -86,6 +83,6 @@ public class GridDisplay {
 	}
 	public void update() {
 		current.advanceGrid();
-		createGridDisplay(rowCell,colCell);
+		createGridDisplay();
 	}
 }
