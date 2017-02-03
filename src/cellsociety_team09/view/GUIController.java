@@ -1,6 +1,7 @@
 package cellsociety_team09.view;
 import java.util.ResourceBundle;
 
+import cellsociety_team09.model.Grid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -40,6 +41,7 @@ public class GUIController{
 		sceneRoot.getChildren().addAll(b);
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
 	}
+	
 	public Scene getScene(){
 		return myScene;
 	}
