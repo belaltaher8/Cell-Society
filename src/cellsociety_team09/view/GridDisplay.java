@@ -29,13 +29,12 @@ public class GridDisplay {
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "cellsociety_team09/src/CellSocResources";
 	private Grid current; 
-	private Map<Point, Cell> gridMap;
 	public GridDisplay(Grid grid){
+		gridRoot = new Group();
 		current = grid;
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "/ButtonLabels");
 		myWidth = grid.getWidth();
 		myHeight = grid.getHeight();
-		gridMap = grid.getMap();
 		createGridDisplay();
 	}
 	/**
@@ -44,14 +43,14 @@ public class GridDisplay {
 	 * creates the grid part of the display 
 	 */
 	private void createGridDisplay(){  
-		gridRoot = new Group(); 
+		gridRoot.getChildren().clear();
 		int cellWidth = displayX/myWidth; // equivalent to columnWidth
 		int cellHeight = gridY/myHeight; // equivalent to rowHeight
 
 		for (int x = 0; x < myWidth; x++){
 			for (int y = 0; y < myHeight; y++){
 				Point p = new Point(x,y);
-				Cell c = gridMap.get(p); 
+				Cell c = current.getCellAtPoint(p);
 				System.out.println(c);
 				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
 				gridRoot.getChildren().add(gridCell);
@@ -83,7 +82,7 @@ public class GridDisplay {
 	/**
 	 * @return grid view for use by other   
 	 */
-	public Node getGridView(){
+	public Group getGridView(){
 		return gridRoot; 
 	}
 	public void update() {

@@ -1,6 +1,7 @@
 package cellsociety_team09.view;
 import java.util.ResourceBundle;
 
+import cellsociety_team09.configuration.XMLReader;
 import cellsociety_team09.model.Grid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,7 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class GUIController{
@@ -30,13 +33,18 @@ public class GUIController{
 	private final int controlY = 200; 
 	public final int gridY = 600;
 	private HBox controlPane; 
+	private Pane gridPane;
 	private BorderPane mainView; 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
+	
+	private XMLReader myXMLReader;
 
-	public GUIController(Grid grid){
-		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
+	public GUIController(XMLReader reader, Grid grid){
+		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
+		myXMLReader = reader;
 		societyView = new GridDisplay(grid);
+		//sceneRoot = new Group(); 
 		createControls();
 		mainView = new BorderPane();
 		configureDisplay();
@@ -44,56 +52,63 @@ public class GUIController{
 		sceneRoot.getChildren().addAll(mainView);
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
 	} 
-	/*public GUIController(){
-		societyView = new GridDisplay(); 
-		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
-		createControls();
+	
+	public void setup(Stage primaryStage) {
 		BorderPane b = configureDisplay();
-		sceneRoot = new Group(); 
-		sceneRoot.getChildren().addAll(b);
-		myScene = nesw Scene(sceneRoot, sceneWidth, sceneHeight);
-	}*/
+		sceneRoot.getChildren().add(b);
+		
+		primaryStage.setScene(myScene);
+		primaryStage.show();
+	}
+
 	
 	public Scene getScene(){
 		return myScene;
 	}
+	
+	private BorderPane configureDisplay(){
+		BorderPane b = new BorderPane();
+		
+		gridPane = new Pane();
+		gridPane.setPrefSize(displayX, gridY);
+		gridPane.getChildren().add(societyView.getGridView()); 
+		b.setCenter(gridPane);
+		
+		createControls();
+		b.setBottom(controlPane);
+		
+		return b; 
+	}
+	
+	
 	/**
 	 * creates control Pane and sets size  
 	 */
 	private void createControls(){
 		controlPane = new HBox(); 
-		controlPane.setPrefWidth(displayX);
-		controlPane.setPrefHeight(controlY);
+		controlPane.setPrefSize(displayX, controlY);
 		configureControls();
 	}
 
-	private void configureDisplay(){
-		createControls();
-		Node gridPane = societyView.getGridView(); 
-		mainView.setBottom(controlPane);
-		//mainView.getChildren().add(gridPane);
-		mainView.setCenter(gridPane);
-		System.out.println(mainView.getChildren());
-		//mainView.setCenter(gridPane);
-		
-	}
+
 
 	private void configureControls() {
 		//startButton = new Button(myResources.getString("StartLabel"));
 		startButton = new Button("Start"); // ERROR: cell.getState is NULL
 		startButton.setOnMouseClicked(e->animate());
-		//stopButton = new Button(myResources.getString("StopLabel"));
-		stopButton = new Button("Stop");
+		
+		stopButton = new Button(myResources.getString("StopLabel"));
 		stopButton.setOnMouseClicked(e->stopAnimation());
-		//stepButton = new Button(myResources.getString("StepLabel"));
-		stepButton = new Button("Step");
+		
+		stepButton = new Button(myResources.getString("StepLabel"));
 		stepButton.setOnMouseClicked(e->stepAnimation());
-		//resetButton = new Button(myResources.getString("ResetLabel"));
-		resetButton = new Button("Reset");
+		
+		resetButton = new Button(myResources.getString("ResetLabel"));
 		resetButton.setOnMouseClicked(e->resetAnimation());
+		
 		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton);
-
 	}
+	
 	private void resetAnimation() {
 		animation.stop();
 	}
@@ -112,10 +127,9 @@ public class GUIController{
 		animation = new Timeline();
 		animation.setCycleCount(Timeline.INDEFINITE);
 		// should this return a KeyFrame
-		KeyFrame frame = new KeyFrame(Duration.millis(2000), e->societyView.update()); // will update every two seconds, until stop is presssed 
+		KeyFrame frame = new KeyFrame(Duration.millis(500), e->societyView.update()); // will update every two seconds, until stop is presssed 
 		animation.getKeyFrames().add(frame);
 		animation.play();
-
 	}
 	
 }
