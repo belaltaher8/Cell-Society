@@ -23,8 +23,10 @@ import org.xml.sax.SAXException;
 public class XMLReader {
     private static final DocumentBuilder DOCUMENT_BUILDER = getDocumentBuilder();
     private Element rootElement;
+    private MapMaker myMapMaker;
     
     public XMLReader(File file) {
+    	myMapMaker = new MapMaker();
     	loadNewFile(file);
     }
     
@@ -43,38 +45,12 @@ public class XMLReader {
     }
     
     public Rule getRule() {
-    	/*
-    	for (String field : Rule.DATA_FIELDS) {
-
-    	}
-    	*/
-    	
     	int myNumStates = getInt("NUM_STATES", 0);
     	int gridWidth = getWidth();
     	int gridHeight = getHeight();
-    	Map<Triple,Integer> myNextStateMap = new HashMap<Triple,Integer>();
-    	myNextStateMap.put(new Triple(0,1,3), 1);
-    	myNextStateMap.put(new Triple(1,1,0), 0);
-    	myNextStateMap.put(new Triple(1,1,1), 0);
-    	myNextStateMap.put(new Triple(1,1,4), 0);
-    	myNextStateMap.put(new Triple(1,1,5), 0);
-    	myNextStateMap.put(new Triple(1,1,6), 0);
-    	myNextStateMap.put(new Triple(1,1,7), 0);
-    	myNextStateMap.put(new Triple(1,1,8), 0);
-    	//Map<Triple,Integer> myNextStateMap = getNextStateMap();
-    	
-    	Collection<Point> myNeighborOffsets = new ArrayList<Point>();
-    	myNeighborOffsets.add(new Point(1,1));
-    	myNeighborOffsets.add(new Point(1,0));
-    	myNeighborOffsets.add(new Point(1,-1));
-    	myNeighborOffsets.add(new Point(0,1));
-    	myNeighborOffsets.add(new Point(0,-1));
-    	myNeighborOffsets.add(new Point(-1,1));
-    	myNeighborOffsets.add(new Point(-1,0));
-    	myNeighborOffsets.add(new Point(-1,-1));
-    	Map<Integer, Double> transitionProbabilities = new HashMap<Integer, Double>();
-    	transitionProbabilities.put(0, 1.0);
-    	transitionProbabilities.put(1, 1.0);
+    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getText("neighborOffsets", 0));
+    	Map<Integer, Double> transitionProbabilities = myMapMaker.getProbabilitiesMap(getText("transitionProbabilitiesMap", 0));
+    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getText("nextStateMap", 0));
     	
     	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
     }
@@ -96,42 +72,6 @@ public class XMLReader {
     	}
     }
     
-    private Map<Triple, Integer> getNextStateMap() {
-    	NodeList mapFromFile = getNodes("nextStateMap");
-    	Map<Triple, Integer> result = new HashMap<Triple, Integer>();
-    	
-    	for(int i = 0; i < mapFromFile.getLength(); i++) {
-    		String entry = mapFromFile.item(i).getTextContent();
-    		String[] pair = getKeyValuePair(entry);
-    		Triple key = parseTriple(pair[0]);
-    		Integer val = Integer.parseInt(pair[1]);
-    		result.put(key, val);
-    	}
-    	
-    	return result;
-    }
-    
-    private String[] getKeyValuePair(String entry) {
-    	entry = entry.replaceAll("\\s", "");
-    	return entry.split("->");
-    }
-    
-    private Triple parseTriple(String xyz) {
-    	String[] vals = xyz.split(",");
-    	int x = Integer.parseInt(vals[0]);
-    	int y = Integer.parseInt(vals[1]);
-    	int z = Integer.parseInt(vals[2]);
-    	return new Triple(x,y,z);
-    }
-    
-    private double getDouble(String tag, int index) {
-    	String myDouble = getText(tag, index);
-    	if(myDouble == null) {
-    		throw new XMLException("XMLReader could not find: getDouble(%s, %d)", tag, index);
-    	}
-    	return Double.parseDouble(myDouble);
-    }
-    
     private int getInt(String tag, int index) {
     	String myInt = getText(tag, index);
     	if(myInt == null) {
@@ -141,16 +81,13 @@ public class XMLReader {
     }
     
     private String getText(String tag, int index) {
-    	NodeList nodeList = getNodes(tag);
+    	NodeList nodeList = rootElement.getElementsByTagName(tag);
     	if (nodeList != null && nodeList.getLength() > index) {
             return nodeList.item(index).getTextContent();
         }
     	return null;
     }
-    
-    private NodeList getNodes(String tag) {
-    	return rootElement.getElementsByTagName(tag);
-    }
+
     
     private boolean isValidDataFile(Element root) {
     	return root.getAttribute("type").equals("CellSociety");

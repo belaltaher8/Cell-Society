@@ -16,7 +16,20 @@
 			<ns>1,1,7 -> 0</ns>
 			<ns>1,1,8 -> 0</ns>
 		</nextStateMap>
-		<myNeighborOffsets>(1,0);(0,1);(-1,0);(0,-1)</myNeighborOffsets>
+		<transitionProbabilitiesMap>
+			<prob>0 -> 1.0</prob>
+			<prob>1 -> 1.0</prob>
+		</transitionProbabilitiesMap>
+		<neighborOffsets>
+			<nbr>1,1</nbr>
+			<nbr>1,0</nbr>
+			<nbr>1,-1</nbr>
+			<nbr>0,1</nbr>
+			<nbr>0,-1</nbr>
+			<nbr>-1,1</nbr>
+			<nbr>-1,0</nbr>
+			<nbr>-1,-1</nbr>
+		</neighborOffsets>
 	</Rule>
 	
 	
