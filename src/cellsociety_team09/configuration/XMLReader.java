@@ -69,9 +69,9 @@ public class XMLReader {
     	int myNumStates = getInt("NUM_STATES", 0);
     	int gridWidth = getGridWidth();
     	int gridHeight = getGridHeight();
-    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getText("neighborOffsets", 0));
+    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getText("nextStateMap", 0));
     	Map<Integer, Double> transitionProbabilities = myMapMaker.getProbabilitiesMap(getText("transitionProbabilitiesMap", 0));
-    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getText("nextStateMap", 0));
+    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getText("neighborOffsets", 0));
     	
     	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
     }

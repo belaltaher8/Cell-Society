@@ -66,10 +66,7 @@ public class MapMaker {
 	
 	private String ignoreExtraChars(String verbose) {
 		String result = removeWhiteSpace(verbose);
-		result = result.replaceAll("(", "");
-		result = result.replaceAll(")", "");
-		result = result.replaceAll("{", "");
-		result = result.replaceAll("}", "");
+		result = result.replaceAll("[(){}]", "");
 		return result;
 	}
 	
