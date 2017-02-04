@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <data type="CellSociety">
+	<simulation>
+		<SIM_NAME>Game of Life</SIM_NAME>
+	</simulation>
+
 	<Grid>
 		<GRID_WIDTH>10</GRID_WIDTH>
 		<GRID_HEIGHT>10</GRID_HEIGHT>
+		<initialGridStates>
+			<INITIAL_STATE_0_0>1</INITIAL_STATE_0_0>
+			<INITIAL_STATE_0_1>1</INITIAL_STATE_0_1>
+			<INITIAL_STATE_1_0>1</INITIAL_STATE_1_0>
+			<INITIAL_STATE_1_1>1</INITIAL_STATE_1_1>
+	</initialGridStates>
 	</Grid>
+	
 	<Rule>
 		<NUM_STATES>2</NUM_STATES>
 		<nextStateMap>
@@ -31,6 +42,4 @@
 			<nbr>-1,-1</nbr>
 		</neighborOffsets>
 	</Rule>
-	
-	
 </data>

@@ -82,7 +82,7 @@ public class GridDisplay {
 		return gridRoot; 
 	}
 	public void update() {
-		current.advanceGrid();
+		current.stepGrid();
 		createGridDisplay();
 	}
 }

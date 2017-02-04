@@ -44,22 +44,15 @@ public class XMLReader {
         }
     }
     
-    public Rule getRule() {
-    	int myNumStates = getInt("NUM_STATES", 0);
-    	int gridWidth = getWidth();
-    	int gridHeight = getHeight();
-    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getText("neighborOffsets", 0));
-    	Map<Integer, Double> transitionProbabilities = myMapMaker.getProbabilitiesMap(getText("transitionProbabilitiesMap", 0));
-    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getText("nextStateMap", 0));
-    	
-    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
+    public String getSimulationName() {
+    	return getString("SIM_NAME", 0);
     }
     
-    public int getWidth() {
+    public int getGridWidth() {
     	return getInt("GRID_WIDTH", 0);
     }
     
-    public int getHeight() {
+    public int getGridHeight() {
     	return getInt("GRID_HEIGHT", 0);
     }
     
@@ -70,6 +63,25 @@ public class XMLReader {
     	} else {
     		return 0;
     	}
+    }
+    
+    public Rule getRule() {
+    	int myNumStates = getInt("NUM_STATES", 0);
+    	int gridWidth = getGridWidth();
+    	int gridHeight = getGridHeight();
+    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getText("neighborOffsets", 0));
+    	Map<Integer, Double> transitionProbabilities = myMapMaker.getProbabilitiesMap(getText("transitionProbabilitiesMap", 0));
+    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getText("nextStateMap", 0));
+    	
+    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
+    }
+    
+    private String getString(String tag, int index) {
+    	String myString = getText(tag, index);
+    	if(myString == null) {
+    		throw new XMLException("XMLReader could not find: getString(%s, %d)", tag, index);
+    	}
+    	return myString;
     }
     
     private int getInt(String tag, int index) {
@@ -88,7 +100,6 @@ public class XMLReader {
     	return null;
     }
 
-    
     private boolean isValidDataFile(Element root) {
     	return root.getAttribute("type").equals("CellSociety");
     }
