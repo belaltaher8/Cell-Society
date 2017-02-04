@@ -2,10 +2,12 @@ package cellsociety_team09.view;
 import cellsociety_team09.model.Grid;
 import cellsociety_team09.model.Point;
 
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import cellsociety_team09.model.Cell;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -25,17 +27,16 @@ public class GridDisplay {
 	private int myWidth; // number cells per row 
 	private int myHeight; // number cells col 
 	private ResourceBundle myResources; 
-	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
+	public static final String DEFAULT_RESOURCE_PACKAGE = "cellsociety_team09/src/CellSocResources";
 	private Grid current; 
-	
 	public GridDisplay(Grid grid){
 		gridRoot = new Group();
 		current = grid;
-		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
+		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "/ButtonLabels");
 		myWidth = grid.getWidth();
 		myHeight = grid.getHeight();
+		createGridDisplay();
 	}
-	
 	/**
 	 * @param cellsPerRow 
 	 * @param cellsPerColumn
@@ -45,10 +46,12 @@ public class GridDisplay {
 		gridRoot.getChildren().clear();
 		int cellWidth = displayX/myWidth; // equivalent to columnWidth
 		int cellHeight = gridY/myHeight; // equivalent to rowHeight
+
 		for (int x = 0; x < myWidth; x++){
 			for (int y = 0; y < myHeight; y++){
 				Point p = new Point(x,y);
-				Cell c = current.getCellAtPoint(p); 
+				Cell c = current.getCellAtPoint(p);
+				System.out.println(c);
 				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
 				gridRoot.getChildren().add(gridCell);
 			}
@@ -63,8 +66,8 @@ public class GridDisplay {
 	private Shape setColor(Shape gridCell, Cell c) { 
 		// PASS AS PARAMETER
 		// assuming two possible states here
-		if (c.getState()==0){
-			gridCell.setFill(Color.DEEPPINK);
+		if (c.getState()==0){// ERROR
+			gridCell.setFill(Color.DEEPPINK); 
 			//gridCell.setFill(Paint.valueOf(myResources.getString("State0")));
 		}
 		else{

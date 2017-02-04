@@ -34,6 +34,7 @@ public class GUIController{
 	public final int gridY = 600;
 	private HBox controlPane; 
 	private Pane gridPane;
+	private BorderPane mainView; 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
 	
@@ -43,7 +44,12 @@ public class GUIController{
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 		myXMLReader = reader;
 		societyView = new GridDisplay(grid);
+		//sceneRoot = new Group(); 
+		createControls();
+		mainView = new BorderPane();
+		configureDisplay();
 		sceneRoot = new Group(); 
+		sceneRoot.getChildren().addAll(mainView);
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
 	} 
 	
@@ -54,6 +60,7 @@ public class GUIController{
 		primaryStage.setScene(myScene);
 		primaryStage.show();
 	}
+
 	
 	public Scene getScene(){
 		return myScene;
@@ -73,6 +80,7 @@ public class GUIController{
 		return b; 
 	}
 	
+	
 	/**
 	 * creates control Pane and sets size  
 	 */
@@ -82,8 +90,11 @@ public class GUIController{
 		configureControls();
 	}
 
+
+
 	private void configureControls() {
-		startButton = new Button(myResources.getString("StartLabel"));
+		//startButton = new Button(myResources.getString("StartLabel"));
+		startButton = new Button("Start"); // ERROR: cell.getState is NULL
 		startButton.setOnMouseClicked(e->animate());
 		
 		stopButton = new Button(myResources.getString("StopLabel"));
