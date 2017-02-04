@@ -23,6 +23,7 @@ public class Main extends Application {
 		if(dataFile != null) {
 			XMLReader fileReader = new XMLReader(dataFile);
 			Grid theGrid = new Grid(fileReader);
+			//theGrid.printGrid();
 			GUIController theController = new GUIController(theGrid);
 			primaryStage.setScene(theController.getScene());
 			primaryStage.show();

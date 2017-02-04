@@ -30,6 +30,7 @@ public class GUIController{
 	private final int controlY = 200; 
 	public final int gridY = 600;
 	private HBox controlPane; 
+	private BorderPane mainView; 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
 
@@ -37,9 +38,10 @@ public class GUIController{
 		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 		societyView = new GridDisplay(grid);
 		createControls();
-		BorderPane b = configureDisplay();
+		mainView = new BorderPane();
+		configureDisplay();
 		sceneRoot = new Group(); 
-		sceneRoot.getChildren().addAll(b);
+		sceneRoot.getChildren().addAll(mainView);
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
 	} 
 	/*public GUIController(){
@@ -49,7 +51,7 @@ public class GUIController{
 		BorderPane b = configureDisplay();
 		sceneRoot = new Group(); 
 		sceneRoot.getChildren().addAll(b);
-		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
+		myScene = nesw Scene(sceneRoot, sceneWidth, sceneHeight);
 	}*/
 	
 	public Scene getScene(){
@@ -65,18 +67,20 @@ public class GUIController{
 		configureControls();
 	}
 
-	private BorderPane configureDisplay(){
-		BorderPane root = new BorderPane();
+	private void configureDisplay(){
 		createControls();
-		Parent gridPane = societyView.getGridView(); 
-		root.setBottom(controlPane);
-		root.setCenter(gridPane);
-		return root; 
+		Node gridPane = societyView.getGridView(); 
+		mainView.setBottom(controlPane);
+		//mainView.getChildren().add(gridPane);
+		mainView.setCenter(gridPane);
+		System.out.println(mainView.getChildren());
+		//mainView.setCenter(gridPane);
+		
 	}
 
 	private void configureControls() {
 		//startButton = new Button(myResources.getString("StartLabel"));
-		startButton = new Button("Start");
+		startButton = new Button("Start"); // ERROR: cell.getState is NULL
 		startButton.setOnMouseClicked(e->animate());
 		//stopButton = new Button(myResources.getString("StopLabel"));
 		stopButton = new Button("Stop");
