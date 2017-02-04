@@ -29,6 +29,7 @@ public class GridDisplay {
 	private Grid current; 
 	
 	public GridDisplay(Grid grid){
+		gridRoot = new Group();
 		current = grid;
 		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
 		myWidth = grid.getWidth();
@@ -41,7 +42,7 @@ public class GridDisplay {
 	 * creates the grid part of the display 
 	 */
 	private void createGridDisplay(){  
-		gridRoot = new Group(); 
+		gridRoot.getChildren().clear();
 		int cellWidth = displayX/myWidth; // equivalent to columnWidth
 		int cellHeight = gridY/myHeight; // equivalent to rowHeight
 		for (int x = 0; x < myWidth; x++){
@@ -78,7 +79,7 @@ public class GridDisplay {
 	/**
 	 * @return grid view for use by other   
 	 */
-	public Parent getGridView(){
+	public Group getGridView(){
 		return gridRoot; 
 	}
 	public void update() {
