@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<data type="CellSociety">
+	<simulation>
+		<SIM_NAME>Game of Life</SIM_NAME>
+	</simulation>
+
+	<Grid>
+		<GRID_WIDTH>40</GRID_WIDTH>
+		<GRID_HEIGHT>40</GRID_HEIGHT>
+		<initialGridStates>
+			<INITIAL_STATE_1_5>1</INITIAL_STATE_1_5>
+			<INITIAL_STATE_2_5>1</INITIAL_STATE_2_5>
+			<INITIAL_STATE_1_6>1</INITIAL_STATE_1_6>
+			<INITIAL_STATE_2_6>1</INITIAL_STATE_2_6>
+			<INITIAL_STATE_11_5>1</INITIAL_STATE_11_5>
+			<INITIAL_STATE_11_6>1</INITIAL_STATE_11_6>
+			<INITIAL_STATE_11_7>1</INITIAL_STATE_11_7>
+			<INITIAL_STATE_12_4>1</INITIAL_STATE_12_4>
+			<INITIAL_STATE_12_8>1</INITIAL_STATE_12_8>
+			<INITIAL_STATE_13_3>1</INITIAL_STATE_13_3>
+			<INITIAL_STATE_13_9>1</INITIAL_STATE_13_9>
+			<INITIAL_STATE_14_3>1</INITIAL_STATE_14_3>
+			<INITIAL_STATE_14_9>1</INITIAL_STATE_14_9>
+			<INITIAL_STATE_15_6>1</INITIAL_STATE_15_6>
+			<INITIAL_STATE_16_4>1</INITIAL_STATE_16_4>
+			<INITIAL_STATE_16_8>1</INITIAL_STATE_16_8>
+			<INITIAL_STATE_17_5>1</INITIAL_STATE_17_5>
+			<INITIAL_STATE_17_6>1</INITIAL_STATE_17_6>
+			<INITIAL_STATE_17_7>1</INITIAL_STATE_17_7>
+			<INITIAL_STATE_18_6>1</INITIAL_STATE_18_6>
+			<INITIAL_STATE_21_5>1</INITIAL_STATE_21_5>
+			<INITIAL_STATE_21_4>1</INITIAL_STATE_21_4>
+			<INITIAL_STATE_21_3>1</INITIAL_STATE_21_3>
+			<INITIAL_STATE_22_5>1</INITIAL_STATE_22_5>
+			<INITIAL_STATE_22_4>1</INITIAL_STATE_22_4>
+			<INITIAL_STATE_22_3>1</INITIAL_STATE_22_3>
+			<INITIAL_STATE_23_2>1</INITIAL_STATE_23_2>
+			<INITIAL_STATE_23_6>1</INITIAL_STATE_23_6>
+			<INITIAL_STATE_25_6>1</INITIAL_STATE_25_6>
+			<INITIAL_STATE_25_7>1</INITIAL_STATE_25_7>
+			<INITIAL_STATE_25_1>1</INITIAL_STATE_25_1>
+			<INITIAL_STATE_25_2>1</INITIAL_STATE_25_2>
+			<INITIAL_STATE_35_3>1</INITIAL_STATE_35_3>
+			<INITIAL_STATE_35_4>1</INITIAL_STATE_35_4>
+			<INITIAL_STATE_36_3>1</INITIAL_STATE_36_3>
+			<INITIAL_STATE_36_4>1</INITIAL_STATE_36_4>			
+		</initialGridStates>
+	</Grid>
+	
+	<Rule>
+		<NUM_STATES>2</NUM_STATES>
+		<nextStateMap>
+			<ns>(0,1,3) -> 1</ns>
+			<ns>(1,1,0) -> 0</ns>
+			<ns>(1,1,1) -> 0</ns>
+			<ns>(1,1,4) -> 0</ns>
+			<ns>(1,1,5) -> 0</ns>
+			<ns>(1,1,6) -> 0</ns>
+			<ns>(1,1,7) -> 0</ns>
+			<ns>(1,1,8) -> 0</ns>
+		</nextStateMap>
+		<transitionProbabilitiesMap>
+			<prob>0 -> 1.0</prob>
+			<prob>1 -> 1.0</prob>
+		</transitionProbabilitiesMap>
+		<neighborOffsets>
+			<nbr>(1,1)</nbr>
+			<nbr>(1,0)</nbr>
+			<nbr>(1,-1)</nbr>
+			<nbr>(0,1)</nbr>
+			<nbr>(0,-1)</nbr>
+			<nbr>(-1,1)</nbr>
+			<nbr>(-1,0)</nbr>
+			<nbr>(-1,-1)</nbr>
+		</neighborOffsets>
+	</Rule>
+</data>

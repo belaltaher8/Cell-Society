@@ -16,7 +16,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {		
 		FileChooser myChooser = new FileChooser();
 		myChooser.setTitle("Open Data File");
-		myChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
 		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION));
 		File dataFile = myChooser.showOpenDialog(primaryStage);
 		
