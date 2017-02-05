@@ -48,7 +48,6 @@ public class GUIController{
 		societyView = new GridDisplay(myGrid);
 		
 		sceneRoot = new Group(); 
-		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
 		animation = new Timeline();
 		
 		mainView = new BorderPane();
@@ -59,6 +58,8 @@ public class GUIController{
 	public void setup(Stage primaryStage) {
 		configureDisplay();
 		sceneRoot.getChildren().add(mainView);
+		Scene myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
+
 		
 		animation.setCycleCount(Timeline.INDEFINITE);
 		KeyFrame frame = new KeyFrame(Duration.millis(250), e->stepAnimation());
@@ -73,7 +74,6 @@ public class GUIController{
 		gridPane.setPrefSize(sceneWidth, gridY);
 		gridPane.getChildren().add(societyView.getGridView()); 
 		mainView.setCenter(gridPane);
-		
 		controlPane.setPrefSize(sceneWidth, controlY);
 		configureControls();
 		mainView.setBottom(controlPane);
