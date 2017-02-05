@@ -11,19 +11,11 @@ import cellsociety_team09.view.GUIController;
 
 public class Main extends Application {
 	public static final String DATA_FILE_EXTENSION = "*.xml";
+
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
-		FileChooser myChooser = new FileChooser();
-		myChooser.setTitle("Open Data File");
-		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
-		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION));
-		File dataFile = myChooser.showOpenDialog(primaryStage);
-		
-		if(dataFile != null) {
-			XMLReader fileReader = new XMLReader(dataFile);
-			GUIController theController = new GUIController(fileReader, primaryStage);
-		}
+		GUIController theController = new GUIController(primaryStage);
 	}
 	
 	public static void main(String args[]) {
