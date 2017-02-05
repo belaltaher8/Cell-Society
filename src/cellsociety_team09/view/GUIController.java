@@ -1,5 +1,6 @@
 package cellsociety_team09.view;
 
+import java.io.File;
 import java.util.ResourceBundle;
 import cellsociety_team09.configuration.XMLReader;
 import cellsociety_team09.model.Grid;
@@ -12,10 +13,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Duration;
 
 public class GUIController{
+	public static final String DATA_FILE_EXTENSION = "*.xml";
+	
 	private final int sceneWidth = 600; 
 	private final int sceneHeight = 800; 
 	private final int controlY = 200; 
@@ -29,19 +34,35 @@ public class GUIController{
 	private Grid myGrid;
 	
 	private Timeline animation; 
+	private Stage myStage;
+	private Pane gridPane;
 
-	public GUIController(XMLReader reader, Stage primaryStage){
+	public GUIController(Stage primaryStage){
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
-		myXMLReader = reader;
-		
-		makeSimulation();
+		myStage = primaryStage;
 		configureAnimation();
+		
+		promptForFile(primaryStage);
+		makeSimulation();
 		
 		Scene mainScene = configureScene();
 		primaryStage.setTitle(myXMLReader.getSimulationName());
 		primaryStage.setScene(mainScene);
 		primaryStage.show();
 	} 
+	
+	private void promptForFile(Stage primaryStage) {
+		FileChooser myChooser = new FileChooser();
+		myChooser.setTitle("Open Data File");
+		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
+		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION));
+		File dataFile = myChooser.showOpenDialog(primaryStage);
+		if(dataFile != null) {
+			myXMLReader = new XMLReader(dataFile);
+		} else {
+			//throw new Exception
+		}
+	}
 	
 	private void makeSimulation() {
 		if(myXMLReader.getCellType().equals("Cell")) {
@@ -73,7 +94,7 @@ public class GUIController{
 	}
 	
 	private Pane configureDisplay(){
-		Pane gridPane = new Pane();
+		gridPane = new Pane();
 		gridPane.setPrefSize(sceneWidth, gridY);
 		gridPane.getChildren().add(societyView.getGridView()); 
 		return gridPane;
@@ -98,16 +119,19 @@ public class GUIController{
 		Button randomizeButton = new Button(myResources.getString("RandomLabel"));
 		randomizeButton.setOnMouseClicked(e->randomizeGrid());
 		
-		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,randomizeButton);
+		Button loadButton = new Button(myResources.getString("LoadLabel"));
+		loadButton.setOnMouseClicked(e->loadNewFile());
+		
+		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,randomizeButton,loadButton);
 		return controlPane;
 	}
 	
-	private void makeButton(String text) {
-		//see the "makeButton()" method in lab_browser
-	}
-	
 	private void loadNewFile() {
-		
+		animation.stop();
+		gridPane.getChildren().remove(societyView.getGridView()); 
+		promptForFile(myStage);
+		makeSimulation();
+		gridPane.getChildren().add(societyView.getGridView()); 
 	}
 	
 	private void randomizeGrid() {
