@@ -31,6 +31,10 @@ public class Rule {
 		myNextStateMap = stateRules;
 	}
 	
+	public int getNumStates() {
+		return myNumStates;
+	}
+	
 	public Collection<Point> getNeighborCoords(Point cellCoords) {
 		Collection<Point> neighbors = new ArrayList<Point>();
 		for(Point offset : myNeighborOffsets) {
