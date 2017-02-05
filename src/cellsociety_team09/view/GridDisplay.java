@@ -65,12 +65,7 @@ public class GridDisplay {
 	private Shape setColor(Shape gridCell, Cell c) { 
 		// PASS AS PARAMETER
 		// assuming two possible states here
-		if (c.getState() == 0){
-			gridCell.setFill(Paint.valueOf(myResources.getString("State0")));
-		}
-		else{
-			gridCell.setFill(Paint.valueOf(myResources.getString("State1")));
-		}
+		gridCell.setFill(Paint.valueOf(myResources.getString("State" + c.getState())));
 		return gridCell; 
 	}
 	
