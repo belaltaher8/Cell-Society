@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <data type="CellSociety">
 	<simulation>
-		<SIM_NAME>Game of Life</SIM_NAME>
-		<CELL_TYPE>MovingCell</CELL_TYPE>
+		<SIM_NAME>Predator Prey</SIM_NAME>
+		<CELL_TYPE>PredatorPrey</CELL_TYPE>
 	</simulation>
 
 	<Grid>
@@ -16,14 +16,14 @@
 	<Rule>
 		<NUM_STATES>3</NUM_STATES>
 		<nextStateMap>
-			<ns>(0,1,3) -> 1</ns>
-			<ns>(1,1,0) -> 0</ns>
-			<ns>(1,1,1) -> 0</ns>
-			<ns>(1,1,4) -> 0</ns>
-			<ns>(1,1,5) -> 0</ns>
-			<ns>(1,1,6) -> 0</ns>
-			<ns>(1,1,7) -> 0</ns>
-			<ns>(1,1,8) -> 0</ns>
+			<ns>(1,0,1) -> 0</ns>
+			<ns>(1,0,2) -> 0</ns>
+			<ns>(1,0,3) -> 0</ns>
+			<ns>(1,0,4) -> 0</ns>
+			<ns>(2,0,1) -> 0</ns>
+			<ns>(2,0,2) -> 0</ns>
+			<ns>(2,0,3) -> 0</ns>
+			<ns>(2,0,4) -> 0</ns>
 		</nextStateMap>
 		<neighborOffsets>
 			<nbr>(1,0)</nbr>
