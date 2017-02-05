@@ -22,8 +22,6 @@ public class Grid {
 
 	public Grid(XMLReader reader){
 		myReader = reader;
-		gridWidth = myReader.getGridHeight();
-		gridHeight = myReader.getGridWidth(); 
 		myRand = new Random();
 		reset();
 	}
@@ -43,7 +41,6 @@ public class Grid {
 				int randomState = myRand.nextInt(myRule.getNumStates());
 				Cell cell = placeCell(randomState, point);
 				myGrid.put(point, cell);
-			
 			}
 		}
 	}
@@ -54,10 +51,6 @@ public class Grid {
 	
 	public int getHeight(){
 		return gridHeight;
-	}
-
-	public Map<Point,Cell> getMap(){
-		return myGrid;
 	}
 
 	public Cell getCellAtPoint(Point myPoint){
@@ -121,11 +114,6 @@ public class Grid {
 			}
 		}
 	}
-
-	public void printGrid(){
-		System.out.println(myGrid.values());
-	}
-	
 	
 	private void intializeGrid() {
 		for(int x = 0; x < gridWidth; x++) {

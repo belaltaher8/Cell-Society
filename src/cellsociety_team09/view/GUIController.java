@@ -28,58 +28,61 @@ public class GUIController{
 	private GridDisplay societyView; 
 	private Grid myGrid;
 	
-	private Group sceneRoot; 
-	private Scene myScene; 
 	private Timeline animation; 
 
-	private BorderPane mainView; 
-	private HBox controlPane; 
-	private Pane gridPane;
-
-	public GUIController(XMLReader reader){
+	public GUIController(XMLReader reader, Stage primaryStage){
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
-		
 		myXMLReader = reader;
-		if(reader.getCellType().equals("Cell")) {
-			myGrid = new Grid(reader);
-		} else if(reader.getCellType().equals("MovingCell")){
-			myGrid = new MovingGrid(reader);
-		}
-		societyView = new GridDisplay(myGrid);
 		
-		sceneRoot = new Group(); 
-		animation = new Timeline();
+		makeSimulation();
+		configureAnimation();
 		
-		mainView = new BorderPane();
-		controlPane = new HBox();
-		gridPane = new Pane();
+		Scene mainScene = configureScene();
+		primaryStage.setTitle(myXMLReader.getSimulationName());
+		primaryStage.setScene(mainScene);
+		primaryStage.show();
 	} 
 	
-	public void setup(Stage primaryStage) {
-		configureDisplay();
-		sceneRoot.getChildren().add(mainView);
-		Scene myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
+	private void makeSimulation() {
+		if(myXMLReader.getCellType().equals("Cell")) {
+			myGrid = new Grid(myXMLReader);
+		} else if(myXMLReader.getCellType().equals("MovingCell")){
+			myGrid = new MovingGrid(myXMLReader);
+		}
+		societyView = new GridDisplay(myGrid);
+	}
 
-		
+	private void configureAnimation() {
+		animation = new Timeline();
 		animation.setCycleCount(Timeline.INDEFINITE);
 		KeyFrame frame = new KeyFrame(Duration.millis(250), e->stepAnimation());
 		animation.getKeyFrames().add(frame);
-		
-		primaryStage.setTitle(myXMLReader.getSimulationName());
-		primaryStage.setScene(myScene);
-		primaryStage.show();
 	}
-
-	private void configureDisplay(){
+	
+	private Scene configureScene() {
+		Pane gridPane = configureDisplay();
+		HBox controlPane = configureControls();
+		
+		BorderPane mainView = new BorderPane();
+		mainView.setCenter(gridPane);
+		mainView.setBottom(controlPane);
+		
+		Group sceneRoot = new Group(); 
+		sceneRoot.getChildren().add(mainView);
+		return new Scene(sceneRoot, sceneWidth, sceneHeight);
+	}
+	
+	private Pane configureDisplay(){
+		Pane gridPane = new Pane();
 		gridPane.setPrefSize(sceneWidth, gridY);
 		gridPane.getChildren().add(societyView.getGridView()); 
-		mainView.setCenter(gridPane);
-		controlPane.setPrefSize(sceneWidth, controlY);
-		configureControls();
-		mainView.setBottom(controlPane);
+		return gridPane;
 	}
 
-	private void configureControls() {
+	private HBox configureControls() {
+		HBox controlPane = new HBox();
+		controlPane.setPrefSize(sceneWidth, controlY);
+		
 		Button startButton = new Button(myResources.getString("StartLabel"));
 		startButton.setOnMouseClicked(e->animate());
 		
@@ -96,10 +99,15 @@ public class GUIController{
 		randomizeButton.setOnMouseClicked(e->randomizeGrid());
 		
 		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,randomizeButton);
+		return controlPane;
 	}
 	
 	private void makeButton(String text) {
 		//see the "makeButton()" method in lab_browser
+	}
+	
+	private void loadNewFile() {
+		
 	}
 	
 	private void randomizeGrid() {
