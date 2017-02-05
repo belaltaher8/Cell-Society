@@ -87,16 +87,24 @@ public class GUIController{
 		Button resetButton = new Button(myResources.getString("ResetLabel"));
 		resetButton.setOnMouseClicked(e->resetAnimation());
 		
-		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton);
+		Button randomizeButton = new Button(myResources.getString("RandomLabel"));
+		randomizeButton.setOnMouseClicked(e->randomizeGrid());
+		
+		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,randomizeButton);
 	}
 	
 	private void makeButton(String text) {
 		//see the "makeButton()" method in lab_browser
 	}
 	
-	private void resetAnimation() {
-		societyView.reset();
+	private void randomizeGrid() {
 		animation.stop();
+		societyView.randomizeGrid();
+	}
+	
+	private void resetAnimation() {
+		animation.stop();
+		societyView.reset();
 	}
 
 	private void stepAnimation() {

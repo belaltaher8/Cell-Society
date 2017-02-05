@@ -5,19 +5,23 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import cellsociety_team09.configuration.XMLReader;
 
 public class Grid {	
 
-	XMLReader myReader;
 	Map<Point, Cell> myGrid;
+	XMLReader myReader;
+	Rule myRule;
+	
 	int gridWidth;
 	int gridHeight;
-	Rule myRule;
+	Random myRand;
 
 	public Grid(XMLReader reader){
 		myReader = reader;
+		myRand = new Random();
 		reset();
 	}
 	
@@ -28,6 +32,17 @@ public class Grid {
 		
 		myGrid = new HashMap<Point, Cell>();
 		intializeGrid();
+	}
+	
+	public void randomizeGrid() {
+		for(int x = 0; x < gridWidth; x++) {
+			for(int y = 0; y < gridHeight; y++) {
+				Point point = new Point(x, y);
+				int randomState = myRand.nextInt(myRule.getNumStates());
+				Cell cell = new Cell(randomState, point, myRule);
+				myGrid.put(point, cell);
+			}
+		}
 	}
 			
 	public int getWidth(){
@@ -49,6 +64,21 @@ public class Grid {
 	public void stepGrid(){
 		computeNextGrid();
 		advanceGrid();
+	}
+	
+	public void requestSwap(Cell swapper, int desiredSwappee) {
+		Collection<Cell> swapCandidates = myGrid.values();
+		Cell swappee = null;
+		
+		for(Cell c : swapCandidates) {
+			if(c.getState() == desiredSwappee) {
+				swappee = c;
+			}
+		}
+		
+		if(swappee != null) {
+			this.swapCells(swapper, swappee);
+		}
 	}
 	
 	private void computeNextGrid(){
@@ -88,5 +118,19 @@ public class Grid {
 				myGrid.put(point, cell);
 			}
 		}
+	}
+	
+	private void swapCells(Cell a, Cell b) {
+		Point pointA = a.getCoords();
+		Point pointB = b.getCoords();
+		
+		myGrid.remove(pointA);
+		myGrid.remove(pointB);
+		
+		a.setCoords(pointB);
+		b.setCoords(pointA);
+		
+		myGrid.put(pointB, a);
+		myGrid.put(pointA, b);
 	}
 }

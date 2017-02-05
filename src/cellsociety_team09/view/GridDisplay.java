@@ -85,4 +85,9 @@ public class GridDisplay {
 		myGrid.reset();
 		drawGridDisplay();
 	}
+	
+	public void randomizeGrid() {
+		myGrid.randomizeGrid();
+		drawGridDisplay();
+	}
 }
