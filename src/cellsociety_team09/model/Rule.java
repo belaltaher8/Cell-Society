@@ -89,7 +89,8 @@ public class Rule {
 	}
 	
 	private boolean transitionSucceeds(int newState) {
-		return (myRNG.nextDouble() <= myProbOfTransition.get(newState));
+		return (myProbOfTransition == null || 
+				myRNG.nextDouble() <= myProbOfTransition.get(newState));
 	}
 	
 	private boolean isWithinBounds(Point point) {

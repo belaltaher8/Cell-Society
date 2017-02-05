@@ -24,7 +24,7 @@ public class MapMaker {
 	
 	public Map<Integer, Double> getProbabilitiesMap(String fullText) {
     	Map<Integer, Double> result = new HashMap<Integer, Double>();
-    	    	
+    	
     	Collection<String[]> keyValuePairs = splitTextIntoElementsBy(fullText, "->");
     	
 		for(String[] pair : keyValuePairs) {

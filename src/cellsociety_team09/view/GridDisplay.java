@@ -25,7 +25,7 @@ public class GridDisplay {
 	private int myWidth; // number cells per row 
 	private int myHeight; // number cells col 
 	private ResourceBundle myResources; 
-	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
+	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
 	private Grid myGrid; 
 	
 	public GridDisplay(Grid grid){

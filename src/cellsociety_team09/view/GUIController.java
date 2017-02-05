@@ -3,6 +3,7 @@ package cellsociety_team09.view;
 import java.util.ResourceBundle;
 import cellsociety_team09.configuration.XMLReader;
 import cellsociety_team09.model.Grid;
+import cellsociety_team09.model.MovingGrid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -19,7 +20,7 @@ public class GUIController{
 	private final int sceneHeight = 800; 
 	private final int controlY = 200; 
 	public final int gridY = 600;
-	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
+	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
 	
 	private ResourceBundle myResources; 
 	
@@ -35,12 +36,16 @@ public class GUIController{
 	private HBox controlPane; 
 	private Pane gridPane;
 
-	public GUIController(XMLReader reader, Grid grid){
+	public GUIController(XMLReader reader){
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 		
 		myXMLReader = reader;
-		myGrid = grid;
-		societyView = new GridDisplay(grid);
+		if(reader.getCellType().equals("Cell")) {
+			myGrid = new Grid(reader);
+		} else if(reader.getCellType().equals("MovingCell")){
+			myGrid = new MovingGrid(reader);
+		}
+		societyView = new GridDisplay(myGrid);
 		
 		sceneRoot = new Group(); 
 		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);

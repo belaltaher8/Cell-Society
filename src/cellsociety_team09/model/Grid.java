@@ -2,6 +2,7 @@ package cellsociety_team09.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class Grid {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
 				int randomState = myRand.nextInt(myRule.getNumStates());
-				Cell cell = new Cell(randomState, point, myRule);
+				Cell cell = placeCell(randomState, point);
 				myGrid.put(point, cell);
 			
 			}
@@ -73,21 +74,27 @@ public class Grid {
 	}
 	
 	public void requestSwap(Cell swapper, int desiredSwappee) {
-		Collection<Cell> swapCandidates = myGrid.values();
+		ArrayList<Cell> swapCandidates = new ArrayList<Cell>(myGrid.values());
+		Collections.shuffle(swapCandidates);
 		Cell swappee = null;
-		
+							
 		for(Cell c : swapCandidates) {
 			if(c.getState() == desiredSwappee) {
 				swappee = c;
+				break;
 			}
 		}
 		
 		if(swappee != null) {
 			this.swapCells(swapper, swappee);
-		}
+		} 
 	}
 	
-	private void computeNextGrid(){
+	public Cell placeCell(int initialState, Point point) {
+		return new Cell(initialState, point, myRule);
+	}
+	
+	private void computeNextGrid() {
 		for(int x = 0; x < gridWidth; x++){
 			for(int y = 0; y < gridHeight; y++){
 				Cell myCell = myGrid.get(new Point(x, y));
@@ -125,7 +132,7 @@ public class Grid {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
 				int initialState = myReader.getInitialState(point);
-				Cell cell = new Cell(initialState, point, myRule);
+				Cell cell = placeCell(initialState, point);
 				myGrid.put(point, cell);
 			}
 		}
