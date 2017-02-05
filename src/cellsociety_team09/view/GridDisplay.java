@@ -2,11 +2,11 @@ package cellsociety_team09.view;
 import cellsociety_team09.model.Grid;
 import cellsociety_team09.model.Point;
 
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import cellsociety_team09.model.Cell;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -26,13 +26,15 @@ public class GridDisplay {
 	private int myHeight; // number cells col 
 	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
-	private Grid current; 
+	private Grid myGrid; 
 	
 	public GridDisplay(Grid grid){
-		current = grid;
-		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
+		gridRoot = new Group();
+		myGrid = grid;
+		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
 		myWidth = grid.getWidth();
 		myHeight = grid.getHeight();
+		drawGridDisplay();
 	}
 	
 	/**
@@ -40,15 +42,15 @@ public class GridDisplay {
 	 * @param cellsPerColumn
 	 * creates the grid part of the display 
 	 */
-	private void createGridDisplay(){  
-		gridRoot = new Group(); 
-		int cellWidth = displayX/myWidth; // equivalent to columnWidth
-		int cellHeight = gridY/myHeight; // equivalent to rowHeight
+	private void drawGridDisplay(){  
+		gridRoot.getChildren().clear();
+		int cellWidth = displayX/myWidth; 
+		int cellHeight = gridY/myHeight;
 
 		for (int x = 0; x < myWidth; x++){
 			for (int y = 0; y < myHeight; y++){
 				Point p = new Point(x,y);
-				Cell c = current.getCellAtPoint(p); 
+				Cell c = myGrid.getCellAtPoint(p);
 				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
 				gridRoot.getChildren().add(gridCell);
 			}
@@ -63,27 +65,29 @@ public class GridDisplay {
 	private Shape setColor(Shape gridCell, Cell c) { 
 		// PASS AS PARAMETER
 		// assuming two possible states here
-		if (c.getState()==0){// ERROR
-			gridCell.setFill(Color.DEEPPINK); 
-			//gridCell.setFill(Paint.valueOf(myResources.getString("State0")));
-		}
-		else{
-			gridCell.setFill(Color.AQUA);
-			//gridCell.setFill(Paint.valueOf(myResources.getString("State1")));
-		}
+		gridCell.setFill(Paint.valueOf(myResources.getString("State" + c.getState())));
 		return gridCell; 
 	}
+	
 	/**
-	 * @return control pane for use by other classes 
+	 * @return grid view for use by other classes
 	 */
-	/**
-	 * @return grid view for use by other   
-	 */
-	public Parent getGridView(){
+	public Group getGridView(){
 		return gridRoot; 
 	}
-	public void update() {
-		current.advanceGrid();
-		createGridDisplay();
+	
+	public void step() {
+		myGrid.stepGrid();
+		drawGridDisplay();
+	}
+	
+	public void reset() {
+		myGrid.reset();
+		drawGridDisplay();
+	}
+	
+	public void randomizeGrid() {
+		myGrid.randomizeGrid();
+		drawGridDisplay();
 	}
 }

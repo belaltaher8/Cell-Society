@@ -35,4 +35,11 @@ public class Cell {
 	public Point getCoords() {
 		return myCoords;
 	}
+	public void setCoords(Point newCoords) {
+		myCoords = newCoords;
+	}
+	
+	public Rule getRule() {
+		return myRule;
+	}
 }

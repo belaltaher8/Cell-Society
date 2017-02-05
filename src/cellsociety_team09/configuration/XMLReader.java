@@ -23,8 +23,10 @@ import org.xml.sax.SAXException;
 public class XMLReader {
     private static final DocumentBuilder DOCUMENT_BUILDER = getDocumentBuilder();
     private Element rootElement;
+    private MapMaker myMapMaker;
     
     public XMLReader(File file) {
+    	myMapMaker = new MapMaker();
     	loadNewFile(file);
     }
     
@@ -42,48 +44,15 @@ public class XMLReader {
         }
     }
     
-    public Rule getRule() {
-    	/*
-    	for (String field : Rule.DATA_FIELDS) {
-
-    	}
-    	*/
-    	
-    	int myNumStates = getInt("NUM_STATES", 0);
-    	int gridWidth = getWidth();
-    	int gridHeight = getHeight();
-    	Map<Triple,Integer> myNextStateMap = new HashMap<Triple,Integer>();
-    	myNextStateMap.put(new Triple(0,1,3), 1);
-    	myNextStateMap.put(new Triple(1,1,0), 0);
-    	myNextStateMap.put(new Triple(1,1,1), 0);
-    	myNextStateMap.put(new Triple(1,1,4), 0);
-    	myNextStateMap.put(new Triple(1,1,5), 0);
-    	myNextStateMap.put(new Triple(1,1,6), 0);
-    	myNextStateMap.put(new Triple(1,1,7), 0);
-    	myNextStateMap.put(new Triple(1,1,8), 0);
-    	//Map<Triple,Integer> myNextStateMap = getNextStateMap();
-    	
-    	Collection<Point> myNeighborOffsets = new ArrayList<Point>();
-    	myNeighborOffsets.add(new Point(1,1));
-    	myNeighborOffsets.add(new Point(1,0));
-    	myNeighborOffsets.add(new Point(1,-1));
-    	myNeighborOffsets.add(new Point(0,1));
-    	myNeighborOffsets.add(new Point(0,-1));
-    	myNeighborOffsets.add(new Point(-1,1));
-    	myNeighborOffsets.add(new Point(-1,0));
-    	myNeighborOffsets.add(new Point(-1,-1));
-    	Map<Integer, Double> transitionProbabilities = new HashMap<Integer, Double>();
-    	transitionProbabilities.put(0, 1.0);
-    	transitionProbabilities.put(1, 1.0);
-    	
-    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
+    public String getSimulationName() {
+    	return getString("SIM_NAME", 0);
     }
     
-    public int getWidth() {
+    public int getGridWidth() {
     	return getInt("GRID_WIDTH", 0);
     }
     
-    public int getHeight() {
+    public int getGridHeight() {
     	return getInt("GRID_HEIGHT", 0);
     }
     
@@ -96,40 +65,23 @@ public class XMLReader {
     	}
     }
     
-    private Map<Triple, Integer> getNextStateMap() {
-    	NodeList mapFromFile = getNodes("nextStateMap");
-    	Map<Triple, Integer> result = new HashMap<Triple, Integer>();
+    public Rule getRule() {
+    	int myNumStates = getInt("NUM_STATES", 0);
+    	int gridWidth = getGridWidth();
+    	int gridHeight = getGridHeight();
+    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getText("nextStateMap", 0));
+    	Map<Integer, Double> transitionProbabilities = myMapMaker.getProbabilitiesMap(getText("transitionProbabilitiesMap", 0));
+    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getText("neighborOffsets", 0));
     	
-    	for(int i = 0; i < mapFromFile.getLength(); i++) {
-    		String entry = mapFromFile.item(i).getTextContent();
-    		String[] pair = getKeyValuePair(entry);
-    		Triple key = parseTriple(pair[0]);
-    		Integer val = Integer.parseInt(pair[1]);
-    		result.put(key, val);
+    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
+    }
+    
+    private String getString(String tag, int index) {
+    	String myString = getText(tag, index);
+    	if(myString == null) {
+    		throw new XMLException("XMLReader could not find: getString(%s, %d)", tag, index);
     	}
-    	
-    	return result;
-    }
-    
-    private String[] getKeyValuePair(String entry) {
-    	entry = entry.replaceAll("\\s", "");
-    	return entry.split("->");
-    }
-    
-    private Triple parseTriple(String xyz) {
-    	String[] vals = xyz.split(",");
-    	int x = Integer.parseInt(vals[0]);
-    	int y = Integer.parseInt(vals[1]);
-    	int z = Integer.parseInt(vals[2]);
-    	return new Triple(x,y,z);
-    }
-    
-    private double getDouble(String tag, int index) {
-    	String myDouble = getText(tag, index);
-    	if(myDouble == null) {
-    		throw new XMLException("XMLReader could not find: getDouble(%s, %d)", tag, index);
-    	}
-    	return Double.parseDouble(myDouble);
+    	return myString;
     }
     
     private int getInt(String tag, int index) {
@@ -141,17 +93,13 @@ public class XMLReader {
     }
     
     private String getText(String tag, int index) {
-    	NodeList nodeList = getNodes(tag);
+    	NodeList nodeList = rootElement.getElementsByTagName(tag);
     	if (nodeList != null && nodeList.getLength() > index) {
             return nodeList.item(index).getTextContent();
         }
     	return null;
     }
-    
-    private NodeList getNodes(String tag) {
-    	return rootElement.getElementsByTagName(tag);
-    }
-    
+
     private boolean isValidDataFile(Element root) {
     	return root.getAttribute("type").equals("CellSociety");
     }

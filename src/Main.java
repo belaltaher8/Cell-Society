@@ -16,16 +16,15 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {		
 		FileChooser myChooser = new FileChooser();
 		myChooser.setTitle("Open Data File");
-		myChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
 		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION));
 		File dataFile = myChooser.showOpenDialog(primaryStage);
 		
 		if(dataFile != null) {
 			XMLReader fileReader = new XMLReader(dataFile);
 			Grid theGrid = new Grid(fileReader);
-			GUIController theController = new GUIController(theGrid);
-			primaryStage.setScene(theController.getScene());
-			primaryStage.show();
+			GUIController theController = new GUIController(fileReader, theGrid);
+			theController.setup(primaryStage);
 		}
 	}
 	

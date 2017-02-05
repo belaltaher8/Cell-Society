@@ -5,36 +5,60 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import cellsociety_team09.configuration.XMLReader;
 
 public class Grid {	
 
-	XMLReader myReader;
 	Map<Point, Cell> myGrid;
+	XMLReader myReader;
+	Rule myRule;
+	
 	int gridWidth;
 	int gridHeight;
-	Rule myRule;
+	Random myRand;
 
 	public Grid(XMLReader reader){
-		//uses XML reader to store important information
 		myReader = reader;
-		gridWidth = myReader.getHeight();
-		gridHeight = myReader.getWidth(); 
+		gridWidth = myReader.getGridHeight();
+		gridHeight = myReader.getGridWidth(); 
+		myRand = new Random();
+		reset();
+	}
+	
+	public void reset() {
+		gridWidth = myReader.getGridWidth(); 
+		gridHeight = myReader.getGridHeight();
 		myRule = myReader.getRule();
 		myGrid = new HashMap<Point, Cell>();
-		intialize();
+		intializeGrid();
+	}
+	
+	public void randomizeGrid() {
+		for(int x = 0; x < gridWidth; x++) {
+			for(int y = 0; y < gridHeight; y++) {
+				Point point = new Point(x, y);
+				int randomState = myRand.nextInt(myRule.getNumStates());
+				Cell cell = new Cell(randomState, point, myRule);
+				myGrid.put(point, cell);
+			
+			}
+		}
 	}
 			
 	public int getWidth(){
 		return gridWidth; 
 	}
+	
 	public int getHeight(){
 		return gridHeight;
 	}
+
 	public Map<Point,Cell> getMap(){
 		return myGrid;
 	}
+
 	public Cell getCellAtPoint(Point myPoint){
 		if(!myGrid.containsKey(myPoint)) {
 			//TODO: add exceptions
@@ -44,13 +68,26 @@ public class Grid {
 	}
 	
 	public void stepGrid(){
-		//computes next states of cells
 		computeNextGrid();
-		//advances cells to their next state
 		advanceGrid();
 	}
 	
-	public void computeNextGrid(){
+	public void requestSwap(Cell swapper, int desiredSwappee) {
+		Collection<Cell> swapCandidates = myGrid.values();
+		Cell swappee = null;
+		
+		for(Cell c : swapCandidates) {
+			if(c.getState() == desiredSwappee) {
+				swappee = c;
+			}
+		}
+		
+		if(swappee != null) {
+			this.swapCells(swapper, swappee);
+		}
+	}
+	
+	private void computeNextGrid(){
 		for(int x = 0; x < gridWidth; x++){
 			for(int y = 0; y < gridHeight; y++){
 				Cell myCell = myGrid.get(new Point(x, y));
@@ -58,31 +95,32 @@ public class Grid {
 				Collection<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
 				List<Integer> myNeighborStates = new ArrayList<Integer>();
 				
-				//locates all neighbors by stored points
+				//gets neighbor states from their locations
 				for(Point currentPoint : myCellNeighborsCoords) {
 					Cell cell = getCellAtPoint(currentPoint);
 					myNeighborStates.add(cell.getState());
 				}
 				
-				//computes next state of current cell by states of neighbors
 				myCell.computeNextState(myNeighborStates);
 			}
 		}
 	}
 	
-	public void advanceGrid(){
+	private void advanceGrid(){
 		for(int x = 0; x < gridWidth; x++){
 			for(int y = 0; y < gridHeight; y++){
-				//advances state of each individual cell
 				Point point = new Point(x, y);
 				myGrid.get(point).advanceState();
 			}
 		}
 	}
+
 	public void printGrid(){
 		System.out.println(myGrid.values());
 	}
-	private void intialize() {
+	
+	
+	private void intializeGrid() {
 		for(int x = 0; x < gridWidth; x++) {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
@@ -91,5 +129,19 @@ public class Grid {
 				myGrid.put(point, cell);
 			}
 		}
+	}
+	
+	private void swapCells(Cell a, Cell b) {
+		Point pointA = a.getCoords();
+		Point pointB = b.getCoords();
+		
+		myGrid.remove(pointA);
+		myGrid.remove(pointB);
+		
+		a.setCoords(pointB);
+		b.setCoords(pointA);
+		
+		myGrid.put(pointB, a);
+		myGrid.put(pointA, b);
 	}
 }

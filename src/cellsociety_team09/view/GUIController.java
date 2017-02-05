@@ -1,117 +1,121 @@
 package cellsociety_team09.view;
-import java.util.ResourceBundle;
 
+import java.util.ResourceBundle;
+import cellsociety_team09.configuration.XMLReader;
 import cellsociety_team09.model.Grid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class GUIController{
-	private GridDisplay societyView; 
-	private Scene myScene; 
-	private Group sceneRoot; 
-	private Button startButton; 
-	private Button stopButton; // calls pause()
-	private Button stepButton;
-	private Button resetButton; // calls stop()
-	private Timeline animation; 
 	private final int sceneWidth = 600; 
 	private final int sceneHeight = 800; 
-	private final int displayX = 600; 
-	///private final int displayY = 800; 
 	private final int controlY = 200; 
 	public final int gridY = 600;
-	private HBox controlPane; 
-	private ResourceBundle myResources; 
 	public static final String DEFAULT_RESOURCE_PACKAGE = "Resources/";
-
-	public GUIController(Grid grid){
-		//myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
-		societyView = new GridDisplay(grid);
-		createControls();
-		BorderPane b = configureDisplay();
-		sceneRoot = new Group(); 
-		sceneRoot.getChildren().addAll(b);
-		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
-	} 
-	/*public GUIController(){
-		societyView = new GridDisplay(); 
-		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
-		createControls();
-		BorderPane b = configureDisplay();
-		sceneRoot = new Group(); 
-		sceneRoot.getChildren().addAll(b);
-		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
-	}*/
 	
-	public Scene getScene(){
-		return myScene;
-	}
-	/**
-	 * creates control Pane and sets size  
-	 */
-	private void createControls(){
-		controlPane = new HBox(); 
-		controlPane.setPrefWidth(displayX);
-		controlPane.setPrefHeight(controlY);
-		configureControls();
+	private ResourceBundle myResources; 
+	
+	private XMLReader myXMLReader;
+	private GridDisplay societyView; 
+	private Grid myGrid;
+	
+	private Group sceneRoot; 
+	private Scene myScene; 
+	private Timeline animation; 
+
+	private BorderPane mainView; 
+	private HBox controlPane; 
+	private Pane gridPane;
+
+	public GUIController(XMLReader reader, Grid grid){
+		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
+		
+		myXMLReader = reader;
+		myGrid = grid;
+		societyView = new GridDisplay(grid);
+		
+		sceneRoot = new Group(); 
+		myScene = new Scene(sceneRoot, sceneWidth, sceneHeight);
+		animation = new Timeline();
+		
+		mainView = new BorderPane();
+		controlPane = new HBox();
+		gridPane = new Pane();
+	} 
+	
+	public void setup(Stage primaryStage) {
+		configureDisplay();
+		sceneRoot.getChildren().add(mainView);
+		
+		animation.setCycleCount(Timeline.INDEFINITE);
+		KeyFrame frame = new KeyFrame(Duration.millis(250), e->stepAnimation());
+		animation.getKeyFrames().add(frame);
+		
+		primaryStage.setTitle(myXMLReader.getSimulationName());
+		primaryStage.setScene(myScene);
+		primaryStage.show();
 	}
 
-	private BorderPane configureDisplay(){
-		BorderPane root = new BorderPane();
-		createControls();
-		Parent gridPane = societyView.getGridView(); 
-		root.setBottom(controlPane);
-		root.setCenter(gridPane);
-		return root; 
+	private void configureDisplay(){
+		gridPane.setPrefSize(sceneWidth, gridY);
+		gridPane.getChildren().add(societyView.getGridView()); 
+		mainView.setCenter(gridPane);
+		
+		controlPane.setPrefSize(sceneWidth, controlY);
+		configureControls();
+		mainView.setBottom(controlPane);
 	}
 
 	private void configureControls() {
-		//startButton = new Button(myResources.getString("StartLabel"));
-		startButton = new Button("Start");
+		Button startButton = new Button(myResources.getString("StartLabel"));
 		startButton.setOnMouseClicked(e->animate());
-		//stopButton = new Button(myResources.getString("StopLabel"));
-		stopButton = new Button("Stop");
+		
+		Button stopButton = new Button(myResources.getString("StopLabel"));
 		stopButton.setOnMouseClicked(e->stopAnimation());
-		//stepButton = new Button(myResources.getString("StepLabel"));
-		stepButton = new Button("Step");
+		
+		Button stepButton = new Button(myResources.getString("StepLabel"));
 		stepButton.setOnMouseClicked(e->stepAnimation());
-		//resetButton = new Button(myResources.getString("ResetLabel"));
-		resetButton = new Button("Reset");
+		
+		Button resetButton = new Button(myResources.getString("ResetLabel"));
 		resetButton.setOnMouseClicked(e->resetAnimation());
-		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton);
-
+		
+		Button randomizeButton = new Button(myResources.getString("RandomLabel"));
+		randomizeButton.setOnMouseClicked(e->randomizeGrid());
+		
+		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,randomizeButton);
 	}
+	
+	private void makeButton(String text) {
+		//see the "makeButton()" method in lab_browser
+	}
+	
+	private void randomizeGrid() {
+		animation.stop();
+		societyView.randomizeGrid();
+	}
+	
 	private void resetAnimation() {
 		animation.stop();
+		societyView.reset();
 	}
 
 	private void stepAnimation() {
-		animation.pause();
-		societyView.update();
+		societyView.step();
 	}
 
 	private void stopAnimation() {
-		// TODO Auto-generated method stub
 		animation.pause();
 	}
 
 	private void animate() {
-		animation = new Timeline();
-		animation.setCycleCount(Timeline.INDEFINITE);
-		// should this return a KeyFrame
-		KeyFrame frame = new KeyFrame(Duration.millis(2000), e->societyView.update()); // will update every two seconds, until stop is presssed 
-		animation.getKeyFrames().add(frame);
 		animation.play();
-
 	}
-	
 }
