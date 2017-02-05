@@ -36,10 +36,12 @@ public class GUIController{
 	private Timeline animation; 
 	private Stage myStage;
 	private Pane gridPane;
+	private int animationSpeed; 
 
 	public GUIController(Stage primaryStage){
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 		myStage = primaryStage;
+		animationSpeed = 250; 
 		configureAnimation();
 		
 		promptForFile(primaryStage);
@@ -75,8 +77,9 @@ public class GUIController{
 
 	private void configureAnimation() {
 		animation = new Timeline();
+		animation.getKeyFrames().clear();
 		animation.setCycleCount(Timeline.INDEFINITE);
-		KeyFrame frame = new KeyFrame(Duration.millis(250), e->stepAnimation());
+		KeyFrame frame = new KeyFrame(Duration.millis(animationSpeed), e->stepAnimation());
 		animation.getKeyFrames().add(frame);
 	}
 	
@@ -122,10 +125,32 @@ public class GUIController{
 		Button loadButton = new Button(myResources.getString("LoadLabel"));
 		loadButton.setOnMouseClicked(e->loadNewFile());
 		
-		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,randomizeButton,loadButton);
+		Button speedButton = new Button(myResources.getString("Speed"));
+		speedButton.setOnMouseClicked(e->speedAnimation());
+		
+		Button slowButton = new Button(myResources.getString("Slow"));
+		slowButton.setOnMouseClicked(e->slowAnimation());
+		
+		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,
+				randomizeButton,loadButton, speedButton, slowButton);
+		
 		return controlPane;
 	}
 	
+	private void slowAnimation() {
+		animation.pause();
+		animationSpeed = animationSpeed*2; 
+		configureAnimation(); 
+	}
+
+	private void speedAnimation() {
+		// TODO Auto-generated method stub
+		animation.pause();
+		animationSpeed = (int) (animationSpeed*(0.5)); 
+		configureAnimation();
+		
+	}
+
 	private void loadNewFile() {
 		animation.stop();
 		gridPane.getChildren().remove(societyView.getGridView()); 
