@@ -19,13 +19,10 @@ public class Grid {
 	public Grid(XMLReader reader){
 		//uses XML reader to store important information
 		myReader = reader;
-		
 		gridWidth = myReader.getHeight();
 		gridHeight = myReader.getWidth(); 
 		myRule = myReader.getRule();
-		
 		myGrid = new HashMap<Point, Cell>();
-		
 		intialize();
 	}
 			
@@ -34,6 +31,9 @@ public class Grid {
 	}
 	public int getHeight(){
 		return gridHeight;
+	}
+	public Map<Point,Cell> getMap(){
+		return myGrid;
 	}
 	public Cell getCellAtPoint(Point myPoint){
 		if(!myGrid.containsKey(myPoint)) {
@@ -79,7 +79,9 @@ public class Grid {
 			}
 		}
 	}
-	
+	public void printGrid(){
+		System.out.println(myGrid.values());
+	}
 	private void intialize() {
 		for(int x = 0; x < gridWidth; x++) {
 			for(int y = 0; y < gridHeight; y++) {
