@@ -22,8 +22,8 @@ public class Grid {
 	}
 	
 	public void reset() {
-		gridWidth = myReader.getGridHeight();
-		gridHeight = myReader.getGridWidth(); 
+		gridWidth = myReader.getGridWidth(); 
+		gridHeight = myReader.getGridHeight();
 		myRule = myReader.getRule();
 		
 		myGrid = new HashMap<Point, Cell>();
