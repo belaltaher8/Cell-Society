@@ -40,7 +40,7 @@ public class Grid {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
 				int randomState = myRand.nextInt(myRule.getNumStates());
-				Cell cell = new Cell(randomState, point, myRule);
+				Cell cell = placeCell(randomState, point);
 				myGrid.put(point, cell);
 			}
 		}
@@ -84,6 +84,10 @@ public class Grid {
 		} 
 	}
 	
+	public Cell placeCell(int initialState, Point point) {
+		return new Cell(initialState, point, myRule);
+	}
+	
 	private void computeNextGrid() {
 		for(int x = 0; x < gridWidth; x++){
 			for(int y = 0; y < gridHeight; y++){
@@ -117,7 +121,7 @@ public class Grid {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
 				int initialState = myReader.getInitialState(point);
-				Cell cell = new Cell(initialState, point, myRule);
+				Cell cell = placeCell(initialState, point);
 				myGrid.put(point, cell);
 			}
 		}

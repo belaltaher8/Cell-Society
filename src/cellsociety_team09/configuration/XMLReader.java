@@ -48,6 +48,10 @@ public class XMLReader {
     	return getString("SIM_NAME", 0);
     }
     
+    public String getCellType() {
+    	return getString("CELL_TYPE", 0);
+    }
+    
     public int getGridWidth() {
     	return getInt("GRID_WIDTH", 0);
     }
@@ -69,9 +73,14 @@ public class XMLReader {
     	int myNumStates = getInt("NUM_STATES", 0);
     	int gridWidth = getGridWidth();
     	int gridHeight = getGridHeight();
+    	
     	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getText("nextStateMap", 0));
-    	Map<Integer, Double> transitionProbabilities = myMapMaker.getProbabilitiesMap(getText("transitionProbabilitiesMap", 0));
     	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getText("neighborOffsets", 0));
+
+    	Map<Integer, Double> transitionProbabilities = null;
+    	if(getText("transitionProbabilitiesMap", 0) != null) {
+    		transitionProbabilities = myMapMaker.getProbabilitiesMap(getText("transitionProbabilitiesMap", 0));
+    	} 
     	
     	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
     }

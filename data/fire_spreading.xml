@@ -2,6 +2,7 @@
 <data type="CellSociety">
 	<simulation>
 		<SIM_NAME>Fire Spreading</SIM_NAME>
+		<CELL_TYPE>Cell</CELL_TYPE>
 	</simulation>
 
 	<Grid>

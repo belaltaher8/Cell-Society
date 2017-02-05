@@ -22,8 +22,7 @@ public class Main extends Application {
 		
 		if(dataFile != null) {
 			XMLReader fileReader = new XMLReader(dataFile);
-			Grid theGrid = new Grid(fileReader);
-			GUIController theController = new GUIController(fileReader, theGrid);
+			GUIController theController = new GUIController(fileReader);
 			theController.setup(primaryStage);
 		}
 	}
