@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import cellsociety_team09.configuration.XMLReader;
 import cellsociety_team09.model.Grid;
 import cellsociety_team09.model.MovingGrid;
+import cellsociety_team09.model.PredatorGrid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -69,8 +70,10 @@ public class GUIController{
 	private void makeSimulation() {
 		if(myXMLReader.getCellType().equals("Cell")) {
 			myGrid = new Grid(myXMLReader);
-		} else if(myXMLReader.getCellType().equals("MovingCell")){
+		} else if(myXMLReader.getCellType().equals("MovingCell")) {
 			myGrid = new MovingGrid(myXMLReader);
+		} else if(myXMLReader.getCellType().equals("PredatorPrey")) {
+			myGrid = new PredatorGrid(myXMLReader); 
 		}
 		societyView = new GridDisplay(myGrid);
 	}
