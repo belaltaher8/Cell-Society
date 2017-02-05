@@ -2,6 +2,7 @@ package cellsociety_team09.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,21 +68,23 @@ public class Grid {
 	}
 	
 	public void requestSwap(Cell swapper, int desiredSwappee) {
-		Collection<Cell> swapCandidates = myGrid.values();
+		ArrayList<Cell> swapCandidates = new ArrayList<Cell>(myGrid.values());
+		Collections.shuffle(swapCandidates);
 		Cell swappee = null;
-		
+							
 		for(Cell c : swapCandidates) {
 			if(c.getState() == desiredSwappee) {
 				swappee = c;
+				break;
 			}
 		}
 		
 		if(swappee != null) {
 			this.swapCells(swapper, swappee);
-		}
+		} 
 	}
 	
-	private void computeNextGrid(){
+	private void computeNextGrid() {
 		for(int x = 0; x < gridWidth; x++){
 			for(int y = 0; y < gridHeight; y++){
 				Cell myCell = myGrid.get(new Point(x, y));
