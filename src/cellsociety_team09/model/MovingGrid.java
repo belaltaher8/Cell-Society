@@ -15,6 +15,6 @@ public class MovingGrid extends Grid {
 	
 	@Override
 	protected Cell placeCell(int initialState, Point point) {
-		return new MovingCell(initialState, point, myRule, this);
+		return new MovingCell(initialState, point, this.getRule(), this);
 	}
 }

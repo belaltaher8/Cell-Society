@@ -17,23 +17,22 @@ import javafx.scene.shape.Shape;
  * Display class creates control pane and grid view 
  */
 public class GridDisplay {
-	Shape cellShape; 
+	public static final int DISPLAY_WIDTH = 600; 
+	public static final int DISPLAY_HEIGHT = 600;
+	
 	private Group gridRoot; 
-	private final int displayX = 600; 
-	private final int displayY = 800;
-	public final int gridY = 600;
-	private int myWidth; // number cells per row 
-	private int myHeight; // number cells col 
+	private int myGridWidth; 
+	private int myGridHeight; 
+	
 	private ResourceBundle myResources; 
-	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
 	private Grid myGrid; 
 	
 	public GridDisplay(Grid grid){
 		gridRoot = new Group();
 		myGrid = grid;
-		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE+ "BinaryStates");
-		myWidth = grid.getWidth();
-		myHeight = grid.getHeight();
+		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "CellColors");
+		myGridWidth = grid.getWidth();
+		myGridHeight = grid.getHeight();
 		drawGridDisplay();
 	}
 	
@@ -44,11 +43,11 @@ public class GridDisplay {
 	 */
 	private void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
-		int cellWidth = displayX/myWidth; 
-		int cellHeight = gridY/myHeight;
-
-		for (int x = 0; x < myWidth; x++){
-			for (int y = 0; y < myHeight; y++){
+		int cellWidth = DISPLAY_WIDTH/myGridWidth; 
+		int cellHeight = DISPLAY_HEIGHT/myGridHeight;
+		
+		for (int x = 0; x < myGridWidth; x++){
+			for (int y = 0; y < myGridHeight; y++){
 				Point p = new Point(x,y);
 				Cell c = myGrid.getCellAtPoint(p);
 				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
@@ -63,8 +62,6 @@ public class GridDisplay {
 	 * @return Shape with color set according to cell state 
 	 */
 	private Shape setColor(Shape gridCell, Cell c) { 
-		// PASS AS PARAMETER
-		// assuming two possible states here
 		gridCell.setFill(Paint.valueOf(myResources.getString("State" + c.getState())));
 		return gridCell; 
 	}

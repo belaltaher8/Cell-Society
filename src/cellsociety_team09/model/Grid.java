@@ -12,13 +12,13 @@ import cellsociety_team09.configuration.XMLReader;
 
 public class Grid {	
 
-	Map<Point, Cell> myGrid;
-	XMLReader myReader;
-	Rule myRule;
+	private Map<Point, Cell> myGrid;
+	private XMLReader myReader;
+	private Rule myRule;
 	
-	int gridWidth;
-	int gridHeight;
-	Random myRand;
+	private int gridWidth;
+	private int gridHeight;
+	private Random myRand;
 
 	public Grid(XMLReader reader){
 		myReader = reader;
@@ -48,9 +48,20 @@ public class Grid {
 	public int getWidth(){
 		return gridWidth; 
 	}
-	
 	public int getHeight(){
 		return gridHeight;
+	}
+	protected Random getRand() {
+		return myRand;
+	}
+	protected Rule getRule() {
+		return myRule;
+	}
+	protected XMLReader getReader() {
+		return myReader;
+	}
+	protected Map<Point, Cell> getGrid() {
+		return myGrid;
 	}
 
 	public Cell getCellAtPoint(Point myPoint){

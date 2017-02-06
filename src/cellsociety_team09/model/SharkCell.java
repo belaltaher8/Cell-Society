@@ -33,7 +33,7 @@ public class SharkCell extends FishCell {
 	
 	@Override
 	protected Cell getOffspring(Point coords) {
-		return new SharkCell(this.getState(), coords, this.getRule(), this.getGrid(), this.getBreedInterval(), starveTimer);
+		return new SharkCell(this.getState(), coords, this.getRule(), this.getGrid(), this.getBreedInterval(), starveInterval);
 	}
 	
 	@Override

@@ -21,12 +21,13 @@ import javafx.util.Duration;
 
 public class GUIController{
 	public static final String DATA_FILE_EXTENSION = "*.xml";
-	
-	private final int sceneWidth = 600; 
-	private final int sceneHeight = 800; 
-	private final int controlY = 200; 
-	public final int gridY = 600;
 	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
+	public static final double SPEED_UP_FACTOR = 2.0;
+	public static final double DEFAULT_ANIMATION_SPEED = 250;
+	
+	public static final int SCENE_WIDTH = 600; 
+	public static final int SCENE_HEIGHT = 800; 
+	public static final int CONTROLS_HEIGHT = 200; 
 	
 	private ResourceBundle myResources; 
 	
@@ -37,12 +38,12 @@ public class GUIController{
 	private Timeline animation; 
 	private Stage myStage;
 	private Pane gridPane;
-	private int animationSpeed; 
+	private double animationSpeed; 
 
 	public GUIController(Stage primaryStage){
 		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
 		myStage = primaryStage;
-		animationSpeed = 250; 
+		animationSpeed = DEFAULT_ANIMATION_SPEED; 
 		configureAnimation();
 		
 		promptForFile(primaryStage);
@@ -96,19 +97,19 @@ public class GUIController{
 		
 		Group sceneRoot = new Group(); 
 		sceneRoot.getChildren().add(mainView);
-		return new Scene(sceneRoot, sceneWidth, sceneHeight);
+		return new Scene(sceneRoot, SCENE_WIDTH, SCENE_HEIGHT);
 	}
 	
 	private Pane configureDisplay(){
 		gridPane = new Pane();
-		gridPane.setPrefSize(sceneWidth, gridY);
+		gridPane.setPrefSize(GridDisplay.DISPLAY_WIDTH, GridDisplay.DISPLAY_HEIGHT);
 		gridPane.getChildren().add(societyView.getGridView()); 
 		return gridPane;
 	}
 
 	private HBox configureControls() {
 		HBox controlPane = new HBox();
-		controlPane.setPrefSize(sceneWidth, controlY);
+		controlPane.setPrefSize(SCENE_WIDTH, CONTROLS_HEIGHT);
 		
 		Button startButton = new Button(myResources.getString("StartLabel"));
 		startButton.setOnMouseClicked(e->animate());
@@ -120,7 +121,7 @@ public class GUIController{
 		stepButton.setOnMouseClicked(e->stepAnimation());
 		
 		Button resetButton = new Button(myResources.getString("ResetLabel"));
-		resetButton.setOnMouseClicked(e->resetAnimation());
+		resetButton.setOnMouseClicked(e->resetGrid());
 		
 		Button randomizeButton = new Button(myResources.getString("RandomLabel"));
 		randomizeButton.setOnMouseClicked(e->randomizeGrid());
@@ -129,33 +130,20 @@ public class GUIController{
 		loadButton.setOnMouseClicked(e->loadNewFile());
 		
 		Button speedButton = new Button(myResources.getString("Speed"));
-		speedButton.setOnMouseClicked(e->speedAnimation());
+		speedButton.setOnMouseClicked(e->speedAnimation(animationSpeed/SPEED_UP_FACTOR));
 		
 		Button slowButton = new Button(myResources.getString("Slow"));
-		slowButton.setOnMouseClicked(e->slowAnimation());
+		slowButton.setOnMouseClicked(e->speedAnimation(animationSpeed*SPEED_UP_FACTOR));
 		
 		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,
 				randomizeButton,loadButton, speedButton, slowButton);
 		
 		return controlPane;
 	}
-	
-	private void slowAnimation() {
-		animation.pause();
-		animationSpeed = animationSpeed*2; 
-		configureAnimation(); 
-	}
-
-	private void speedAnimation() {
-		// TODO Auto-generated method stub
-		animation.pause();
-		animationSpeed = (int) (animationSpeed*(0.5)); 
-		configureAnimation();
-		
-	}
 
 	private void loadNewFile() {
 		animation.stop();
+		animationSpeed = DEFAULT_ANIMATION_SPEED;
 		gridPane.getChildren().remove(societyView.getGridView()); 
 		promptForFile(myStage);
 		makeSimulation();
@@ -167,11 +155,22 @@ public class GUIController{
 		societyView.randomizeGrid();
 	}
 	
-	private void resetAnimation() {
+	private void resetGrid() {
 		animation.stop();
+		animationSpeed = DEFAULT_ANIMATION_SPEED;
 		societyView.reset();
 	}
-
+	
+	private void speedAnimation(double newSpeed) {
+		boolean wasPlaying = animation.getCurrentRate() > 0;
+		animation.pause();
+		animationSpeed = newSpeed; 
+		configureAnimation();
+		if(wasPlaying) {
+			animation.play();
+		}
+	}
+	
 	private void stepAnimation() {
 		societyView.step();
 	}

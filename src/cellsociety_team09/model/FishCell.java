@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FishCell extends Cell {
 	public static final int FISH_STATE = 1;
-	public static final int BREED_INTERVAL = 2;
+	public static final int BREED_INTERVAL = 5;
 	
 	private int breedInterval;
 	private int breedTimer;
@@ -32,7 +32,6 @@ public class FishCell extends Cell {
 	protected int getBreedInterval() {
 		return breedInterval;
 	}
-	
 	
 	protected Cell getOffspring(Point coords) {
 		return new FishCell(this.getState(), coords, this.getRule(), this.getGrid(), breedInterval);
