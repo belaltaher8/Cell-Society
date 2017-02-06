@@ -4,8 +4,6 @@ import java.util.Collection;
 
 public class SharkCell extends FishCell {
 	public static final int SHARK_STATE = 2;
-	public static final int BREED_INTERVAL = 10;
-	public static final int STARVE_INTERVAL = 5;
 	
 	private int starveInterval;
 	private int starveTimer;

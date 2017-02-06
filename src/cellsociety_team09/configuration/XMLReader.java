@@ -1,5 +1,6 @@
 package cellsociety_team09.configuration;
 
+import cellsociety_team09.model.Cell;
 import cellsociety_team09.model.Point;
 import cellsociety_team09.model.Rule;
 import cellsociety_team09.model.Triple;
@@ -62,12 +63,19 @@ public class XMLReader {
     	return getInt("GRID_HEIGHT", FIRST_OCCURRENCE_IN_FILE);
     }
     
+    public int getIntParameter(String name) {
+    	return getInt(name, FIRST_OCCURRENCE_IN_FILE);
+    }
+    public double getDoubleParameter(String name) {
+    	return getDouble(name, FIRST_OCCURRENCE_IN_FILE);
+    }
+    
     public int getInitialState(Point point) {
     	String state = getText(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);
     	if(state != null) {
     		return Integer.parseInt(state);
     	} else {
-    		return 0;
+    		return Cell.EMPTY_STATE;
     	}
     }
     
@@ -101,6 +109,14 @@ public class XMLReader {
     		throw new XMLException("XMLReader could not find: getInt(%s, %d)", tag, index);
     	}
     	return Integer.parseInt(myInt);
+    }
+    
+    private double getDouble(String tag, int index) {
+    	String myDouble = getText(tag, index);
+    	if(myDouble == null) {
+    		throw new XMLException("XMLReader could not find: getInt(%s, %d)", tag, index);
+    	}
+    	return Double.parseDouble(myDouble);
     }
     
     private String getText(String tag, int index) {

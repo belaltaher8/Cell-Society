@@ -7,7 +7,6 @@ import java.util.List;
 
 public class FishCell extends Cell {
 	public static final int FISH_STATE = 1;
-	public static final int BREED_INTERVAL = 5;
 	
 	private int breedInterval;
 	private int breedTimer;

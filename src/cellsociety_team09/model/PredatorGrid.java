@@ -3,11 +3,20 @@ package cellsociety_team09.model;
 import cellsociety_team09.configuration.XMLReader;
 
 public class PredatorGrid extends Grid {
-	public static final double FISH_POPULATION = 0.75;
-	public static final double SHARK_POPULATION = 0.1;
+	private double FISH_INITIAL_POPULATION;
+	private double SHARK_INITIAL_POPULATION;
+	private int FISH_BREED_INTERVAL;
+	private int SHARK_BREED_INTERVAL;
+	private int SHARK_STARVE_INTERVAL;
 	
 	public PredatorGrid(XMLReader reader) {
 		super(reader);
+		FISH_BREED_INTERVAL = reader.getIntParameter("FISH_BREED_INTERVAL");
+		SHARK_BREED_INTERVAL = reader.getIntParameter("SHARK_BREED_INTERVAL");
+		SHARK_STARVE_INTERVAL = reader.getIntParameter("SHARK_STARVE_INTERVAL");
+		FISH_INITIAL_POPULATION = reader.getDoubleParameter("FISH_INITIAL_POPULATION");
+		SHARK_INITIAL_POPULATION = reader.getDoubleParameter("SHARK_INITIAL_POPULATION");
+		this.reset();
 	}
 
 	@Override
@@ -17,9 +26,9 @@ public class PredatorGrid extends Grid {
 				Point point = new Point(x, y);
 				int initialState = Cell.EMPTY_STATE;
 				double rand = this.getRand().nextDouble();
-				if(rand <= FISH_POPULATION) {
+				if(rand <= FISH_INITIAL_POPULATION) {
 					initialState = FishCell.FISH_STATE;
-				} else if(rand <= (SHARK_POPULATION + FISH_POPULATION)) {
+				} else if(rand <= (SHARK_INITIAL_POPULATION + FISH_INITIAL_POPULATION)) {
 					initialState = SharkCell.SHARK_STATE;
 				}
 				Cell cell = placeCell(initialState, point);
@@ -31,9 +40,9 @@ public class PredatorGrid extends Grid {
 	@Override
 	protected Cell placeCell(int initialState, Point point) {
 		if(initialState == FishCell.FISH_STATE) {
-			return new FishCell(initialState, point, this.getRule(), this, FishCell.BREED_INTERVAL);
+			return new FishCell(initialState, point, this.getRule(), this, FISH_BREED_INTERVAL);
 		} else if(initialState == SharkCell.SHARK_STATE) {
-			return new SharkCell(initialState, point, this.getRule(), this, SharkCell.BREED_INTERVAL, SharkCell.STARVE_INTERVAL);
+			return new SharkCell(initialState, point, this.getRule(), this, SHARK_BREED_INTERVAL, SHARK_STARVE_INTERVAL);
 		} else {
 			return new Cell(initialState, point, this.getRule(), this);
 		}
