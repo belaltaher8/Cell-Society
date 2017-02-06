@@ -61,12 +61,18 @@ public class Grid {
 		return myGrid.get(myPoint);
 	}
 	
+	public void replaceCell(Cell old, Cell replacement) {
+		Point coords = old.getCoords();
+		myGrid.remove(coords);
+		myGrid.put(coords, replacement);
+	}
+	
 	public void stepGrid(){
 		computeNextGrid();
 		advanceGrid();
 	}
 	
-	public void requestSwap(Cell swapper, int desiredSwappee) {
+	public void requestRandomSwap(Cell swapper, int desiredSwappee) {
 		ArrayList<Cell> swapCandidates = new ArrayList<Cell>(myGrid.values());
 		Collections.shuffle(swapCandidates);
 		Cell swappee = null;
@@ -83,8 +89,18 @@ public class Grid {
 		} 
 	}
 	
-	public Cell placeCell(int initialState, Point point) {
-		return new Cell(initialState, point, myRule);
+	public void swapCells(Cell a, Cell b) {
+		Point pointA = a.getCoords();
+		Point pointB = b.getCoords();
+		
+		myGrid.remove(pointA);
+		myGrid.remove(pointB);
+		
+		a.setCoords(pointB);
+		b.setCoords(pointA);
+		
+		myGrid.put(pointB, a);
+		myGrid.put(pointA, b);
 	}
 	
 	private void computeNextGrid() {
@@ -115,7 +131,7 @@ public class Grid {
 		}
 	}
 	
-	private void intializeGrid() {
+	protected void intializeGrid() {
 		for(int x = 0; x < gridWidth; x++) {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
@@ -126,17 +142,7 @@ public class Grid {
 		}
 	}
 	
-	private void swapCells(Cell a, Cell b) {
-		Point pointA = a.getCoords();
-		Point pointB = b.getCoords();
-		
-		myGrid.remove(pointA);
-		myGrid.remove(pointB);
-		
-		a.setCoords(pointB);
-		b.setCoords(pointA);
-		
-		myGrid.put(pointB, a);
-		myGrid.put(pointA, b);
+	protected Cell placeCell(int initialState, Point point) {
+		return new Cell(initialState, point, myRule, this);
 	}
 }

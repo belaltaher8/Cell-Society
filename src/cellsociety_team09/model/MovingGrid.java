@@ -1,7 +1,5 @@
 package cellsociety_team09.model;
 
-import java.util.Random;
-
 import cellsociety_team09.configuration.XMLReader;
 
 public class MovingGrid extends Grid {
@@ -11,7 +9,12 @@ public class MovingGrid extends Grid {
 	}
 
 	@Override
-	public Cell placeCell(int initialState, Point point) {
+	protected void intializeGrid() {
+		this.randomizeGrid();
+	}
+	
+	@Override
+	protected Cell placeCell(int initialState, Point point) {
 		return new MovingCell(initialState, point, myRule, this);
 	}
 }

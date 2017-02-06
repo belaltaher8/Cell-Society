@@ -4,23 +4,27 @@ import java.util.Collection;
 import java.util.List;
 
 public class Cell {
+	public static final int EMPTY_STATE = 0;
+	
 	private int currentState;
 	private int nextState;
 	private Point myCoords;
 	private Rule myRule;
+	private Grid myGrid;
 	
-	public Cell(int initialState, Point coordinates, Rule rule) {
+	public Cell(int initialState, Point coordinates, Rule rule, Grid grid) {
 		currentState = initialState;
 		nextState = initialState;
 		myCoords = coordinates;
 		myRule = rule;
+		myGrid = grid;
 	}
 	
 	public void advanceState() {
 		currentState = nextState;
 	}
 	
-	public void computeNextState(List<Integer> neighborStates) {
+	public void computeNextState(Collection<Integer> neighborStates) {
 		nextState = myRule.getNextState(currentState, neighborStates);
 	}
 	
@@ -35,11 +39,16 @@ public class Cell {
 	public Point getCoords() {
 		return myCoords;
 	}
+	
 	public void setCoords(Point newCoords) {
 		myCoords = newCoords;
 	}
 	
-	public Rule getRule() {
+	protected Rule getRule() {
 		return myRule;
+	}
+	
+	protected Grid getGrid() {
+		return myGrid;
 	}
 }
