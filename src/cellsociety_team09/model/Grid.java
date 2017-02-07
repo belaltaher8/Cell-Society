@@ -12,17 +12,19 @@ import cellsociety_team09.configuration.XMLReader;
 
 public class Grid {	
 
-	Map<Point, Cell> myGrid;
-	XMLReader myReader;
-	Rule myRule;
+	private Map<Point, Cell> myGrid;
+	private XMLReader myReader;
+	private Rule myRule;
 	
-	int gridWidth;
-	int gridHeight;
-	Random myRand;
+	private int gridWidth;
+	private int gridHeight;
+	private Random myRand;
+	private Collection<Cell[]> swapPairs;
 
 	public Grid(XMLReader reader){
 		myReader = reader;
 		myRand = new Random();
+		swapPairs = new ArrayList<Cell[]>();
 		reset();
 	}
 	
@@ -48,9 +50,20 @@ public class Grid {
 	public int getWidth(){
 		return gridWidth; 
 	}
-	
 	public int getHeight(){
 		return gridHeight;
+	}
+	protected Random getRand() {
+		return myRand;
+	}
+	protected Rule getRule() {
+		return myRule;
+	}
+	protected XMLReader getReader() {
+		return myReader;
+	}
+	protected Map<Point, Cell> getGrid() {
+		return myGrid;
 	}
 
 	public Cell getCellAtPoint(Point myPoint){
@@ -61,12 +74,19 @@ public class Grid {
 		return myGrid.get(myPoint);
 	}
 	
+	public void replaceCell(Cell old, Cell replacement) {
+		Point coords = old.getCoords();
+		myGrid.remove(coords);
+		myGrid.put(coords, replacement);
+	}
+	
 	public void stepGrid(){
 		computeNextGrid();
 		advanceGrid();
+		applyAllSwaps();
 	}
 	
-	public void requestSwap(Cell swapper, int desiredSwappee) {
+	public void requestRandomSwap(Cell swapper, int desiredSwappee) {
 		ArrayList<Cell> swapCandidates = new ArrayList<Cell>(myGrid.values());
 		Collections.shuffle(swapCandidates);
 		Cell swappee = null;
@@ -79,12 +99,33 @@ public class Grid {
 		}
 		
 		if(swappee != null) {
-			this.swapCells(swapper, swappee);
+			this.requestSpecificSwap(swapper, swappee);
 		} 
 	}
 	
-	public Cell placeCell(int initialState, Point point) {
-		return new Cell(initialState, point, myRule);
+	public void requestSpecificSwap(Cell a, Cell b) {
+		swapPairs.add(new Cell[] {a,b});
+	}
+	
+	public void swapCells(Cell a, Cell b) {
+		Point pointA = a.getCoords();
+		Point pointB = b.getCoords();
+		
+		myGrid.remove(pointA);
+		myGrid.remove(pointB);
+		
+		a.setCoords(pointB);
+		b.setCoords(pointA);
+		
+		myGrid.put(pointB, a);
+		myGrid.put(pointA, b);
+	}
+	
+	private void applyAllSwaps() {
+		for(Cell[] pair : swapPairs) {
+			swapCells(pair[0], pair[1]);
+		}
+		swapPairs.clear();
 	}
 	
 	private void computeNextGrid() {
@@ -115,7 +156,7 @@ public class Grid {
 		}
 	}
 	
-	private void intializeGrid() {
+	protected void intializeGrid() {
 		for(int x = 0; x < gridWidth; x++) {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
@@ -126,17 +167,7 @@ public class Grid {
 		}
 	}
 	
-	private void swapCells(Cell a, Cell b) {
-		Point pointA = a.getCoords();
-		Point pointB = b.getCoords();
-		
-		myGrid.remove(pointA);
-		myGrid.remove(pointB);
-		
-		a.setCoords(pointB);
-		b.setCoords(pointA);
-		
-		myGrid.put(pointB, a);
-		myGrid.put(pointA, b);
+	protected Cell placeCell(int initialState, Point point) {
+		return new Cell(initialState, point, myRule, this);
 	}
 }
