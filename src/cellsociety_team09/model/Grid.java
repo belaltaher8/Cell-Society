@@ -19,10 +19,12 @@ public class Grid {
 	private int gridWidth;
 	private int gridHeight;
 	private Random myRand;
+	private Collection<Cell[]> swapPairs;
 
 	public Grid(XMLReader reader){
 		myReader = reader;
 		myRand = new Random();
+		swapPairs = new ArrayList<Cell[]>();
 		reset();
 	}
 	
@@ -81,6 +83,7 @@ public class Grid {
 	public void stepGrid(){
 		computeNextGrid();
 		advanceGrid();
+		applyAllSwaps();
 	}
 	
 	public void requestRandomSwap(Cell swapper, int desiredSwappee) {
@@ -96,8 +99,12 @@ public class Grid {
 		}
 		
 		if(swappee != null) {
-			this.swapCells(swapper, swappee);
+			this.requestSpecificSwap(swapper, swappee);
 		} 
+	}
+	
+	public void requestSpecificSwap(Cell a, Cell b) {
+		swapPairs.add(new Cell[] {a,b});
 	}
 	
 	public void swapCells(Cell a, Cell b) {
@@ -112,6 +119,13 @@ public class Grid {
 		
 		myGrid.put(pointB, a);
 		myGrid.put(pointA, b);
+	}
+	
+	private void applyAllSwaps() {
+		for(Cell[] pair : swapPairs) {
+			swapCells(pair[0], pair[1]);
+		}
+		swapPairs.clear();
 	}
 	
 	private void computeNextGrid() {

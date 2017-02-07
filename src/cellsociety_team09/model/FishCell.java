@@ -19,8 +19,8 @@ public class FishCell extends Cell {
 
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {		
-		this.move();
 		this.reproduce();
+		this.move();
 		
 		incrementTimer();
 	}
@@ -39,7 +39,7 @@ public class FishCell extends Cell {
 	protected void move() {
 		Cell empty = findNeighborOfGivenState(Cell.EMPTY_STATE);
 		if(empty != null) {
-			this.getGrid().swapCells(this, empty);
+			this.getGrid().requestSpecificSwap(this, empty);
 		}
 	}
 	

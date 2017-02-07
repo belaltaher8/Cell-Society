@@ -7,6 +7,7 @@ public class SharkCell extends FishCell {
 	
 	private int starveInterval;
 	private int starveTimer;
+	private boolean alive = true;
 
 	public SharkCell(int initialState, Point coordinates, Rule rule, Grid grid, int breedtime, int starvetime) {
 		super(initialState, coordinates, rule, grid, breedtime);
@@ -16,15 +17,17 @@ public class SharkCell extends FishCell {
 	
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {	
-		Cell fish = findNeighborOfGivenState(FishCell.FISH_STATE);
-		if(fish != null) {
-			this.eat(fish);
-		} else {
-			this.move();
-		}
-		
 		this.reproduce();
 		this.starve();
+		
+		if(alive) {
+			Cell fish = findNeighborOfGivenState(FishCell.FISH_STATE);
+			if(fish != null) {
+				this.eat(fish);
+			} else {
+				this.move();
+			}
+		}
 		
 		incrementTimer();
 	}
@@ -50,6 +53,7 @@ public class SharkCell extends FishCell {
 		if(starveTimer >= starveInterval) {
 			Cell empty = new Cell(Cell.EMPTY_STATE, this.getCoords(), this.getRule(), this.getGrid());
 			this.getGrid().replaceCell(this, empty);
+			alive = false;
 		}
 	}
 }
