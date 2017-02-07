@@ -48,7 +48,7 @@ public class Rule {
 		return neighbors;
 	}
 	
-	public int getNextState(int myState, List<Integer> neighborStates) {
+	public int getNextState(int myState, Collection<Integer> neighborStates) {
 		int nextState = myState;
 		
 		List<Integer> neighborCounts = getStateCounts(neighborStates);
