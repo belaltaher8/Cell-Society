@@ -42,7 +42,7 @@ public class GUIController{
 	private double animationSpeed; 
 
 	public GUIController(Stage primaryStage){
-		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "ButtonLabels");
+		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "GUI");
 		myStage = primaryStage;
 		animationSpeed = DEFAULT_ANIMATION_SPEED; 
 		configureAnimation();
@@ -58,7 +58,7 @@ public class GUIController{
 	
 	private void promptForFile(Stage primaryStage) {
 		FileChooser myChooser = new FileChooser();
-		myChooser.setTitle("Open Data File"); /// string
+		myChooser.setTitle(myResources.getString("ChooseFilePrompt")); /// string
 		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data")); // string 
 		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION)); // string 
 		File dataFile = myChooser.showOpenDialog(primaryStage);
