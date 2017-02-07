@@ -25,8 +25,8 @@ public class GUIController{
 	private final int sceneWidth = 600; 
 	private final int sceneHeight = 800; 
 	private final int controlY = 200; 
-	public final int gridY = 600;
-	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
+	private final int gridY = 600;
+	private final String DEFAULT_RESOURCE_PACKAGE = "resources/";
 	
 	private ResourceBundle myResources; 
 	
@@ -56,9 +56,9 @@ public class GUIController{
 	
 	private void promptForFile(Stage primaryStage) {
 		FileChooser myChooser = new FileChooser();
-		myChooser.setTitle("Open Data File");
-		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
-		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION));
+		myChooser.setTitle("Open Data File"); /// string
+		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data")); // string 
+		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION)); // string 
 		File dataFile = myChooser.showOpenDialog(primaryStage);
 		if(dataFile != null) {
 			myXMLReader = new XMLReader(dataFile);
@@ -147,7 +147,6 @@ public class GUIController{
 	}
 
 	private void speedAnimation() {
-		// TODO Auto-generated method stub
 		animation.pause();
 		animationSpeed = (int) (animationSpeed*(0.5)); 
 		configureAnimation();
