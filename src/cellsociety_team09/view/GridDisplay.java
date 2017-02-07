@@ -2,12 +2,10 @@ package cellsociety_team09.view;
 import cellsociety_team09.model.Grid;
 import cellsociety_team09.model.Point;
 
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import cellsociety_team09.model.Cell;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -39,7 +37,7 @@ public class GridDisplay {
 	/**
 	 * @param cellsPerRow 
 	 * @param cellsPerColumn
-	 * creates the grid part of the display 
+	 * creates the grid part of the display where the simulation occurs
 	 */
 	private void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
@@ -73,16 +71,25 @@ public class GridDisplay {
 		return gridRoot; 
 	}
 	
+	/**
+	 * advances the grid to the next state
+	 */
 	public void step() {
 		myGrid.stepGrid();
 		drawGridDisplay();
 	}
 	
+	/**
+	 * resets grid to original state
+	 */
 	public void reset() {
 		myGrid.reset();
 		drawGridDisplay();
 	}
 	
+	/**
+	 * randomizes the grid 
+	 */
 	public void randomizeGrid() {
 		myGrid.randomizeGrid();
 		drawGridDisplay();

@@ -57,9 +57,9 @@ public class GUIController{
 	
 	private void promptForFile(Stage primaryStage) {
 		FileChooser myChooser = new FileChooser();
-		myChooser.setTitle("Open Data File");
-		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data"));
-		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION));
+		myChooser.setTitle("Open Data File"); /// string
+		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data")); // string 
+		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION)); // string 
 		File dataFile = myChooser.showOpenDialog(primaryStage);
 		if(dataFile != null) {
 			myXMLReader = new XMLReader(dataFile);
