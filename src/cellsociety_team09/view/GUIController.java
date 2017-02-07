@@ -21,13 +21,7 @@ import javafx.util.Duration;
 
 public class GUIController{
 	public static final String DATA_FILE_EXTENSION = "*.xml";
-
 	
-	private final int sceneWidth = 600; 
-	private final int sceneHeight = 800; 
-	private final int controlY = 200; 
-	private final int gridY = 600;
-
 	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
 	public static final double SPEED_UP_FACTOR = 2.0;
 	public static final double DEFAULT_ANIMATION_SPEED = 250;

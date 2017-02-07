@@ -20,16 +20,11 @@ public class GridDisplay {
 	
 	private Group gridRoot; 
 
-	private final int displayX = 600; 
-	public final int gridY = 600;
-	private int myWidth; // number cells per row 
-	private int myHeight; // number cells col 
-	private ResourceBundle myResources; 
-	private final String DEFAULT_RESOURCE_PACKAGE = "resources/";
-
 	private int myGridWidth; 
 	private int myGridHeight; 
 	
+	private ResourceBundle myResources; 
+
 	private Grid myGrid; 
 	
 	public GridDisplay(Grid grid){
