@@ -1,10 +1,9 @@
-package cellsociety_team09.view;
-import cellsociety_team09.model.Grid;
-import cellsociety_team09.model.Point;
-
+package cs.view;
 import java.util.ResourceBundle;
 
-import cellsociety_team09.model.Cell;
+import cs.model.Cell;
+import cs.model.Point;
+import cs.model.Simulation;
 import javafx.scene.Group;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -24,10 +23,10 @@ public class GridDisplay {
 	private int myGridHeight; 
 	
 	private ResourceBundle myResources; 
+	private Simulation myGrid; 
 
-	private Grid myGrid; 
 	
-	public GridDisplay(Grid grid){
+	public GridDisplay(Simulation grid){
 		gridRoot = new Group();
 		myGrid = grid;
 		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "CellColors");

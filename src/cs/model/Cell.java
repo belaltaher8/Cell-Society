@@ -1,18 +1,18 @@
-package cellsociety_team09.model;
+package cs.model;
 
 import java.util.Collection;
 import java.util.List;
 
 public class Cell {
-	public static final int EMPTY_STATE = 0;
+	public static final int DEFAULT_STATE = 0;
 	
 	private int currentState;
 	private int nextState;
 	private Point myCoords;
 	private Rule myRule;
-	private Grid myGrid;
+	private Simulation myGrid;
 	
-	public Cell(int initialState, Point coordinates, Rule rule, Grid grid) {
+	public Cell(int initialState, Point coordinates, Rule rule, Simulation grid) {
 		currentState = initialState;
 		nextState = initialState;
 		myCoords = coordinates;
@@ -48,7 +48,7 @@ public class Cell {
 		return myRule;
 	}
 	
-	protected Grid getGrid() {
+	protected Simulation getGrid() {
 		return myGrid;
 	}
 }

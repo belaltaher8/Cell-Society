@@ -1,4 +1,4 @@
-package cellsociety_team09.configuration;
+package cs.configuration;
 
 /**
  * This class represents what might go wrong when using XML files.

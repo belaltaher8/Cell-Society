@@ -1,6 +1,11 @@
-package cellsociety_team09.model;
+package cs.model.cells;
 
 import java.util.Collection;
+
+import cs.model.Cell;
+import cs.model.Point;
+import cs.model.Rule;
+import cs.model.Simulation;
 
 public class SharkCell extends FishCell {
 	public static final int SHARK_STATE = 2;
@@ -9,7 +14,7 @@ public class SharkCell extends FishCell {
 	private int starveTimer;
 	private boolean alive = true;
 
-	public SharkCell(int initialState, Point coordinates, Rule rule, Grid grid, int breedtime, int starvetime) {
+	public SharkCell(int initialState, Point coordinates, Rule rule, Simulation grid, int breedtime, int starvetime) {
 		super(initialState, coordinates, rule, grid, breedtime);
 		starveInterval = starvetime;
 		starveTimer = 0;
@@ -44,14 +49,14 @@ public class SharkCell extends FishCell {
 	}
 	
 	private void eat(Cell sharkFood) {
-		Cell replacement = new Cell(Cell.EMPTY_STATE, sharkFood.getCoords(), this.getRule(), this.getGrid());
+		Cell replacement = new Cell(Cell.DEFAULT_STATE, sharkFood.getCoords(), this.getRule(), this.getGrid());
 		this.getGrid().replaceCell(sharkFood, replacement);
 		starveTimer = 0;
 	}
 	
 	private void starve() {
 		if(starveTimer >= starveInterval) {
-			Cell empty = new Cell(Cell.EMPTY_STATE, this.getCoords(), this.getRule(), this.getGrid());
+			Cell empty = new Cell(Cell.DEFAULT_STATE, this.getCoords(), this.getRule(), this.getGrid());
 			this.getGrid().replaceCell(this, empty);
 			alive = false;
 		}

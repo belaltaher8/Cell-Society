@@ -1,4 +1,4 @@
-package cellsociety_team09.model;
+package cs.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import cellsociety_team09.configuration.XMLReader;
+import cs.configuration.XMLReader;
 
-public class Grid {	
+public class Simulation {	
 
 	private Map<Point, Cell> myGrid;
 	private XMLReader myReader;
@@ -21,7 +21,7 @@ public class Grid {
 	private Random myRand;
 	private Collection<Cell[]> swapPairs;
 
-	public Grid(XMLReader reader){
+	public Simulation(XMLReader reader){
 		myReader = reader;
 		myRand = new Random();
 		swapPairs = new ArrayList<Cell[]>();

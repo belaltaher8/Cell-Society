@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <data type="CellSociety">
-	<simulation>
+	<general>
 		<SIM_NAME>Fire Spreading</SIM_NAME>
-		<CELL_TYPE>Cell</CELL_TYPE>
-	</simulation>
+		<GRID_TYPE>Grid</GRID_TYPE>
+	</general>
+	
+	<simiulation_specific>
+	</simiulation_specific>
 
 	<Grid>
 		<GRID_WIDTH>45</GRID_WIDTH>

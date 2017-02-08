@@ -1,9 +1,14 @@
-package cellsociety_team09.model;
+package cs.model.cells;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import cs.model.Cell;
+import cs.model.Point;
+import cs.model.Rule;
+import cs.model.Simulation;
 
 public class FishCell extends Cell {
 	public static final int FISH_STATE = 1;
@@ -11,7 +16,7 @@ public class FishCell extends Cell {
 	private int breedInterval;
 	private int breedTimer;
 	
-	public FishCell(int initialState, Point coordinates, Rule rule, Grid grid, int breedtime) {
+	public FishCell(int initialState, Point coordinates, Rule rule, Simulation grid, int breedtime) {
 		super(initialState, coordinates, rule, grid);
 		breedInterval = breedtime;
 		breedTimer = 0;
@@ -37,7 +42,7 @@ public class FishCell extends Cell {
 	}
 	
 	protected void move() {
-		Cell empty = findNeighborOfGivenState(Cell.EMPTY_STATE);
+		Cell empty = findNeighborOfGivenState(Cell.DEFAULT_STATE);
 		if(empty != null) {
 			this.getGrid().requestSpecificSwap(this, empty);
 		}
@@ -45,7 +50,7 @@ public class FishCell extends Cell {
 	
 	protected void reproduce() {
 		if(breedTimer >= breedInterval) {
-			Cell empty = findNeighborOfGivenState(Cell.EMPTY_STATE);
+			Cell empty = findNeighborOfGivenState(Cell.DEFAULT_STATE);
 			if(empty != null) {
 				Cell replacement = getOffspring(empty.getCoords());
 				this.getGrid().replaceCell(empty, replacement);

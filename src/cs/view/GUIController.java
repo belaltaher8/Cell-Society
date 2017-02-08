@@ -1,11 +1,12 @@
-package cellsociety_team09.view;
+package cs.view;
 
 import java.io.File;
 import java.util.ResourceBundle;
-import cellsociety_team09.configuration.XMLReader;
-import cellsociety_team09.model.Grid;
-import cellsociety_team09.model.MovingGrid;
-import cellsociety_team09.model.PredatorGrid;
+
+import cs.configuration.XMLReader;
+import cs.model.Simulation;
+import cs.model.sims.MovingSim;
+import cs.model.sims.PredatorSim;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -34,7 +35,7 @@ public class GUIController{
 	
 	private XMLReader myXMLReader;
 	private GridDisplay societyView; 
-	private Grid myGrid;
+	private Simulation myGrid;
 	
 	private Timeline animation; 
 	private Stage myStage;
@@ -70,12 +71,12 @@ public class GUIController{
 	}
 	
 	private void makeSimulation() {
-		if(myXMLReader.getCellType().equals("Cell")) {
-			myGrid = new Grid(myXMLReader);
-		} else if(myXMLReader.getCellType().equals("MovingCell")) {
-			myGrid = new MovingGrid(myXMLReader);
-		} else if(myXMLReader.getCellType().equals("PredatorPrey")) {
-			myGrid = new PredatorGrid(myXMLReader); 
+		if(myXMLReader.getGridType().equals("Grid")) {
+			myGrid = new Simulation(myXMLReader);
+		} else if(myXMLReader.getGridType().equals("MovingGrid")) {
+			myGrid = new MovingSim(myXMLReader);
+		} else if(myXMLReader.getGridType().equals("PredatorGrid")) {
+			myGrid = new PredatorSim(myXMLReader); 
 		}
 		societyView = new GridDisplay(myGrid);
 	}

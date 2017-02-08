@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <data type="CellSociety">
-	<simulation>
+	<general>
 		<SIM_NAME>Predator Prey</SIM_NAME>
-		<CELL_TYPE>PredatorPrey</CELL_TYPE>
+		<GRID_TYPE>PredatorGrid</GRID_TYPE>
+	</general>
+
+	<simulation_specific>
 		<FISH_BREED_INTERVAL>5</FISH_BREED_INTERVAL>
 		<SHARK_BREED_INTERVAL>20</SHARK_BREED_INTERVAL>
 		<SHARK_STARVE_INTERVAL>10</SHARK_STARVE_INTERVAL>
-	</simulation>
+	</simulation_specific>
 
 	<Grid>
 		<GRID_WIDTH>40</GRID_WIDTH>
