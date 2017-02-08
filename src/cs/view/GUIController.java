@@ -22,6 +22,7 @@ import javafx.util.Duration;
 
 public class GUIController{
 	public static final String DATA_FILE_EXTENSION = "*.xml";
+	
 	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
 	public static final double SPEED_UP_FACTOR = 2.0;
 	public static final double DEFAULT_ANIMATION_SPEED = 250;
@@ -141,6 +142,7 @@ public class GUIController{
 		
 		return controlPane;
 	}
+
 
 	private void loadNewFile() {
 		animation.stop();

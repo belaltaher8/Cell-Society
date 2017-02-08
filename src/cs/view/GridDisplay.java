@@ -18,11 +18,13 @@ public class GridDisplay {
 	public static final int DISPLAY_HEIGHT = 600;
 	
 	private Group gridRoot; 
+
 	private int myGridWidth; 
 	private int myGridHeight; 
 	
 	private ResourceBundle myResources; 
 	private Simulation myGrid; 
+
 	
 	public GridDisplay(Simulation grid){
 		gridRoot = new Group();
