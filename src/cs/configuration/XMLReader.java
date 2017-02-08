@@ -1,9 +1,4 @@
-package cellsociety_team09.configuration;
-
-import cellsociety_team09.model.Cell;
-import cellsociety_team09.model.Point;
-import cellsociety_team09.model.Rule;
-import cellsociety_team09.model.Triple;
+package cs.configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +15,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import cs.model.Cell;
+import cs.model.Point;
+import cs.model.Rule;
+import cs.model.Triple;
 
 public class XMLReader {
 	private static final int FIRST_OCCURRENCE_IN_FILE = 0;
@@ -47,22 +47,38 @@ public class XMLReader {
         }
     }
     
+    
+    
     public String getSimulationName() {
     	return getString("SIM_NAME", FIRST_OCCURRENCE_IN_FILE);
     }
-    
-    public String getCellType() {
-    	return getString("CELL_TYPE", FIRST_OCCURRENCE_IN_FILE);
+    public String getGridType() {
+    	return getString("GRID_TYPE", FIRST_OCCURRENCE_IN_FILE);
     }
-    
     public int getGridWidth() {
     	return getInt("GRID_WIDTH", FIRST_OCCURRENCE_IN_FILE);
     }
-    
     public int getGridHeight() {
     	return getInt("GRID_HEIGHT", FIRST_OCCURRENCE_IN_FILE);
     }
     
+    public Rule getRule() {
+    	int myNumStates = getInt("NUM_STATES", FIRST_OCCURRENCE_IN_FILE);
+    	int gridWidth = getGridWidth();
+    	int gridHeight = getGridHeight();
+    	
+    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getTextByTag("nextStateMap", FIRST_OCCURRENCE_IN_FILE));
+    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getTextByTag("neighborOffsets", FIRST_OCCURRENCE_IN_FILE));
+
+    	Map<Integer, Double> transitionProbabilities = null;
+    	if(getTextByTag("transitionProbabilitiesMap", FIRST_OCCURRENCE_IN_FILE) != null) {
+    		transitionProbabilities = myMapMaker.getProbabilitiesMap(getTextByTag("transitionProbabilitiesMap", FIRST_OCCURRENCE_IN_FILE));
+    	} 
+    	
+    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
+    }
+    
+    //TODO: this is poor design. Requires simulation to know xml tags
     public int getIntParameter(String name) {
     	return getInt(name, FIRST_OCCURRENCE_IN_FILE);
     }
@@ -71,40 +87,25 @@ public class XMLReader {
     }
     
     public int getInitialState(Point point) {
-    	String state = getText(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);
-    	if(state != null) {
-    		return Integer.parseInt(state);
-    	} else {
-    		return Cell.EMPTY_STATE;
+    	int state;
+    	try {
+    		state = getInt(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);
+    	} catch (XMLException e) {
+    		state = Cell.DEFAULT_STATE;
     	}
-    }
-    
-    public Rule getRule() {
-    	int myNumStates = getInt("NUM_STATES", FIRST_OCCURRENCE_IN_FILE);
-    	int gridWidth = getGridWidth();
-    	int gridHeight = getGridHeight();
-    	
-    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getText("nextStateMap", FIRST_OCCURRENCE_IN_FILE));
-    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getText("neighborOffsets", FIRST_OCCURRENCE_IN_FILE));
-
-    	Map<Integer, Double> transitionProbabilities = null;
-    	if(getText("transitionProbabilitiesMap", FIRST_OCCURRENCE_IN_FILE) != null) {
-    		transitionProbabilities = myMapMaker.getProbabilitiesMap(getText("transitionProbabilitiesMap", FIRST_OCCURRENCE_IN_FILE));
-    	} 
-    	
-    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
+    	return state;
     }
     
     private String getString(String tag, int index) {
-    	String myString = getText(tag, index);
+    	String myString = getTextByTag(tag, index);
     	if(myString == null) {
-    		throw new XMLException("XMLReader could not find: getString(%s, %d)", tag, index);
+    		//throw new XMLException("XMLReader could not find: getString(%s, %d)", tag, index);
     	}
     	return myString;
     }
     
-    private int getInt(String tag, int index) {
-    	String myInt = getText(tag, index);
+    private int getInt(String tag, int index) throws XMLException{
+    	String myInt = getTextByTag(tag, index);
     	if(myInt == null) {
     		throw new XMLException("XMLReader could not find: getInt(%s, %d)", tag, index);
     	}
@@ -112,14 +113,14 @@ public class XMLReader {
     }
     
     private double getDouble(String tag, int index) {
-    	String myDouble = getText(tag, index);
+    	String myDouble = getTextByTag(tag, index);
     	if(myDouble == null) {
-    		throw new XMLException("XMLReader could not find: getInt(%s, %d)", tag, index);
+    		//throw new XMLException("XMLReader could not find: getDouble(%s, %d)", tag, index);
     	}
     	return Double.parseDouble(myDouble);
     }
     
-    private String getText(String tag, int index) {
+    private String getTextByTag(String tag, int index) {
     	NodeList nodeList = rootElement.getElementsByTagName(tag);
     	if (nodeList != null && nodeList.getLength() > index) {
             return nodeList.item(index).getTextContent();
