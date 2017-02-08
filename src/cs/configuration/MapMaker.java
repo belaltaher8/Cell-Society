@@ -1,11 +1,12 @@
-package cellsociety_team09.configuration;
+package cs.configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import cellsociety_team09.model.Point;
-import cellsociety_team09.model.Triple;
+
+import cs.model.Point;
+import cs.model.Triple;
 
 public class MapMaker {
 	public Collection<Point> getNeighborOffsets(String fullText) {

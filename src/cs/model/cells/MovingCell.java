@@ -1,10 +1,15 @@
-package cellsociety_team09.model;
+package cs.model.cells;
 
 import java.util.Collection;
 
+import cs.model.Cell;
+import cs.model.Point;
+import cs.model.Rule;
+import cs.model.Simulation;
+
 public class MovingCell extends Cell {
 	
-	public MovingCell(int initialState, Point coordinates, Rule rule, Grid grid) {
+	public MovingCell(int initialState, Point coordinates, Rule rule, Simulation grid) {
 		super(initialState, coordinates, rule, grid);
 	}
 
@@ -13,7 +18,7 @@ public class MovingCell extends Cell {
 		int nextState = this.getRule().getNextState(this.getState(), neighborStates);
 		
 		if(nextState != this.getState()){
-			this.getGrid().requestRandomSwap(this, Cell.EMPTY_STATE);
+			this.getGrid().requestRandomSwap(this, Cell.DEFAULT_STATE);
 		}
 		
 		//Note: a MovingCell doesn't ever actually change state, it just uses the
