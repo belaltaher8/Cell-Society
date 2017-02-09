@@ -160,7 +160,7 @@ public class Simulation {
 		for(int x = 0; x < gridWidth; x++) {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
-				int initialState = myReader.getInitialState(point);
+				int initialState = myReader.getInitialStateAt(point);
 				Cell cell = placeCell(initialState, point);
 				myGrid.put(point, cell);
 			}

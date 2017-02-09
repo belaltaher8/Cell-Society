@@ -2,7 +2,8 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Game of Life</SIM_NAME>
-		<GRID_TYPE>Grid</GRID_TYPE>
+		<SIM_TYPE>Grid</SIM_TYPE>
+		<GRID_SHAPE>Square</GRID_SHAPE>
 	</general>
 	
 	<simiulation_specific>

@@ -22,15 +22,17 @@ import cs.model.Rule;
 import cs.model.Triple;
 
 public class XMLReader {
-	private static final int FIRST_OCCURRENCE_IN_FILE = 0;
+	public static final int FIRST_OCCURRENCE_IN_FILE = 0;
 	
     private static final DocumentBuilder DOCUMENT_BUILDER = getDocumentBuilder();
     private Element rootElement;
     private MapMaker myMapMaker;
+    private ConfigDoc myConfigDoc;
     
     public XMLReader(File file) {
-    	myMapMaker = new MapMaker();
     	loadNewFile(file);
+    	myMapMaker = new MapMaker();
+    	myConfigDoc = new ConfigDoc(this);
     }
     
     public void loadNewFile(File file) {
@@ -47,14 +49,21 @@ public class XMLReader {
         }
     }
     
+    public ConfigDoc getConfigParameters() {
+    	return myConfigDoc;
+    }
     
+    public void setConfigType(String name) {
+    	//TODO: if-statement that changes myConfigDoc to a subclass
+    }
     
     public String getSimulationName() {
     	return getString("SIM_NAME", FIRST_OCCURRENCE_IN_FILE);
     }
-    public String getGridType() {
-    	return getString("GRID_TYPE", FIRST_OCCURRENCE_IN_FILE);
+    public String getSimType() {
+    	return getString("SIM_TYPE", FIRST_OCCURRENCE_IN_FILE);
     }
+   
     public int getGridWidth() {
     	return getInt("GRID_WIDTH", FIRST_OCCURRENCE_IN_FILE);
     }
@@ -86,7 +95,7 @@ public class XMLReader {
     	return getDouble(name, FIRST_OCCURRENCE_IN_FILE);
     }
     
-    public int getInitialState(Point point) {
+    public int getInitialStateAt(Point point) {
     	int state;
     	try {
     		state = getInt(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);
@@ -96,15 +105,15 @@ public class XMLReader {
     	return state;
     }
     
-    private String getString(String tag, int index) {
+    public String getString(String tag, int index) throws XMLException {
     	String myString = getTextByTag(tag, index);
     	if(myString == null) {
-    		//throw new XMLException("XMLReader could not find: getString(%s, %d)", tag, index);
+    		throw new XMLException("XMLReader could not find: getString(%s, %d)", tag, index);
     	}
     	return myString;
     }
     
-    private int getInt(String tag, int index) throws XMLException{
+    public int getInt(String tag, int index) throws XMLException {
     	String myInt = getTextByTag(tag, index);
     	if(myInt == null) {
     		throw new XMLException("XMLReader could not find: getInt(%s, %d)", tag, index);
@@ -112,10 +121,10 @@ public class XMLReader {
     	return Integer.parseInt(myInt);
     }
     
-    private double getDouble(String tag, int index) {
+    public double getDouble(String tag, int index) throws XMLException {
     	String myDouble = getTextByTag(tag, index);
     	if(myDouble == null) {
-    		//throw new XMLException("XMLReader could not find: getDouble(%s, %d)", tag, index);
+    		throw new XMLException("XMLReader could not find: getDouble(%s, %d)", tag, index);
     	}
     	return Double.parseDouble(myDouble);
     }

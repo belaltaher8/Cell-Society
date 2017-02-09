@@ -2,7 +2,8 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Predator Prey</SIM_NAME>
-		<GRID_TYPE>PredatorGrid</GRID_TYPE>
+		<SIM_TYPE>PredatorGrid</SIM_TYPE>
+		<GRID_SHAPE>Square</GRID_SHAPE>
 	</general>
 
 	<simulation_specific>

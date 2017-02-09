@@ -19,7 +19,6 @@ public class Rule {
 	private Map<Integer, Double> myProbOfTransition;
 	private Map<Triple, Integer> myNextStateMap;
 	
-	
 	public Rule(int numStates, int gridWidth, int gridHeight, Collection<Point> neighborRules, Map<Integer, Double> transitionProbabilities, Map<Triple, Integer> stateRules) {
 		myRNG = new Random();
 		myNumStates = numStates;

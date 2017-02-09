@@ -2,7 +2,8 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Segregation</SIM_NAME>
-		<GRID_TYPE>MovingGrid</GRID_TYPE>
+		<SIM_TYPE>MovingGrid</SIM_TYPE>
+		<GRID_SHAPE>Square</GRID_SHAPE>
 	</general>
 
 	<simiulation_specific>

@@ -70,11 +70,11 @@ public class GUIController{
 	}
 	
 	private void makeSimulation() {
-		if(myXMLReader.getGridType().equals("Grid")) {
+		if(myXMLReader.getSimType().equals("Grid")) {
 			myGrid = new Simulation(myXMLReader);
-		} else if(myXMLReader.getGridType().equals("MovingGrid")) {
+		} else if(myXMLReader.getSimType().equals("MovingGrid")) {
 			myGrid = new MovingSim(myXMLReader);
-		} else if(myXMLReader.getGridType().equals("PredatorGrid")) {
+		} else if(myXMLReader.getSimType().equals("PredatorGrid")) {
 			myGrid = new PredatorSim(myXMLReader); 
 		}
 		societyView = new GridDisplay(myGrid);
