@@ -39,7 +39,7 @@ public class SharkCell extends FishCell {
 	
 	@Override
 	protected Cell getOffspring(Point coords) {
-		return new SharkCell(this.getState(), coords, this.getRule(), this.getGrid(), this.getBreedInterval(), starveInterval);
+		return new SharkCell(this.getState(), coords, this.getRule(), this.getSimulation(), this.getBreedInterval(), starveInterval);
 	}
 	
 	@Override
@@ -49,15 +49,15 @@ public class SharkCell extends FishCell {
 	}
 	
 	private void eat(Cell sharkFood) {
-		Cell replacement = new Cell(Cell.DEFAULT_STATE, sharkFood.getCoords(), this.getRule(), this.getGrid());
-		this.getGrid().replaceCell(sharkFood, replacement);
+		Cell replacement = new Cell(Cell.DEFAULT_STATE, sharkFood.getCoords(), this.getRule(), this.getSimulation());
+		this.getSimulation().replaceCell(sharkFood, replacement);
 		starveTimer = 0;
 	}
 	
 	private void starve() {
 		if(starveTimer >= starveInterval) {
-			Cell empty = new Cell(Cell.DEFAULT_STATE, this.getCoords(), this.getRule(), this.getGrid());
-			this.getGrid().replaceCell(this, empty);
+			Cell empty = new Cell(Cell.DEFAULT_STATE, this.getCoords(), this.getRule(), this.getSimulation());
+			this.getSimulation().replaceCell(this, empty);
 			alive = false;
 		}
 	}

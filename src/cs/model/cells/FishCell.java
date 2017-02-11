@@ -38,13 +38,13 @@ public class FishCell extends Cell {
 	}
 	
 	protected Cell getOffspring(Point coords) {
-		return new FishCell(this.getState(), coords, this.getRule(), this.getGrid(), breedInterval);
+		return new FishCell(this.getState(), coords, this.getRule(), this.getSimulation(), breedInterval);
 	}
 	
 	protected void move() {
 		Cell empty = findNeighborOfGivenState(Cell.DEFAULT_STATE);
 		if(empty != null) {
-			this.getGrid().requestSpecificSwap(this, empty);
+			this.getSimulation().requestSpecificSwap(this, empty);
 		}
 	}
 	
@@ -53,7 +53,7 @@ public class FishCell extends Cell {
 			Cell empty = findNeighborOfGivenState(Cell.DEFAULT_STATE);
 			if(empty != null) {
 				Cell replacement = getOffspring(empty.getCoords());
-				this.getGrid().replaceCell(empty, replacement);
+				this.getSimulation().replaceCell(empty, replacement);
 				breedTimer = 0;
 			}
 		}
@@ -63,7 +63,7 @@ public class FishCell extends Cell {
 		List<Point> neighborCoords = new ArrayList<Point>(this.getNeighborCoords());
 		Collections.shuffle(neighborCoords);
 		for(Point p : neighborCoords) {
-			Cell c = this.getGrid().getCellAtPoint(p);
+			Cell c = this.getSimulation().getCellAtPoint(p);
 			if(c.getState() == state) {
 				return c;
 			}

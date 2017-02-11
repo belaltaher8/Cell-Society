@@ -12,12 +12,30 @@ import cs.model.Rule;
 import cs.model.Triple;
 
 public class ConfigDoc {
+	public static final String SIM_TYPE_DEFAULT = "Default";
+	public static final String SIM_TYPE_MOVING = "MovingSim";
+	public static final String SIM_TYPE_PRED_PREY = "PredatorPreySim";
+	
+	public static final String GRID_SHAPE_SQUARE = "Square";
+	public static final String GRID_SHAPE_TRIANGLE = "Triangle";
+	public static final String GRID_SHAPE_HEXAGON = "Hexagon";
+	
+	public static final String GRID_EDGE_FINITE = "Finite";
+	public static final String GRID_EDGE_TOROIDAL = "Toroidal";
+	public static final String GRID_EDGE_INFINITE = "Infinite";
+	
+	public static final String INIT_STYLE_SPECIFIC = "Specific";
+	public static final String INIT_STYLE_RAND = "Random";
+	public static final String INIT_STYLE_PROB = "Probability";
+	
+	
+	
 	private XMLReader myReader;
 	private MapMaker myMapMaker;
 	
-	private String mySimType;
 	private String mySimName;
 	private String myGridShape;
+	private String myGridEdge;
 	private String myInitializationStyle;
 	private int myNumStates;
 	private int myGridWidth;
@@ -41,17 +59,10 @@ public class ConfigDoc {
 	
 	protected void initParams() throws XMLException {
 		try {
-			mySimType = myReader.getString("SIM_TYPE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-		} catch(XMLException e) {
-			mySimType = "";
-			throw new XMLException("No simulation type specified in the XML input file.", e);
-		}
-		
-		try {
 			myNumStates = myReader.getInt("NUM_STATES", XMLReader.FIRST_OCCURRENCE_IN_FILE);
 		} catch(XMLException e) {
 			myNumStates = 0;
-			throw new XMLException("Unspecified number of cell states for this CA in the XML file.", e);
+			throw new XMLException("Unspecified number of cell states for this simulation in the XML file.", e);
 		}
 			
 		try {
@@ -63,13 +74,19 @@ public class ConfigDoc {
 		try {
 			myGridShape = myReader.getString("GRID_SHAPE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
 		} catch(XMLException e) {
-			myGridShape = "Square";
+			myGridShape = GRID_SHAPE_SQUARE;
+		}
+		
+		try {
+			myGridEdge = myReader.getString("GRID_EDGE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
+		} catch(XMLException e) {
+			myGridEdge = GRID_EDGE_FINITE;
 		}
 		
 		try {
 			myInitializationStyle = myReader.getString("INIT_STYLE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
 		} catch(XMLException e) {
-			myInitializationStyle = "Random";
+			myInitializationStyle = INIT_STYLE_RAND;
 		}
 		
 		try {
@@ -128,17 +145,23 @@ public class ConfigDoc {
     		myNeighborOffsets = Arrays.asList(defaultNeighbors);
     	}
     	
-    	myRule = new Rule(myNumStates, myGridWidth, myGridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
+    	myRule = new Rule(this, myNeighborOffsets, transitionProbabilities, myNextStateMap);
 	}
 	
 	public String getSimulationName() {
     	return mySimName;
     }
     public String getSimType() {
-    	return mySimType;
+    	return myReader.getSimType();
+    }
+    public int getNumStates() {
+    	return myNumStates;
     }
     public String getGridShape() {
     	return myGridShape;
+    }
+    public String getGridEdge() {
+    	return myGridEdge;
     }
     public String getInitializationStyle() {
     	return myInitializationStyle;
@@ -156,7 +179,7 @@ public class ConfigDoc {
     	return myInitialDensities.get(state);
     }
     
-    public int getInitialStateAt(Point point) throws XMLException {
+    public int getInitialStateAt(Point point) {
     	int state;
     	try {
     		state = myReader.getInt(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);

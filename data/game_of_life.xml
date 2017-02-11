@@ -2,9 +2,10 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Game of Life</SIM_NAME>
-		<SIM_TYPE>Default</SIM_TYPE>
 		<NUM_STATES>2</NUM_STATES>
+		<SIM_TYPE>Default</SIM_TYPE>
 		<GRID_SHAPE>Square</GRID_SHAPE>
+		<GRID_EDGE>Toroidal</GRID_EDGE>
 		<INIT_STYLE>Specific</INIT_STYLE>
 		<GRID_WIDTH>40</GRID_WIDTH>
 		<GRID_HEIGHT>40</GRID_HEIGHT>

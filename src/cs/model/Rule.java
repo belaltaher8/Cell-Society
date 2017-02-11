@@ -9,21 +9,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import cs.configuration.ConfigDoc;
+
 public class Rule {
 	private Random myRNG;
-	private int myNumStates;
-	private int myGridWidth;
-	private int myGridHeight;
+	private ConfigDoc myConfig;
 	
 	private Collection<Point> myNeighborOffsets;
 	private Map<Integer, Double> myProbOfTransition;
 	private Map<Triple, Integer> myNextStateMap;
 	
-	public Rule(int numStates, int gridWidth, int gridHeight, Collection<Point> neighborRules, Map<Integer, Double> transitionProbabilities, Map<Triple, Integer> stateRules) {
+	public Rule(ConfigDoc config, Collection<Point> neighborRules, Map<Integer, Double> transitionProbabilities, Map<Triple, Integer> stateRules) {
 		myRNG = new Random();
-		myNumStates = numStates;
-		myGridWidth = gridWidth;
-		myGridHeight = gridHeight;
+		myConfig = config;
 		
 		myNeighborOffsets = neighborRules;
 		myProbOfTransition = transitionProbabilities;
@@ -31,7 +29,7 @@ public class Rule {
 	}
 	
 	public int getNumStates() {
-		return myNumStates;
+		return myConfig.getNumStates();
 	}
 	
 	public Collection<Point> getNeighborCoords(Point cellCoords) {
@@ -40,8 +38,10 @@ public class Rule {
 			Point neighbor = new Point(cellCoords.getX() + offset.getX(),
 									   cellCoords.getY() + offset.getY());
 			
-			if(isWithinBounds(neighbor)) {
+			if(isWithinXBounds(neighbor) && isWithinYBounds(neighbor)) {
 				neighbors.add(neighbor);
+			} else if(myConfig.getGridEdge().equals(ConfigDoc.GRID_EDGE_TOROIDAL)) {
+				neighbors.add(this.wrapPointAroundEdge(neighbor));
 			}
 		}
 		return neighbors;
@@ -56,7 +56,7 @@ public class Rule {
 		
 		List<Integer> neighborCounts = getStateCounts(neighborStates);
 		
-		for(int stateX = 0; stateX < myNumStates; stateX++){
+		for(int stateX = 0; stateX < myConfig.getNumStates(); stateX++){
 			int numNeighborsWithStateX = neighborCounts.get(stateX);
 			Triple condition = new Triple(myState, stateX, numNeighborsWithStateX);
 			
@@ -78,7 +78,7 @@ public class Rule {
 	 * @return array whose entries are the number of times each state appears 
 	 */
 	private List<Integer> getStateCounts(Collection<Integer> states) {
-		List<Integer> stateCounts = new ArrayList<Integer>(Collections.nCopies(myNumStates, 0));
+		List<Integer> stateCounts = new ArrayList<Integer>(Collections.nCopies(myConfig.getNumStates(), 0));
 		for(Integer st : states) {
 			//Increments the counter for each state
 			stateCounts.set(st, (stateCounts.get(st) + 1));
@@ -96,8 +96,28 @@ public class Rule {
 				myRNG.nextDouble() <= myProbOfTransition.get(newState));
 	}
 	
-	private boolean isWithinBounds(Point point) {
-		return (point.getX() >= 0 && point.getX() < myGridWidth &&
-				point.getY() >= 0 && point.getY() < myGridHeight);
+	private boolean isWithinXBounds(Point point) {
+		return (point.getX() >= 0 && point.getX() < myConfig.getGridWidth());
+	}
+	
+	private boolean isWithinYBounds(Point point) {
+		return (point.getY() >= 0 && point.getY() < myConfig.getGridHeight());
+	}
+	
+	private Point wrapPointAroundEdge(Point point) {
+		int wrappedX = wrapCoordAroundEdge(point.getX(), myConfig.getGridWidth());
+		int wrappedY = wrapCoordAroundEdge(point.getY(), myConfig.getGridHeight());
+		
+		return new Point(wrappedX, wrappedY);
+	}
+	
+	private int wrapCoordAroundEdge(int coord, int max) {
+		if(coord < 0) {
+			return max - 1;
+		} else if(coord >= max){
+			return 0;
+		} else {
+			return coord;
+		}
 	}
 }

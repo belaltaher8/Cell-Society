@@ -10,16 +10,9 @@ import java.util.Random;
 import cs.configuration.ConfigDoc;
 
 public class Simulation {	
-	public static final String INIT_SPECIFIC = "Specific";
-	public static final String INIT_RAND = "Random";
-	public static final String INIT_PROB = "Probability";
-	
 	private Map<Point, Cell> myGrid;
 	private ConfigDoc myConfig;
-	private Rule myRule;
 	
-	private int gridWidth;
-	private int gridHeight;
 	private Random myRand;
 	private Collection<Cell[]> swapPairs;
 
@@ -30,41 +23,31 @@ public class Simulation {
 		reset();
 	}
 	
+	public ConfigDoc getConfig() {
+		return myConfig;
+	}
+	protected Rule getRule() {
+		return myConfig.getRule();
+	}
+	
 	public void reset() {
-		gridWidth = myConfig.getGridWidth(); 
-		gridHeight = myConfig.getGridHeight();
-		myRule = myConfig.getRule();
 		myGrid = new HashMap<Point, Cell>();
 		intializeGrid();
 	}
 	
 	public void randomizeGrid() {
-		for(int x = 0; x < gridWidth; x++) {
-			for(int y = 0; y < gridHeight; y++) {
+		for(int x = 0; x < myConfig.getGridWidth(); x++) {
+			for(int y = 0; y < myConfig.getGridHeight(); y++) {
 				Point point = new Point(x, y);
-				int randomState = myRand.nextInt(myRule.getNumStates());
+				int randomState = myRand.nextInt(myConfig.getNumStates());
 				Cell cell = placeCell(randomState, point);
 				myGrid.put(point, cell);
 			}
 		}
 	}
-			
-	protected Random getRand() {
-		return myRand;
-	}
-	protected Rule getRule() {
-		return myRule;
-	}
-	public ConfigDoc getConfig() {
-		return myConfig;
-	}
-	protected Map<Point, Cell> getGrid() {
-		return myGrid;
-	}
 
 	public Cell getCellAtPoint(Point myPoint){
 		if(!myGrid.containsKey(myPoint)) {
-			//TODO: add exceptions
 			return null;
 		}
 		return myGrid.get(myPoint);
@@ -103,7 +86,7 @@ public class Simulation {
 		swapPairs.add(new Cell[] {a,b});
 	}
 	
-	public void swapCells(Cell a, Cell b) {
+	private void swapCells(Cell a, Cell b) {
 		Point pointA = a.getCoords();
 		Point pointB = b.getCoords();
 		
@@ -125,14 +108,13 @@ public class Simulation {
 	}
 	
 	private void computeNextGrid() {
-		for(int x = 0; x < gridWidth; x++){
-			for(int y = 0; y < gridHeight; y++){
+		for(int x = 0; x < myConfig.getGridWidth(); x++){
+			for(int y = 0; y < myConfig.getGridHeight(); y++){
 				Cell myCell = myGrid.get(new Point(x, y));
 				
 				Collection<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
 				List<Integer> myNeighborStates = new ArrayList<Integer>();
 				
-				//gets neighbor states from their locations
 				for(Point currentPoint : myCellNeighborsCoords) {
 					Cell cell = getCellAtPoint(currentPoint);
 					myNeighborStates.add(cell.getState());
@@ -144,33 +126,30 @@ public class Simulation {
 	}
 	
 	private void advanceGrid(){
-		for(int x = 0; x < gridWidth; x++){
-			for(int y = 0; y < gridHeight; y++){
-				Point point = new Point(x, y);
-				myGrid.get(point).advanceState();
-			}
+		for(Cell c : myGrid.values()) {
+			c.advanceState();
 		}
 	}
 	
-	protected void intializeGrid() {
-		for(int x = 0; x < gridWidth; x++) {
-			for(int y = 0; y < gridHeight; y++) {
+	private void intializeGrid() {
+		for(int x = 0; x < myConfig.getGridWidth(); x++) {
+			for(int y = 0; y < myConfig.getGridHeight(); y++) {
 				Point point = new Point(x, y);
-				int initialState = determineInitialState(point);
+				int initialState = determineInitialStateAt(point);
 				Cell cell = placeCell(initialState, point);
 				myGrid.put(point, cell);
 			}
 		}
 	}
 	
-	private int determineInitialState(Point point) {
-		if(myConfig.getInitializationStyle().equals(INIT_SPECIFIC)) {
+	private int determineInitialStateAt(Point point) {
+		if(myConfig.getInitializationStyle().equals(ConfigDoc.INIT_STYLE_SPECIFIC)) {
 			return myConfig.getInitialStateAt(point);
-		} else if(myConfig.getInitializationStyle().equals(INIT_PROB)) {
+		} else if(myConfig.getInitializationStyle().equals(ConfigDoc.INIT_STYLE_PROB)) {
 			int result = Cell.DEFAULT_STATE;
 			double rand = myRand.nextDouble();
 			double threshold = 0.0;
-			for(int state = 0; state < myRule.getNumStates(); state++) {
+			for(int state = 0; state < myConfig.getNumStates(); state++) {
 				threshold += myConfig.getInitialStateDensity(state);
 				if(rand <= threshold) {
 					result = state;
@@ -179,11 +158,11 @@ public class Simulation {
 			}
 			return result;
 		} else {
-			return myRand.nextInt(myRule.getNumStates());
+			return myRand.nextInt(myConfig.getNumStates());
 		}
 	}
 	
 	protected Cell placeCell(int initialState, Point point) {
-		return new Cell(initialState, point, myRule, this);
+		return new Cell(initialState, point, myConfig.getRule(), this);
 	}
 }

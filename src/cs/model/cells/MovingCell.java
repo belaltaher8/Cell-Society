@@ -18,7 +18,7 @@ public class MovingCell extends Cell {
 		int nextState = this.getRule().getNextState(this.getState(), neighborStates);
 		
 		if(nextState != this.getState()){
-			this.getGrid().requestRandomSwap(this, Cell.DEFAULT_STATE);
+			this.getSimulation().requestRandomSwap(this, Cell.DEFAULT_STATE);
 		}
 		
 		//Note: a MovingCell doesn't ever actually change state, it just uses the

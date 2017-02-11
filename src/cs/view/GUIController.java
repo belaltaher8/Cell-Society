@@ -28,10 +28,6 @@ import javafx.util.Duration;
 public class GUIController{
 	public static final String DATA_FILE_EXTENSION = "*.xml";
 	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
-	
-	public static final String SIM_TYPE_DEFAULT = "Default";
-	public static final String SIM_TYPE_MOVING = "MovingSim";
-	public static final String SIM_TYPE_PRED_PREY = "PredatorPreySim";
 
 	public static final double SPEED_UP_FACTOR = 2.0;
 	public static final double DEFAULT_ANIMATION_SPEED = 250;
@@ -44,8 +40,8 @@ public class GUIController{
 	
 	private XMLReader myXMLReader;
 	private ConfigDoc myConfigDoc;
-	private GridDisplay societyView; 
 	private Simulation mySimulation;
+	private GridDisplay mySocietyView; 
 	
 	private Timeline animation; 
 	private Stage myStage;
@@ -58,8 +54,7 @@ public class GUIController{
 		animationSpeed = DEFAULT_ANIMATION_SPEED; 
 		configureAnimation();
 		
-		promptForFile(primaryStage);
-		makeSimulation();
+		resetAll();
 		
 		Scene mainScene = configureScene();
 		primaryStage.setTitle(myConfigDoc.getSimulationName());
@@ -67,37 +62,55 @@ public class GUIController{
 		primaryStage.show();
 	} 
 	
-	private void promptForFile(Stage primaryStage) {
+	private void resetAll() {
+		File xmlFile = promptForFile(myStage);
+		myXMLReader = makeXMLReader(xmlFile);
+		myConfigDoc = makeConfigDoc(myXMLReader);
+		mySimulation = makeSimulation(myConfigDoc);
+		mySocietyView = new GridDisplay(mySimulation);
+	}
+	
+	private File promptForFile(Stage primaryStage) {
 		FileChooser myChooser = new FileChooser();
-		myChooser.setTitle(myResources.getString("ChooseFilePrompt")); /// string
-		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data")); // string 
-		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION)); // string 
+		myChooser.setTitle(myResources.getString("ChooseFilePrompt"));
+		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data/"));
+		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION));
 		File dataFile = myChooser.showOpenDialog(primaryStage);
 		if(dataFile != null) {
-			try {
-				myXMLReader = new XMLReader(dataFile);
-				myConfigDoc = new ConfigDoc(myXMLReader);
-			} catch(XMLException e) {
-				//TODO:
-				throw e;
-			}
+			return dataFile;
 		} else {
-			//new Alert
+			//TODO : new Alert
+			return null;
 		}
 	}
 	
-	private void makeSimulation() {
-		if(myConfigDoc.getSimType().equals(SIM_TYPE_DEFAULT)) {
-			mySimulation = new Simulation(myConfigDoc);
-		} else if(myConfigDoc.getSimType().equals(SIM_TYPE_MOVING)) {
-			mySimulation = new MovingSim(myConfigDoc);
-		} else if(myConfigDoc.getSimType().equals(SIM_TYPE_PRED_PREY)) {
-			myConfigDoc = new PredatorPreyDoc(myXMLReader);
-			mySimulation = new PredatorPreySim((PredatorPreyDoc)myConfigDoc); 
-		} else {
-			//throw error
+	private XMLReader makeXMLReader(File file) {
+		try {
+			return new XMLReader(file);
+		} catch(XMLException e) {
+			//TODO: new Alert
+			throw e;
 		}
-		societyView = new GridDisplay(mySimulation);
+	}
+	
+	private ConfigDoc makeConfigDoc(XMLReader reader) {
+		try {
+			return reader.getConfigDoc();
+		} catch(XMLException e) {
+			//TODO: new Alert
+			throw e;
+		}
+	}
+	
+	private Simulation makeSimulation(ConfigDoc config) {
+		//ugly if-statement to choose what kind of Simulation to return
+		if(config.getSimType().equals(ConfigDoc.SIM_TYPE_MOVING)) {
+			return new MovingSim(config);
+		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_PRED_PREY)) {
+			return new PredatorPreySim((PredatorPreyDoc)config); 
+		} else {
+			return new Simulation(config);
+		}
 	}
 
 	private void configureAnimation() {
@@ -124,7 +137,7 @@ public class GUIController{
 	private Pane configureDisplay(){
 		gridPane = new Pane();
 		gridPane.setPrefSize(GridDisplay.DISPLAY_WIDTH, GridDisplay.DISPLAY_HEIGHT);
-		gridPane.getChildren().add(societyView.getGridView()); 
+		gridPane.getChildren().add(mySocietyView.getGridView()); 
 		return gridPane;
 	}
 
@@ -162,25 +175,23 @@ public class GUIController{
 		return controlPane;
 	}
 
-
 	private void loadNewFile() {
 		animation.stop();
 		animationSpeed = DEFAULT_ANIMATION_SPEED;
-		gridPane.getChildren().remove(societyView.getGridView()); 
-		promptForFile(myStage);
-		makeSimulation();
-		gridPane.getChildren().add(societyView.getGridView()); 
+		gridPane.getChildren().remove(mySocietyView.getGridView()); 
+		resetAll();
+		gridPane.getChildren().add(mySocietyView.getGridView()); 
 	}
 	
 	private void randomizeGrid() {
 		animation.stop();
-		societyView.randomizeGrid();
+		mySocietyView.randomizeGrid();
 	}
 	
 	private void resetGrid() {
 		animation.stop();
 		animationSpeed = DEFAULT_ANIMATION_SPEED;
-		societyView.reset();
+		mySocietyView.reset();
 	}
 	
 	private void speedAnimation(double newSpeed) {
@@ -194,7 +205,7 @@ public class GUIController{
 	}
 	
 	private void stepAnimation() {
-		societyView.step();
+		mySocietyView.step();
 	}
 
 	private void stopAnimation() {
