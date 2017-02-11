@@ -26,9 +26,6 @@ public class Simulation {
 	public ConfigDoc getConfig() {
 		return myConfig;
 	}
-	protected Rule getRule() {
-		return myConfig.getRule();
-	}
 	
 	public void reset() {
 		myGrid = new HashMap<Point, Cell>();

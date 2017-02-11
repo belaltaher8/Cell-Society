@@ -15,6 +15,6 @@ public class MovingSim extends Simulation {
 	
 	@Override
 	protected Cell placeCell(int initialState, Point point) {
-		return new MovingCell(initialState, point, this.getRule(), this);
+		return new MovingCell(initialState, point, this.getConfig().getRule(), this);
 	}
 }

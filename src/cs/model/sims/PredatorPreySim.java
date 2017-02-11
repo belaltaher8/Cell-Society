@@ -23,11 +23,11 @@ public class PredatorPreySim extends Simulation {
 	@Override
 	protected Cell placeCell(int initialState, Point point) {
 		if(initialState == FishCell.FISH_STATE) {
-			return new FishCell(initialState, point, this.getRule(), this, FISH_BREED_INTERVAL);
+			return new FishCell(initialState, point, this.getConfig().getRule(), this, FISH_BREED_INTERVAL);
 		} else if(initialState == SharkCell.SHARK_STATE) {
-			return new SharkCell(initialState, point, this.getRule(), this, SHARK_BREED_INTERVAL, SHARK_STARVE_INTERVAL);
+			return new SharkCell(initialState, point, this.getConfig().getRule(), this, SHARK_BREED_INTERVAL, SHARK_STARVE_INTERVAL);
 		} else {
-			return new Cell(initialState, point, this.getRule(), this);
+			return new Cell(initialState, point, this.getConfig().getRule(), this);
 		}
 	}
 }

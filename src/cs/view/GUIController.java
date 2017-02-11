@@ -16,7 +16,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -63,11 +66,15 @@ public class GUIController{
 	} 
 	
 	private void resetAll() {
-		File xmlFile = promptForFile(myStage);
-		myXMLReader = makeXMLReader(xmlFile);
-		myConfigDoc = makeConfigDoc(myXMLReader);
-		mySimulation = makeSimulation(myConfigDoc);
-		mySocietyView = new GridDisplay(mySimulation);
+		try {
+			File xmlFile = promptForFile(myStage);
+			myXMLReader = makeXMLReader(xmlFile);
+			myConfigDoc = makeConfigDoc(myXMLReader);
+			mySimulation = makeSimulation(myConfigDoc);
+			mySocietyView = new GridDisplay(mySimulation);
+		} catch(XMLException e) {
+			resetAll();
+		}
 	}
 	
 	private File promptForFile(Stage primaryStage) {
@@ -79,8 +86,17 @@ public class GUIController{
 		if(dataFile != null) {
 			return dataFile;
 		} else {
-			//TODO : new Alert
-			return null;
+			//TODO: clean this up
+			Alert alert = new Alert(AlertType.ERROR, "No file selected. Press OK to choose another file.",ButtonType.OK, ButtonType.CANCEL);
+	        alert.setTitle("Error");
+	        if(alert.showAndWait().get() == ButtonType.OK) {
+	        	return promptForFile(primaryStage);
+	        } else {
+	        	//TODO: solve this in a better way
+	        	//return new File(System.getProperty("user.dir") + "/data/game_of_life.xml");
+	        	System.exit(0);
+	        	return null;
+	        }
 		}
 	}
 	
@@ -88,8 +104,11 @@ public class GUIController{
 		try {
 			return new XMLReader(file);
 		} catch(XMLException e) {
-			//TODO: new Alert
-			throw e;
+			//TODO: clean this up
+			Alert alert = new Alert(AlertType.ERROR, String.format("Error constructing the XML parser: %s", e.getMessage()),ButtonType.OK, ButtonType.CANCEL);
+	        alert.setTitle("Error");
+	        alert.showAndWait();
+	        throw e;
 		}
 	}
 	
@@ -97,19 +116,28 @@ public class GUIController{
 		try {
 			return reader.getConfigDoc();
 		} catch(XMLException e) {
-			//TODO: new Alert
+			//TODO: clean this up
+			Alert alert = new Alert(AlertType.ERROR, String.format("Error parsing the XML configuration parameters : %s", e.getMessage()),ButtonType.OK, ButtonType.CANCEL);
+	        alert.setTitle("Error");
+	        alert.showAndWait();
 			throw e;
 		}
 	}
 	
 	private Simulation makeSimulation(ConfigDoc config) {
 		//ugly if-statement to choose what kind of Simulation to return
-		if(config.getSimType().equals(ConfigDoc.SIM_TYPE_MOVING)) {
+		if(config.getSimType().equals(ConfigDoc.SIM_TYPE_DEFAULT)) {
+			return new Simulation(config);
+		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_MOVING)) {
 			return new MovingSim(config);
 		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_PRED_PREY)) {
 			return new PredatorPreySim((PredatorPreyDoc)config); 
 		} else {
-			return new Simulation(config);
+			//TODO: clean this up
+			Alert alert = new Alert(AlertType.ERROR, "Invalid simulation type specified in the XML input file.",ButtonType.OK, ButtonType.CANCEL);
+	        alert.setTitle("Error");
+	        alert.showAndWait();
+	        throw new XMLException("Invalid simulation type specified in the XML input file.");
 		}
 	}
 
