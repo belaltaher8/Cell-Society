@@ -1,6 +1,8 @@
 package cs.view;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import cs.configuration.PredatorPreyDoc;
@@ -25,8 +27,12 @@ import javafx.util.Duration;
 
 public class GUIController{
 	public static final String DATA_FILE_EXTENSION = "*.xml";
-	
 	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
+	
+	public static final String SIM_TYPE_DEFAULT = "Default";
+	public static final String SIM_TYPE_MOVING = "MovingSim";
+	public static final String SIM_TYPE_PRED_PREY = "PredatorPreySim";
+
 	public static final double SPEED_UP_FACTOR = 2.0;
 	public static final double DEFAULT_ANIMATION_SPEED = 250;
 	
@@ -39,7 +45,7 @@ public class GUIController{
 	private XMLReader myXMLReader;
 	private ConfigDoc myConfigDoc;
 	private GridDisplay societyView; 
-	private Simulation myGrid;
+	private Simulation mySimulation;
 	
 	private Timeline animation; 
 	private Stage myStage;
@@ -81,15 +87,17 @@ public class GUIController{
 	}
 	
 	private void makeSimulation() {
-		if(myConfigDoc.getSimType().equals("Grid")) {
-			myGrid = new Simulation(myConfigDoc);
-		} else if(myConfigDoc.getSimType().equals("MovingSim")) {
-			myGrid = new MovingSim(myConfigDoc);
-		} else if(myConfigDoc.getSimType().equals("PredatorPreySim")) {
+		if(myConfigDoc.getSimType().equals(SIM_TYPE_DEFAULT)) {
+			mySimulation = new Simulation(myConfigDoc);
+		} else if(myConfigDoc.getSimType().equals(SIM_TYPE_MOVING)) {
+			mySimulation = new MovingSim(myConfigDoc);
+		} else if(myConfigDoc.getSimType().equals(SIM_TYPE_PRED_PREY)) {
 			myConfigDoc = new PredatorPreyDoc(myXMLReader);
-			myGrid = new PredatorPreySim((PredatorPreyDoc)myConfigDoc); 
+			mySimulation = new PredatorPreySim((PredatorPreyDoc)myConfigDoc); 
+		} else {
+			//throw error
 		}
-		societyView = new GridDisplay(myGrid);
+		societyView = new GridDisplay(mySimulation);
 	}
 
 	private void configureAnimation() {

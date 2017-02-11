@@ -10,7 +10,10 @@ import java.util.Random;
 import cs.configuration.ConfigDoc;
 
 public class Simulation {	
-
+	public static final String INIT_SPECIFIC = "Specific";
+	public static final String INIT_RAND = "Random";
+	public static final String INIT_PROB = "Probability";
+	
 	private Map<Point, Cell> myGrid;
 	private ConfigDoc myConfig;
 	private Rule myRule;
@@ -20,8 +23,8 @@ public class Simulation {
 	private Random myRand;
 	private Collection<Cell[]> swapPairs;
 
-	public Simulation(ConfigDoc reader){
-		myConfig = reader;
+	public Simulation(ConfigDoc config){
+		myConfig = config;
 		myRand = new Random();
 		swapPairs = new ArrayList<Cell[]>();
 		reset();
@@ -46,19 +49,13 @@ public class Simulation {
 		}
 	}
 			
-	public int getWidth(){
-		return gridWidth; 
-	}
-	public int getHeight(){
-		return gridHeight;
-	}
 	protected Random getRand() {
 		return myRand;
 	}
 	protected Rule getRule() {
 		return myRule;
 	}
-	protected ConfigDoc getConfig() {
+	public ConfigDoc getConfig() {
 		return myConfig;
 	}
 	protected Map<Point, Cell> getGrid() {
@@ -159,10 +156,30 @@ public class Simulation {
 		for(int x = 0; x < gridWidth; x++) {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
-				int initialState = myConfig.getInitialStateAt(point);
+				int initialState = determineInitialState(point);
 				Cell cell = placeCell(initialState, point);
 				myGrid.put(point, cell);
 			}
+		}
+	}
+	
+	private int determineInitialState(Point point) {
+		if(myConfig.getInitializationStyle().equals(INIT_SPECIFIC)) {
+			return myConfig.getInitialStateAt(point);
+		} else if(myConfig.getInitializationStyle().equals(INIT_PROB)) {
+			int result = Cell.DEFAULT_STATE;
+			double rand = myRand.nextDouble();
+			double threshold = 0.0;
+			for(int state = 0; state < myRule.getNumStates(); state++) {
+				threshold += myConfig.getInitialStateDensity(state);
+				if(rand <= threshold) {
+					result = state;
+					break;
+				} 
+			}
+			return result;
+		} else {
+			return myRand.nextInt(myRule.getNumStates());
 		}
 	}
 	

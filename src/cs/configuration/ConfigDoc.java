@@ -40,13 +40,24 @@ public class ConfigDoc {
 	}
 	
 	protected void initParams() throws XMLException {
-		mySimType = myReader.getString("SIM_TYPE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-		myNumStates = myReader.getInt("NUM_STATES", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-
+		try {
+			mySimType = myReader.getString("SIM_TYPE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
+		} catch(XMLException e) {
+			mySimType = "";
+			throw new XMLException("No simulation type specified in the XML input file.", e);
+		}
+		
+		try {
+			myNumStates = myReader.getInt("NUM_STATES", XMLReader.FIRST_OCCURRENCE_IN_FILE);
+		} catch(XMLException e) {
+			myNumStates = 0;
+			throw new XMLException("Unspecified number of cell states for this CA in the XML file.", e);
+		}
+			
 		try {
 			mySimName = myReader.getString("SIM_NAME", XMLReader.FIRST_OCCURRENCE_IN_FILE);
 		} catch(XMLException e) {
-			mySimName = mySimType;
+			mySimName = "Cell Society";
 		}
 		
 		try {
@@ -79,9 +90,9 @@ public class ConfigDoc {
 		for(int state = 0; state < myNumStates; state++) {
 			try {
 				myInitialDensities.add(myReader.getDouble(String.format("DENSITY_STATE_%d", state), XMLReader.FIRST_OCCURRENCE_IN_FILE));
-			} catch(XMLException e) {
+			} catch(XMLException | NumberFormatException e) {
 				if(myInitializationStyle.equals("Probability")) {
-					throw e;
+					throw new XMLException("Unspecified population densities in the XML file.",e);
 				} else {
 					myInitialDensities.add(0.0);
 				}
@@ -145,13 +156,18 @@ public class ConfigDoc {
     	return myInitialDensities.get(state);
     }
     
-    public int getInitialStateAt(Point point) {
+    public int getInitialStateAt(Point point) throws XMLException {
     	int state;
     	try {
     		state = myReader.getInt(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);
     	} catch (XMLException e) {
     		state = Cell.DEFAULT_STATE;
     	}
+    	
+    	if(state < Cell.DEFAULT_STATE || state >= myNumStates) {
+    		state = Cell.DEFAULT_STATE;
+    	}
+    	
     	return state;
     }
 }
