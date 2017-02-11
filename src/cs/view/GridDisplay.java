@@ -40,7 +40,8 @@ public class GridDisplay {
 	 * @param cellsPerColumn
 	 * creates the grid part of the display where the simulation occurs
 	 */
-	private void drawGridDisplay(){  
+	
+	protected void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
 		int cellWidth = DISPLAY_WIDTH/myGridWidth; 
 		int cellHeight = DISPLAY_HEIGHT/myGridHeight;
@@ -60,7 +61,7 @@ public class GridDisplay {
 	 * @param Cell c
 	 * @return Shape with color set according to cell state 
 	 */
-	private Shape setColor(Shape gridCell, Cell c) { 
+	public Shape setColor(Shape gridCell, Cell c) { 
 		gridCell.setFill(Paint.valueOf(myResources.getString("State" + c.getState())));
 		return gridCell; 
 	}
