@@ -3,10 +3,13 @@ package cs.view;
 import java.io.File;
 import java.util.ResourceBundle;
 
+import cs.configuration.PredatorPreyDoc;
+import cs.configuration.ConfigDoc;
+import cs.configuration.XMLException;
 import cs.configuration.XMLReader;
 import cs.model.Simulation;
 import cs.model.sims.MovingSim;
-import cs.model.sims.PredatorSim;
+import cs.model.sims.PredatorPreySim;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -33,6 +36,7 @@ public class GUIController{
 	private ResourceBundle myResources; 
 	
 	private XMLReader myXMLReader;
+	private ConfigDoc myConfigDoc;
 	private GridDisplay societyView; 
 	private Simulation myGrid;
 	
@@ -51,7 +55,7 @@ public class GUIController{
 		makeSimulation();
 		
 		Scene mainScene = configureScene();
-		primaryStage.setTitle(myXMLReader.getSimulationName());
+		primaryStage.setTitle(myConfigDoc.getSimulationName());
 		primaryStage.setScene(mainScene);
 		primaryStage.show();
 	} 
@@ -63,19 +67,26 @@ public class GUIController{
 		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION)); // string 
 		File dataFile = myChooser.showOpenDialog(primaryStage);
 		if(dataFile != null) {
-			myXMLReader = new XMLReader(dataFile);
+			try {
+				myXMLReader = new XMLReader(dataFile);
+				myConfigDoc = new ConfigDoc(myXMLReader);
+			} catch(XMLException e) {
+				//TODO:
+				throw e;
+			}
 		} else {
-			//throw new Exception
+			//new Alert
 		}
 	}
 	
 	private void makeSimulation() {
-		if(myXMLReader.getSimType().equals("Grid")) {
-			myGrid = new Simulation(myXMLReader);
-		} else if(myXMLReader.getSimType().equals("MovingGrid")) {
-			myGrid = new MovingSim(myXMLReader);
-		} else if(myXMLReader.getSimType().equals("PredatorGrid")) {
-			myGrid = new PredatorSim(myXMLReader); 
+		if(myConfigDoc.getSimType().equals("Grid")) {
+			myGrid = new Simulation(myConfigDoc);
+		} else if(myConfigDoc.getSimType().equals("MovingSim")) {
+			myGrid = new MovingSim(myConfigDoc);
+		} else if(myConfigDoc.getSimType().equals("PredatorPreySim")) {
+			myConfigDoc = new PredatorPreyDoc(myXMLReader);
+			myGrid = new PredatorPreySim((PredatorPreyDoc)myConfigDoc); 
 		}
 		societyView = new GridDisplay(myGrid);
 	}

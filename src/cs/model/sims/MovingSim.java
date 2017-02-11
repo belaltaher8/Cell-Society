@@ -1,5 +1,6 @@
 package cs.model.sims;
 
+import cs.configuration.ConfigDoc;
 import cs.configuration.XMLReader;
 import cs.model.Cell;
 import cs.model.Point;
@@ -8,8 +9,8 @@ import cs.model.cells.MovingCell;
 
 public class MovingSim extends Simulation {
 
-	public MovingSim(XMLReader reader){
-		super(reader);
+	public MovingSim(ConfigDoc config){
+		super(config);
 	}
 
 	@Override

@@ -7,13 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-import cs.configuration.XMLReader;
+import cs.configuration.ConfigDoc;
 
 public class Simulation {	
 
 	private Map<Point, Cell> myGrid;
-	private XMLReader myReader;
+	private ConfigDoc myConfig;
 	private Rule myRule;
 	
 	private int gridWidth;
@@ -21,17 +20,17 @@ public class Simulation {
 	private Random myRand;
 	private Collection<Cell[]> swapPairs;
 
-	public Simulation(XMLReader reader){
-		myReader = reader;
+	public Simulation(ConfigDoc reader){
+		myConfig = reader;
 		myRand = new Random();
 		swapPairs = new ArrayList<Cell[]>();
 		reset();
 	}
 	
 	public void reset() {
-		gridWidth = myReader.getGridWidth(); 
-		gridHeight = myReader.getGridHeight();
-		myRule = myReader.getRule();
+		gridWidth = myConfig.getGridWidth(); 
+		gridHeight = myConfig.getGridHeight();
+		myRule = myConfig.getRule();
 		myGrid = new HashMap<Point, Cell>();
 		intializeGrid();
 	}
@@ -59,8 +58,8 @@ public class Simulation {
 	protected Rule getRule() {
 		return myRule;
 	}
-	protected XMLReader getReader() {
-		return myReader;
+	protected ConfigDoc getConfig() {
+		return myConfig;
 	}
 	protected Map<Point, Cell> getGrid() {
 		return myGrid;
@@ -160,7 +159,7 @@ public class Simulation {
 		for(int x = 0; x < gridWidth; x++) {
 			for(int y = 0; y < gridHeight; y++) {
 				Point point = new Point(x, y);
-				int initialState = myReader.getInitialStateAt(point);
+				int initialState = myConfig.getInitialStateAt(point);
 				Cell cell = placeCell(initialState, point);
 				myGrid.put(point, cell);
 			}

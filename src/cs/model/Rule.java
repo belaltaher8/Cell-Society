@@ -48,6 +48,10 @@ public class Rule {
 	}
 	
 	public int getNextState(int myState, Collection<Integer> neighborStates) {
+		if(myNextStateMap == null) {
+			return myState;
+		}
+		
 		int nextState = myState;
 		
 		List<Integer> neighborCounts = getStateCounts(neighborStates);
