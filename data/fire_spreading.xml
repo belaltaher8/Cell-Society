@@ -2,22 +2,23 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Fire Spreading</SIM_NAME>
-		<GRID_TYPE>Grid</GRID_TYPE>
+		<SIM_TYPE>Grid</SIM_TYPE>
+		<NUM_STATES>3</NUM_STATES>
+		<GRID_SHAPE>Square</GRID_SHAPE>
+		<INIT_STYLE>Random</INIT_STYLE>
+		<GRID_WIDTH>45</GRID_WIDTH>
+		<GRID_HEIGHT>45</GRID_HEIGHT>
 	</general>
 	
 	<simiulation_specific>
 	</simiulation_specific>
-
-	<Grid>
-		<GRID_WIDTH>45</GRID_WIDTH>
-		<GRID_HEIGHT>45</GRID_HEIGHT>
-		<initialGridStates>
-			<INITIAL_STATE_22_22>1</INITIAL_STATE_22_22>			
-		</initialGridStates>
-	</Grid>
+	
+	<initialGridStates>
+		<INITIAL_STATE_22_22>1</INITIAL_STATE_22_22>			
+	</initialGridStates>
 	
 	<Rule>
-		<NUM_STATES>3</NUM_STATES>
+		
 		<nextStateMap>
 			<ns>(0,1,1) -> 1</ns>
 			<ns>(0,1,2) -> 1</ns>

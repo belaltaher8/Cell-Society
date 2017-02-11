@@ -2,22 +2,25 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Segregation</SIM_NAME>
-		<GRID_TYPE>MovingGrid</GRID_TYPE>
+		<SIM_TYPE>MovingSim</SIM_TYPE>
+		<NUM_STATES>3</NUM_STATES>
+		<GRID_SHAPE>Square</GRID_SHAPE>
+		<INIT_STYLE>Random</INIT_STYLE>
+		<GRID_WIDTH>45</GRID_WIDTH>
+		<GRID_HEIGHT>45</GRID_HEIGHT>
 	</general>
 
 	<simiulation_specific>
 	</simiulation_specific>
 
-	<Grid>
-		<GRID_WIDTH>45</GRID_WIDTH>
-		<GRID_HEIGHT>45</GRID_HEIGHT>
-		<initialGridStates>
-			<INITIAL_STATE_0_0>1</INITIAL_STATE_0_0>			
-		</initialGridStates>
-	</Grid>
+	<initialGridStates>
+		<DENSITY_STATE_0></DENSITY_STATE_0>
+		<DENSITY_STATE_1></DENSITY_STATE_1>
+		<DENSITY_STATE_2></DENSITY_STATE_2>		
+		<INITIAL_STATE_0_0></INITIAL_STATE_0_0>			
+	</initialGridStates>
 	
 	<Rule>
-		<NUM_STATES>3</NUM_STATES>
 		<nextStateMap>
 			<ns>(1,2,2) -> 0</ns>
 			<ns>(1,2,3) -> 0</ns>

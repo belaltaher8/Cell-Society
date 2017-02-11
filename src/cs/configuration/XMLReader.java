@@ -2,12 +2,6 @@ package cs.configuration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,24 +10,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import cs.model.Cell;
-import cs.model.Point;
-import cs.model.Rule;
-import cs.model.Triple;
 
 public class XMLReader {
-	private static final int FIRST_OCCURRENCE_IN_FILE = 0;
+	public static final int FIRST_OCCURRENCE_IN_FILE = 0;
 	
     private static final DocumentBuilder DOCUMENT_BUILDER = getDocumentBuilder();
     private Element rootElement;
-    private MapMaker myMapMaker;
+    private String myConfigType;
     
-    public XMLReader(File file) {
-    	myMapMaker = new MapMaker();
-    	loadNewFile(file);
+    public XMLReader(File file) throws XMLException {
+    	this.loadNewFile(file);
+    	myConfigType = "Default";
     }
     
-    public void loadNewFile(File file) {
+    public void loadNewFile(File file) throws XMLException {
     	try {
             DOCUMENT_BUILDER.reset();
             Document xmlDocument = DOCUMENT_BUILDER.parse(file);
@@ -47,97 +37,49 @@ public class XMLReader {
         }
     }
     
-    
-    
-    public String getSimulationName() {
-    	return getString("SIM_NAME", FIRST_OCCURRENCE_IN_FILE);
-    }
-    public String getGridType() {
-    	return getString("GRID_TYPE", FIRST_OCCURRENCE_IN_FILE);
-    }
-    public int getGridWidth() {
-    	return getInt("GRID_WIDTH", FIRST_OCCURRENCE_IN_FILE);
-    }
-    public int getGridHeight() {
-    	return getInt("GRID_HEIGHT", FIRST_OCCURRENCE_IN_FILE);
-    }
-    
-    public Rule getRule() {
-    	int myNumStates = getInt("NUM_STATES", FIRST_OCCURRENCE_IN_FILE);
-    	int gridWidth = getGridWidth();
-    	int gridHeight = getGridHeight();
-    	
-    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getTextByTag("nextStateMap", FIRST_OCCURRENCE_IN_FILE));
-    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getTextByTag("neighborOffsets", FIRST_OCCURRENCE_IN_FILE));
-
-    	Map<Integer, Double> transitionProbabilities = null;
-    	if(getTextByTag("transitionProbabilitiesMap", FIRST_OCCURRENCE_IN_FILE) != null) {
-    		transitionProbabilities = myMapMaker.getProbabilitiesMap(getTextByTag("transitionProbabilitiesMap", FIRST_OCCURRENCE_IN_FILE));
-    	} 
-    	
-    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
-    }
-    
-    //TODO: this is poor design. Requires simulation to know xml tags
-    public int getIntParameter(String name) {
-    	return getInt(name, FIRST_OCCURRENCE_IN_FILE);
-    }
-    public double getDoubleParameter(String name) {
-    	return getDouble(name, FIRST_OCCURRENCE_IN_FILE);
-    }
-    
-    public int getInitialState(Point point) {
-    	int state;
-    	try {
-    		state = getInt(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);
-    	} catch (XMLException e) {
-    		state = Cell.DEFAULT_STATE;
+    public ConfigDoc getConfigParameters() throws XMLException {
+    	//TODO: ugly if-statement to choose what kind of ConfigDoc to return
+    	if(myConfigType.equals("BlahBlahBlah")){
+    		return new ConfigDoc(this);
+    	} else {
+    		return new ConfigDoc(this);
     	}
-    	return state;
     }
     
-    private String getString(String tag, int index) {
-    	String myString = getTextByTag(tag, index);
-    	if(myString == null) {
-    		//throw new XMLException("XMLReader could not find: getString(%s, %d)", tag, index);
-    	}
-    	return myString;
+    public void setConfigType(String type) {
+    	myConfigType = type;
     }
     
-    private int getInt(String tag, int index) throws XMLException{
-    	String myInt = getTextByTag(tag, index);
-    	if(myInt == null) {
-    		throw new XMLException("XMLReader could not find: getInt(%s, %d)", tag, index);
-    	}
-    	return Integer.parseInt(myInt);
+    public String getString(String tag, int index) throws XMLException {
+    	return getTextByTag(tag, index);
     }
     
-    private double getDouble(String tag, int index) {
-    	String myDouble = getTextByTag(tag, index);
-    	if(myDouble == null) {
-    		//throw new XMLException("XMLReader could not find: getDouble(%s, %d)", tag, index);
-    	}
-    	return Double.parseDouble(myDouble);
+    public int getInt(String tag, int index) throws XMLException {
+    	return Integer.parseInt(getTextByTag(tag, index));
     }
     
-    private String getTextByTag(String tag, int index) {
+    public double getDouble(String tag, int index) throws XMLException {
+    	return Double.parseDouble(getTextByTag(tag, index));
+    }
+    
+    private String getTextByTag(String tag, int index) throws XMLException {
     	NodeList nodeList = rootElement.getElementsByTagName(tag);
     	if (nodeList != null && nodeList.getLength() > index) {
             return nodeList.item(index).getTextContent();
         }
-    	return null;
+    	throw new XMLException("XMLReader could not find the simulation parameter: %s", tag);
     }
 
     private boolean isValidDataFile(Element root) {
     	return root.getAttribute("type").equals("CellSociety");
     }
     
-    private static DocumentBuilder getDocumentBuilder() {
+    private static DocumentBuilder getDocumentBuilder() throws RuntimeException {
         try {
             return DocumentBuilderFactory.newInstance().newDocumentBuilder();
         }
         catch (ParserConfigurationException e) {
-            throw new XMLException(e);
+        	throw new RuntimeException(e);
         }
     }
 }

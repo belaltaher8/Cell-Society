@@ -1,26 +1,27 @@
 package cs.model.sims;
 
-import cs.configuration.XMLReader;
+import cs.configuration.ConfigDoc;
+import cs.configuration.PredatorPreyDoc;
 import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 import cs.model.cells.FishCell;
 import cs.model.cells.SharkCell;
 
-public class PredatorSim extends Simulation {
+public class PredatorPreySim extends Simulation {
 	private double FISH_INITIAL_POPULATION;
 	private double SHARK_INITIAL_POPULATION;
 	private int FISH_BREED_INTERVAL;
 	private int SHARK_BREED_INTERVAL;
 	private int SHARK_STARVE_INTERVAL;
 	
-	public PredatorSim(XMLReader reader) {
-		super(reader);
-		FISH_BREED_INTERVAL = reader.getIntParameter("FISH_BREED_INTERVAL");
-		SHARK_BREED_INTERVAL = reader.getIntParameter("SHARK_BREED_INTERVAL");
-		SHARK_STARVE_INTERVAL = reader.getIntParameter("SHARK_STARVE_INTERVAL");
-		FISH_INITIAL_POPULATION = reader.getDoubleParameter("FISH_INITIAL_POPULATION");
-		SHARK_INITIAL_POPULATION = reader.getDoubleParameter("SHARK_INITIAL_POPULATION");
+	public PredatorPreySim(PredatorPreyDoc config) {
+		super(config);
+		FISH_BREED_INTERVAL = config.getFishBreedInterval();
+		SHARK_BREED_INTERVAL = config.getSharkBreedInterval();
+		SHARK_STARVE_INTERVAL = config.getSharkStarveInterval();
+		FISH_INITIAL_POPULATION = config.getInitialStateDensity(FishCell.FISH_STATE);
+		SHARK_INITIAL_POPULATION = config.getInitialStateDensity(SharkCell.SHARK_STATE);
 		this.reset();
 	}
 
