@@ -21,7 +21,8 @@ public class TriangleDisplay extends GridDisplay{
 	@Override
 	public void drawGridDisplay(){
 		this.getGridRoot().getChildren().clear(); 
-
+		initializeStateCounts();
+		
 		int cellWidth = GridDisplay.DISPLAY_WIDTH / ((this.getConfig().getGridWidth()/2)+1); 
 		int cellHeight = GridDisplay.DISPLAY_HEIGHT / this.getConfig().getGridHeight();
 		

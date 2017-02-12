@@ -25,7 +25,7 @@ public class ConfigDoc {
 	public static final String INIT_STYLE_RAND = "Random";
 	public static final String INIT_STYLE_PROB = "Probability";
 	
-	public static final String TURN_OFF_GRID_LINES = "Hide";
+	public static final String TURN_OFF_GRID_LINES = "false";
 	
 	private XMLReader myReader;
 	private XMLHelper myHelper;
@@ -191,6 +191,7 @@ public class ConfigDoc {
     	params += formatWithXMLTags("SIM_TYPE", this.getSimType());
     	params += formatWithXMLTags("GRID_SHAPE", myGridShape);
     	params += formatWithXMLTags("GRID_EDGE", myGridEdge);
+    	params += formatWithXMLTags("GRID_LINES", Boolean.toString(myGridLinesEnabled));
     	params += formatWithXMLTags("INIT_STYLE", INIT_STYLE_SPECIFIC);
     	params += formatWithXMLTags("GRID_WIDTH", Integer.toString(myGridWidth));
     	params += formatWithXMLTags("GRID_HEIGHT", Integer.toString(myGridHeight));
