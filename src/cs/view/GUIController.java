@@ -77,11 +77,15 @@ public class GUIController {
 			myXMLReader = makeXMLReader(xmlFile);
 			myConfigDoc = makeConfigDoc(myXMLReader);
 			mySimulation = makeSimulation(myConfigDoc);
-			myGridDisplay = new TriangleDisplay(mySimulation, myConfigDoc);
+			myGridDisplay = new GridDisplay(mySimulation, myConfigDoc);
 			myControlDisplay = new ControlDisplay(myConfigDoc, this);
 		} catch(XMLException e) {
 			resetAll();
 		}
+	}
+	public double getAnimationSpeed(){
+		double speed = animationSpeed; 
+		return speed; 
 	}
 	
 	private File promptForFile(Stage primaryStage) {

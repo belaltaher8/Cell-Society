@@ -169,4 +169,14 @@ public abstract class Simulation {
 	}
 	
 	abstract protected Cell placeCell(int initialState, Point point);
+
+	public int calculateNumInState(int i) {
+		int count = 0; 
+		for (Point p: myGrid.keySet()){
+			if (myGrid.get(p).getState() == i){
+				count++;
+			}
+		}
+		return count; 
+	}
 }
