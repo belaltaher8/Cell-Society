@@ -34,7 +34,12 @@ public class GridDisplay {
 		myGridHeight = grid.getConfig().getGridHeight();
 		drawGridDisplay();
 	}
-	
+	protected Group getGridRoot(){
+		return gridRoot;
+	}
+	protected Simulation getGrid(){
+		return myGrid; 
+	}
 	/**
 	 * @param cellsPerRow 
 	 * @param cellsPerColumn

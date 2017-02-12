@@ -9,31 +9,26 @@ import javafx.scene.Group;
 import javafx.scene.shape.Shape;
 
 public class TriangleDisplay extends GridDisplay{
-	private Group gridRoot; 
-
-	private Simulation myGrid; 
 
 	public TriangleDisplay(Simulation grid) {
 		super(grid);
-		gridRoot = new Group();
-		myGrid = grid; 
-		drawGridDisplay();
 	}
 
 	// lot of duplicated code, figure out refactor for this
 
 	@Override
 	protected void drawGridDisplay(){
-		//this.gridRoot.getChildren().clear(); 
+		this.getGridRoot().getChildren().clear(); 
 		// should these be encapsulated further?
-		int cellWidth = GridDisplay.DISPLAY_WIDTH/ ((myGrid.getWidth()/2)+1); 
-		int cellHeight = GridDisplay.DISPLAY_HEIGHT/ myGrid.getHeight();
-		for (int y= 0; y<myGrid.getHeight(); y++){
-			for (int x=0; y<myGrid.getWidth(); x++){
-				Cell c = myGrid.getCellAtPoint(new Point(x,y));
+		int cellWidth = GridDisplay.DISPLAY_WIDTH/ ((this.getGrid().getConfig().getGridWidth()/2)+1); 
+		int cellHeight = GridDisplay.DISPLAY_HEIGHT/ this.getGrid().getConfig().getGridHeight();
+		for (int y= 0; y<this.getGrid().getConfig().getGridHeight(); y++){
+			for (int x=0; x<this.getGrid().getConfig().getGridWidth(); x++){
+				Cell c = this.getGrid().getCellAtPoint(new Point(x,y));
 				ArrayList<GUIPoint> trianglePoints = createTriangleCoordinates(new Point(x,y), cellWidth, cellHeight);
-				Shape gridCell = setColor(new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2)),c);
-				gridRoot.getChildren().add(gridCell);
+				Triangle myTriangle = new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2));
+				Shape gridCell = setColor(myTriangle.getTriangle(),c);
+				this.getGridRoot().getChildren().add(gridCell);
 			}
 
 		}
@@ -75,11 +70,6 @@ public class TriangleDisplay extends GridDisplay{
 		triangleCoords.add(p2);
 		triangleCoords.add(p3);
 		return triangleCoords; 
-	}
-
-	@Override
-	public Group getGridView(){
-		return gridRoot; 
 	}
 
 }

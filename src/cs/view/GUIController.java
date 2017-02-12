@@ -76,7 +76,7 @@ public class GUIController{
 			myXMLReader = makeXMLReader(xmlFile);
 			myConfigDoc = makeConfigDoc(myXMLReader);
 			mySimulation = makeSimulation(myConfigDoc);
-			mySocietyView = new GridDisplay(mySimulation);
+			mySocietyView = new TriangleDisplay(mySimulation);
 		} catch(XMLException e) {
 			resetAll();
 		}

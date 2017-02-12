@@ -4,7 +4,7 @@ package cs.view;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 
-public class Triangle extends Polygon {
+public class Triangle {
 	Polygon t; 
 	public Triangle(GUIPoint a, GUIPoint b, GUIPoint c){
 		t = new Polygon();
