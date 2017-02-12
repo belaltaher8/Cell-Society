@@ -154,6 +154,13 @@ public class ConfigDoc {
     	return myInitialDensities.get(state);
     }
     
+    public void setGridWidth(int width) {
+    	myGridWidth = width;
+    }
+    public void setGridHeight(int height) {
+    	myGridHeight = height;
+    }
+    
     public int getInitialStateAt(Point point) {
     	int state;
     	try {
