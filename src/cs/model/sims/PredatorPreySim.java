@@ -13,7 +13,7 @@ public class PredatorPreySim extends Simulation {
 	}
 	
 	@Override
-	protected Cell placeCell(int initialState, Point point) {
+	public Cell placeCell(int initialState, Point point) {
 		if(initialState == FishCell.FISH_STATE) {
 			return new FishCell(initialState, point, this.getConfig(), this);
 		} else if(initialState == SharkCell.SHARK_STATE) {

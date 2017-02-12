@@ -172,5 +172,5 @@ public abstract class Simulation {
 		return contents;
 	}
 	
-	abstract protected Cell placeCell(int initialState, Point point);
+	abstract public Cell placeCell(int initialState, Point point);
 }

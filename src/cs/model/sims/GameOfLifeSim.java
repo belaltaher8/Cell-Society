@@ -13,7 +13,7 @@ public class GameOfLifeSim extends Simulation {
 	}
 
 	@Override
-	protected Cell placeCell(int initialState, Point point) {
+	public Cell placeCell(int initialState, Point point) {
 		return new GameOfLifeCell(initialState, point, this.getConfig(), this);
 	}
 }

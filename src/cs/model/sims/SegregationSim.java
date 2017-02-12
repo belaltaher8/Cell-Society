@@ -13,7 +13,7 @@ public class SegregationSim extends Simulation {
 	}
 	
 	@Override
-	protected Cell placeCell(int initialState, Point point) {
+	public Cell placeCell(int initialState, Point point) {
 		return new SegregationCell(initialState, point, ((SegregationDoc)this.getConfig()), this);
 	}
 }

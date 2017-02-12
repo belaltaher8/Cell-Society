@@ -93,12 +93,11 @@ public class GridDisplay {
 	}
 	
 	protected void handleClick(Cell c) {
-		int nextState = c.getState() +1;
+		int nextState = c.getState() + 1;
 		if(nextState >= myConfig.getNumStates()) {
 			nextState = Cell.DEFAULT_STATE;
 		}
-		c.setNextState(nextState);
-		c.advanceState();
+		myGrid.replaceCell(c, myGrid.placeCell(nextState, c.getCoords()));
 		this.drawGridDisplay();
 	}
 }
