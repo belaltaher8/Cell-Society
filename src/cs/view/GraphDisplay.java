@@ -56,11 +56,14 @@ public class GraphDisplay {
 			mySeries.add(s);
 			
 		}
-		// TESTER
-		/*for (int i=0;i<mySeries.size();i++){
+	 
+		/*TESTER
+		 * for (int i=0;i<mySeries.size();i++){
 			System.out.println(mySeries.get(i).getData());
 		}
-		System.out.println("BREAK");*/
+		System.out.println("BREAK");
+		*/
+		
 		lineChart = new LineChart<Number, Number>(xAxis, yAxis, FXCollections.observableArrayList(mySeries));
 	}
 
