@@ -33,9 +33,9 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Duration;
 
-public class GUIController{
-	public static final String DATA_FILE_EXTENSION = "*.xml";
+public class GUIController {
 	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
+	public static final String DATA_FILE_EXTENSION = "*.xml";
 
 	public static final double SPEED_UP_FACTOR = 2.0;
 	public static final double DEFAULT_ANIMATION_SPEED = 250;
@@ -49,15 +49,16 @@ public class GUIController{
 	private XMLReader myXMLReader;
 	private ConfigDoc myConfigDoc;
 	private Simulation mySimulation;
-	private GridDisplay mySocietyView; 
+	private GridDisplay myGridDisplay; 
+	private ControlDisplay myControlDisplay;
 	
 	private Timeline animation; 
 	private Stage myStage;
-	private Pane gridPane;
+	private Pane myGridPane;
+	private Pane myControlPane;
 	private double animationSpeed; 
 
 	public GUIController(Stage primaryStage){
-		myResources = ResourceBundle.getBundle(DEFAULT_RESOURCE_PACKAGE + "GUI");
 		myStage = primaryStage;
 		animationSpeed = DEFAULT_ANIMATION_SPEED; 
 		configureAnimation();
@@ -76,7 +77,8 @@ public class GUIController{
 			myXMLReader = makeXMLReader(xmlFile);
 			myConfigDoc = makeConfigDoc(myXMLReader);
 			mySimulation = makeSimulation(myConfigDoc);
-			mySocietyView = new TriangleDisplay(mySimulation);
+			myGridDisplay = new TriangleDisplay(mySimulation, myConfigDoc);
+			myControlDisplay = new ControlDisplay(myConfigDoc, this);
 		} catch(XMLException e) {
 			resetAll();
 		}
@@ -84,7 +86,6 @@ public class GUIController{
 	
 	private File promptForFile(Stage primaryStage) {
 		FileChooser myChooser = new FileChooser();
-		myChooser.setTitle(myResources.getString("ChooseFilePrompt"));
 		myChooser.setInitialDirectory(new File(System.getProperty("user.dir") + "/data/"));
 		myChooser.getExtensionFilters().setAll(new ExtensionFilter("Text Files", DATA_FILE_EXTENSION));
 		File dataFile = myChooser.showOpenDialog(primaryStage);
@@ -150,12 +151,12 @@ public class GUIController{
 	}
 	
 	private Scene configureScene() {
-		Pane gridPane = configureDisplay();
-		HBox controlPane = configureControls();
+		myGridPane = configureDisplay();
+		myControlPane = configureControls();
 		
 		BorderPane mainView = new BorderPane();
-		mainView.setCenter(gridPane);
-		mainView.setBottom(controlPane);
+		mainView.setCenter(myGridPane);
+		mainView.setBottom(myControlPane);
 		
 		Group sceneRoot = new Group(); 
 		sceneRoot.getChildren().add(mainView);
@@ -163,43 +164,16 @@ public class GUIController{
 	}
 	
 	private Pane configureDisplay(){
-		gridPane = new Pane();
+		Pane gridPane = new Pane();
 		gridPane.setPrefSize(GridDisplay.DISPLAY_WIDTH, GridDisplay.DISPLAY_HEIGHT);
-		gridPane.getChildren().add(mySocietyView.getGridView()); 
+		gridPane.getChildren().add(myGridDisplay.getGridView()); 
 		return gridPane;
 	}
 
-	private HBox configureControls() {
-		HBox controlPane = new HBox();
+	private Pane configureControls() {
+		Pane controlPane = new Pane();
 		controlPane.setPrefSize(SCENE_WIDTH, CONTROLS_HEIGHT);
-		
-		Button startButton = new Button(myResources.getString("StartLabel"));
-		startButton.setOnMouseClicked(e->animate());
-		
-		Button stopButton = new Button(myResources.getString("StopLabel"));
-		stopButton.setOnMouseClicked(e->stopAnimation());
-		
-		Button stepButton = new Button(myResources.getString("StepLabel"));
-		stepButton.setOnMouseClicked(e->stepAnimation());
-		
-		Button resetButton = new Button(myResources.getString("ResetLabel"));
-		resetButton.setOnMouseClicked(e->resetGrid());
-		
-		Button randomizeButton = new Button(myResources.getString("RandomLabel"));
-		randomizeButton.setOnMouseClicked(e->randomizeGrid());
-		
-		Button loadButton = new Button(myResources.getString("LoadLabel"));
-		loadButton.setOnMouseClicked(e->loadNewFile());
-		
-		Button speedButton = new Button(myResources.getString("Speed"));
-		speedButton.setOnMouseClicked(e->speedAnimation(animationSpeed/SPEED_UP_FACTOR));
-		
-		Button slowButton = new Button(myResources.getString("Slow"));
-		slowButton.setOnMouseClicked(e->speedAnimation(animationSpeed*SPEED_UP_FACTOR));
-		
-		controlPane.getChildren().addAll(startButton,stopButton,stepButton,resetButton,
-				randomizeButton,loadButton, speedButton, slowButton);
-		
+		controlPane.getChildren().add(myControlDisplay.getControlView());
 		return controlPane;
 	}
 
@@ -209,45 +183,57 @@ public class GUIController{
         return alert.showAndWait().get();
 	}
 	
-	private void loadNewFile() {
+	public void loadNewFile() {
+		System.out.println("hi");
 		animation.stop();
 		animationSpeed = DEFAULT_ANIMATION_SPEED;
-		gridPane.getChildren().remove(mySocietyView.getGridView()); 
+		myGridPane.getChildren().remove(myGridDisplay.getGridView()); 
 		resetAll();
-		gridPane.getChildren().add(mySocietyView.getGridView()); 
+		myGridPane.getChildren().add(myGridDisplay.getGridView()); 
 	}
 	
-	private void randomizeGrid() {
+	public void saveSnapshot() {
+		myXMLReader.writeToFile(myConfigDoc.getParamsAsXML(), myConfigDoc.getNeighborsAsXML(), mySimulation.getContentsAsXML());
+	}
+	
+	public void randomizeGrid() {
 		animation.stop();
-		mySocietyView.randomizeGrid();
+		myGridDisplay.randomizeGrid();
 	}
 	
-	private void resetGrid() {
+	public void resetGrid() {
 		animation.stop();
 		animationSpeed = DEFAULT_ANIMATION_SPEED;
-		mySocietyView.reset();
+		configureAnimation();
+		myGridDisplay.reset();
 	}
 	
-	private void speedAnimation(double newSpeed) {
+	public void speedAnimation() {
 		boolean wasPlaying = animation.getCurrentRate() > 0;
 		animation.pause();
-		animationSpeed = newSpeed; 
+		animationSpeed = myControlDisplay.getAnimationSpeed() * -10 + 1050;
 		configureAnimation();
 		if(wasPlaying) {
 			animation.play();
 		}
 	}
 	
-	private void stepAnimation() {
-		mySocietyView.step();
+	public void updateParameters(int width, int height) {
+		myConfigDoc.setGridWidth(width);
+		myConfigDoc.setGridHeight(height);
+		mySimulation.reset();
+		myGridDisplay.reset();
+	}
+	
+	public void stepAnimation() {
+		myGridDisplay.step();
 	}
 
-	private void stopAnimation() {
+	public void stopAnimation() {
 		animation.pause();
-		//myXMLReader.writeToFile(myConfigDoc.getParamsAsXML(), myConfigDoc.getNeighborsAsXML(), mySimulation.getContentsAsXML());
 	}
 
-	private void animate() {
+	public void animate() {
 		animation.play();
 	}
 }

@@ -2,6 +2,7 @@ package cs.view;
 
 import java.util.ArrayList;
 
+import cs.configuration.ConfigDoc;
 import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
@@ -10,8 +11,8 @@ import javafx.scene.shape.Shape;
 
 public class TriangleDisplay extends GridDisplay{
 
-	public TriangleDisplay(Simulation grid) {
-		super(grid);
+	public TriangleDisplay(Simulation grid, ConfigDoc config) {
+		super(grid, config);
 	}
 
 	// lot of duplicated code, figure out refactor for this
@@ -19,18 +20,18 @@ public class TriangleDisplay extends GridDisplay{
 	@Override
 	protected void drawGridDisplay(){
 		this.getGridRoot().getChildren().clear(); 
-		// should these be encapsulated further?
-		int cellWidth = GridDisplay.DISPLAY_WIDTH/ ((this.getGrid().getConfig().getGridWidth()/2)+1); 
-		int cellHeight = GridDisplay.DISPLAY_HEIGHT/ this.getGrid().getConfig().getGridHeight();
-		for (int y= 0; y<this.getGrid().getConfig().getGridHeight(); y++){
-			for (int x=0; x<this.getGrid().getConfig().getGridWidth(); x++){
+
+		int cellWidth = GridDisplay.DISPLAY_WIDTH / ((this.getConfig().getGridWidth()/2)+1); 
+		int cellHeight = GridDisplay.DISPLAY_HEIGHT / this.getConfig().getGridHeight();
+		
+		for (int y = 0; y < this.getConfig().getGridHeight(); y++){
+			for (int x = 0; x < this.getConfig().getGridWidth(); x++){
 				Cell c = this.getGrid().getCellAtPoint(new Point(x,y));
 				ArrayList<GUIPoint> trianglePoints = createTriangleCoordinates(new Point(x,y), cellWidth, cellHeight);
 				Triangle myTriangle = new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2));
 				Shape gridCell = setColor(myTriangle.getTriangle(),c);
 				this.getGridRoot().getChildren().add(gridCell);
 			}
-
 		}
 	}
 

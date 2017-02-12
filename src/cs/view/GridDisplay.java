@@ -1,6 +1,7 @@
 package cs.view;
 import java.util.ResourceBundle;
 
+import cs.configuration.ConfigDoc;
 import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
@@ -19,27 +20,29 @@ public class GridDisplay {
 	
 	private Group gridRoot; 
 
-	private int myGridWidth; 
-	private int myGridHeight; 
-	
 	private ResourceBundle myResources; 
 	private Simulation myGrid; 
+	private ConfigDoc myConfig;
 
 	
-	public GridDisplay(Simulation grid){
+	public GridDisplay(Simulation grid, ConfigDoc config){
 		gridRoot = new Group();
 		myGrid = grid;
+		myConfig = config;
 		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "CellColors");
-		myGridWidth = grid.getConfig().getGridWidth();
-		myGridHeight = grid.getConfig().getGridHeight();
 		drawGridDisplay();
 	}
+	
 	protected Group getGridRoot(){
 		return gridRoot;
 	}
 	protected Simulation getGrid(){
 		return myGrid; 
 	}
+	protected ConfigDoc getConfig() {
+		return myConfig;
+	}
+	
 	/**
 	 * @param cellsPerRow 
 	 * @param cellsPerColumn
@@ -48,11 +51,11 @@ public class GridDisplay {
 	
 	protected void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
-		int cellWidth = DISPLAY_WIDTH/myGridWidth; 
-		int cellHeight = DISPLAY_HEIGHT/myGridHeight;
+		int cellWidth = DISPLAY_WIDTH/myConfig.getGridWidth(); 
+		int cellHeight = DISPLAY_HEIGHT/myConfig.getGridHeight();
 		
-		for (int x = 0; x < myGridWidth; x++){
-			for (int y = 0; y < myGridHeight; y++){
+		for (int x = 0; x < myConfig.getGridWidth(); x++){
+			for (int y = 0; y < myConfig.getGridHeight(); y++){
 				Point p = new Point(x,y);
 				Cell c = myGrid.getCellAtPoint(p);
 				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
