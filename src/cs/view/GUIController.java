@@ -78,7 +78,7 @@ public class GUIController{
 		} else if(myXMLReader.getGridType().equals("PredatorGrid")) {
 			myGrid = new PredatorSim(myXMLReader); 
 		}
-		societyView = new GridDisplay(myGrid);
+		societyView = new TriangleDisplay(myGrid);
 	}
 
 	private void configureAnimation() {
