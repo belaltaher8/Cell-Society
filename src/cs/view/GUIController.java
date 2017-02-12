@@ -103,8 +103,8 @@ public class GUIController {
 			myXMLReader = makeXMLReader(xmlFile);
 			myConfigDoc = makeConfigDoc(myXMLReader);
 			mySimulation = makeSimulation(myConfigDoc);
-			myGridDisplay = new GridDisplay(mySimulation, myConfigDoc);
-			myControlDisplay = new ControlDisplay(myConfigDoc, this);
+			myGridDisplay = makeGridDisplay(mySimulation, myConfigDoc);
+			myControlDisplay = makeControlDisplay(myConfigDoc, this);
 			myGraphDisplay = new GraphDisplay(myGridDisplay);
 			myGraph = myGraphDisplay.getChart();
 		} catch(XMLException e) {

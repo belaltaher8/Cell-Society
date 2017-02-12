@@ -172,8 +172,10 @@ public abstract class Simulation {
 		return contents;
 	}
 	
-	abstract protected Cell placeCell(int initialState, Point point);
+	abstract public Cell placeCell(int initialState, Point point);
 
+	abstract public int getNumStates();
+	
 	public int calculateNumInState(int i) {
 		int count = 0; 
 		for (Point p: myGrid.keySet()){

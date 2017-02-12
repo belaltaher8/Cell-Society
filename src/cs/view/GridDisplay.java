@@ -35,22 +35,23 @@ public class GridDisplay {
 		myGrid = grid;
 		myConfig = config;
 		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "CellColors");	
+		initializeStateCounts();
 		drawGridDisplay();
 	}
+	
 	public Map<Integer, Integer> getStateMap(){
 		return stateCounts; 
 	}
-	private void initializeStateCounts() {
+	
+	protected void initializeStateCounts() {
 		stateCounts = new HashMap<Integer, Integer>(); 
-		int numStates = myConfig.getNumStates(); 
+		int numStates = myGrid.getNumStates(); 
 		// initialize hashMap keys to zero
 		for (int i=0; i<numStates; i++){
 			if (!stateCounts.containsKey(i)){
 				stateCounts.put(i, 0);
 			}
 		}
-		
-
 	}
 
 	protected Group getGridRoot(){
@@ -71,7 +72,7 @@ public class GridDisplay {
 	
 	public void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
-		initializeStateCounts(); 
+		
 		int cellWidth = DISPLAY_WIDTH/myConfig.getGridWidth(); 
 		int cellHeight = DISPLAY_HEIGHT/myConfig.getGridHeight();
 		
@@ -79,6 +80,7 @@ public class GridDisplay {
 			for (int y = 0; y < myConfig.getGridHeight(); y++){
 				Cell c = myGrid.getCellAtPoint(new Point(x,y));
 				if(c != null) {
+					updateStateCounts(c);
 					Shape gridCell = makeShape(c,x, y, cellWidth, cellHeight);
 					gridRoot.getChildren().add(gridCell);
 				}
@@ -94,6 +96,11 @@ public class GridDisplay {
 		}
 		Shape gridCell = setColor(r, c);
 		return gridCell;
+	}
+	
+	private void updateStateCounts(Cell c) {
+		int currentCount = stateCounts.get(c.getState());
+		stateCounts.put(c.getState(), currentCount+1);
 	}
 	
 	/**
