@@ -1,9 +1,6 @@
 package cs.view;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import cs.configuration.ConfigDoc;
@@ -12,6 +9,8 @@ import cs.configuration.XMLReader;
 import cs.configuration.configs.FireDoc;
 import cs.configuration.configs.PredatorPreyDoc;
 import cs.configuration.configs.SegregationDoc;
+import cs.model.Cell;
+import cs.model.Point;
 import cs.model.Simulation;
 import cs.model.sims.FireSpreadSim;
 import cs.model.sims.GameOfLifeSim;
@@ -24,11 +23,9 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.Chart;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -207,6 +204,7 @@ public class GUIController {
 		return new Scene(sceneRoot, SCENE_WIDTH, SCENE_HEIGHT);
 	}
 	
+
 	private Pane configureDisplay(){
 		Pane gridPane = new Pane();
 		gridPane.setPrefSize(GridDisplay.DISPLAY_WIDTH, GridDisplay.DISPLAY_HEIGHT);
@@ -316,7 +314,7 @@ public class GUIController {
 	public void stepAnimation() {
 		stepCount++; 
 		myGridDisplay.step();
-		myGraphDisplay.createGraph(myGridDisplay, stepCount);
+		myGraphDisplay = new GraphDisplay(myGridDisplay);
 		myGraph = myGraphDisplay.getChart();
 	}
 
