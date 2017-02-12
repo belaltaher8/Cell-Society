@@ -8,9 +8,13 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.Stage;
 
 /**
  * @author tahiaemran
@@ -27,7 +31,7 @@ public class GridDisplay {
 	private ConfigDoc myConfig;
 	
 	private HashMap <Integer, Integer> stateCounts; // map of each state to number of cells in that state 
-	
+	private HashMap <Shape, Cell> gridToCells; 
 	
 	public GridDisplay(Simulation grid, ConfigDoc config){
 		gridRoot = new Group();
@@ -38,6 +42,9 @@ public class GridDisplay {
 	}
 	public Map<Integer, Integer> getStateMap(){
 		return stateCounts; 
+	}
+	public Map<Shape, Cell> getCellMap(){
+		return gridToCells; 
 	}
 	private void initializeStateCounts() {
 		stateCounts = new HashMap<Integer, Integer>(); 
@@ -61,7 +68,9 @@ public class GridDisplay {
 	protected ConfigDoc getConfig() {
 		return myConfig;
 	}
-	
+	public boolean clickIsHandled(){
+		return false; 
+	}
 	/**
 	 * @param cellsPerRow 
 	 * @param cellsPerColumn
@@ -71,6 +80,7 @@ public class GridDisplay {
 	protected void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
 		initializeStateCounts(); 
+		gridToCells = new HashMap<Shape, Cell>();
 		int cellWidth = DISPLAY_WIDTH/myConfig.getGridWidth(); 
 		int cellHeight = DISPLAY_HEIGHT/myConfig.getGridHeight();
 		
@@ -79,12 +89,46 @@ public class GridDisplay {
 				Point p = new Point(x,y);
 				Cell c = myGrid.getCellAtPoint(p);
 				updateStateCounts(c);
-				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
+				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);	
+				gridToCells.put(gridCell, c);
+				gridCell.setOnMouseClicked(e->handleClick(gridCell,c));
 				gridRoot.getChildren().add(gridCell);
 			}
 		}
 	}
 
+	public void handleClick(Shape gridCell, Cell c) {
+		Stage dialogBox = new Stage(); 
+		HBox dialogButtons = new HBox(); 
+		Button changeButton = new Button("Change State"); ////// RESOURCE BUNDLES 
+		changeButton.setOnMouseClicked(e -> changeState(gridCell, c, dialogBox));
+		dialogButtons.getChildren().addAll(changeButton);
+		Scene s = new Scene(dialogButtons, 200, 200);
+		dialogBox.setScene(s);
+		dialogBox.show();
+	}
+
+	private void changeState(Shape gridCell, Cell c, Stage dialogBox) {
+		HBox stateButtons = new HBox(); 
+		for (int i=0; i<myGrid.getConfig().getNumStates();i++){
+			int state = i; 
+			Button stateButton = new Button(Integer.toString(i));
+			stateButton.setOnMouseClicked(e->changeStateTo(gridCell, state, c));
+			stateButtons.getChildren().add(stateButton);
+		}
+		Scene s1 = new Scene(stateButtons);
+		dialogBox.setScene(s1);
+		dialogBox.show();
+	}
+
+	private void changeStateTo(Shape gridCell, int i, Cell c) {
+		Cell c1  = gridToCells.get(gridCell); 
+		System.out.println(c1);
+		c1.setState(i);
+		System.out.println(c1.getState());
+		drawGridDisplay();
+	}
+	
 	private void updateStateCounts(Cell c) {
 		int currentCount = stateCounts.get(c.getState());
 		stateCounts.put(c.getState(), currentCount+1);
