@@ -15,6 +15,7 @@ public class TriangleDisplay extends GridDisplay{
 
 	public TriangleDisplay(Simulation grid) {
 		super(grid);
+		gridRoot = new Group();
 		myGrid = grid; 
 		drawGridDisplay();
 	}
@@ -23,7 +24,7 @@ public class TriangleDisplay extends GridDisplay{
 
 	@Override
 	protected void drawGridDisplay(){
-		gridRoot.getChildren().clear(); 
+		//this.gridRoot.getChildren().clear(); 
 		// should these be encapsulated further?
 		int cellWidth = GridDisplay.DISPLAY_WIDTH/ ((myGrid.getWidth()/2)+1); 
 		int cellHeight = GridDisplay.DISPLAY_HEIGHT/ myGrid.getHeight();
@@ -75,7 +76,7 @@ public class TriangleDisplay extends GridDisplay{
 		triangleCoords.add(p3);
 		return triangleCoords; 
 	}
-	
+
 	@Override
 	public Group getGridView(){
 		return gridRoot; 
