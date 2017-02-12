@@ -5,20 +5,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import cs.configuration.ConfigDoc;
+import cs.configuration.configs.PredatorPreyDoc;
 import cs.model.Cell;
 import cs.model.Point;
-import cs.model.Rule;
 import cs.model.Simulation;
 
 public class FishCell extends Cell {
 	public static final int FISH_STATE = 1;
 	
-	private int breedInterval;
 	private int breedTimer;
 	
-	public FishCell(int initialState, Point coordinates, Rule rule, Simulation grid, int breedtime) {
-		super(initialState, coordinates, rule, grid);
-		breedInterval = breedtime;
+	public FishCell(int initialState, Point coordinates, ConfigDoc config, Simulation sim) {
+		super(initialState, coordinates, config, sim);
 		breedTimer = 0;
 	}
 
@@ -33,12 +32,9 @@ public class FishCell extends Cell {
 	protected void incrementTimer() {
 		breedTimer++;
 	}
-	protected int getBreedInterval() {
-		return breedInterval;
-	}
 	
 	protected Cell getOffspring(Point coords) {
-		return new FishCell(this.getState(), coords, this.getRule(), this.getSimulation(), breedInterval);
+		return new FishCell(this.getState(), coords, this.getConfig(), this.getSimulation());
 	}
 	
 	protected void move() {
@@ -49,7 +45,7 @@ public class FishCell extends Cell {
 	}
 	
 	protected void reproduce() {
-		if(breedTimer >= breedInterval) {
+		if(breedTimer >= ((PredatorPreyDoc)this.getConfig()).getFishBreedInterval()) {
 			Cell empty = findNeighborOfGivenState(Cell.DEFAULT_STATE);
 			if(empty != null) {
 				Cell replacement = getOffspring(empty.getCoords());

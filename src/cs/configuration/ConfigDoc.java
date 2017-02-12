@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
 import cs.model.Cell;
 import cs.model.Point;
-import cs.model.Rule;
-import cs.model.Triple;
 
 public class ConfigDoc {
-	public static final String SIM_TYPE_DEFAULT = "Default";
-	public static final String SIM_TYPE_MOVING = "MovingSim";
+	public static final String SIM_TYPE_GAME_OF_LIFE = "GameOfLifeSim";
+	public static final String SIM_TYPE_FIRE_SPREAD = "FireSpreadSim";
+	public static final String SIM_TYPE_SEGREGATION = "SegregationSim";
 	public static final String SIM_TYPE_PRED_PREY = "PredatorPreySim";
 	
 	public static final String GRID_SHAPE_SQUARE = "Square";
@@ -28,10 +25,8 @@ public class ConfigDoc {
 	public static final String INIT_STYLE_RAND = "Random";
 	public static final String INIT_STYLE_PROB = "Probability";
 	
-	
-	
 	private XMLReader myReader;
-	private MapMaker myMapMaker;
+	private XMLHelper myHelper;
 	
 	private String mySimName;
 	private String myGridShape;
@@ -41,16 +36,16 @@ public class ConfigDoc {
 	private int myGridWidth;
 	private int myGridHeight;
 	
-	private Rule myRule;
+	private Collection<Point> myNeighborOffsets;
 	private List<Double> myInitialDensities;
 	
 	public ConfigDoc(XMLReader reader) throws XMLException {
 		myReader = reader;
-		myMapMaker = new MapMaker();
+		myHelper = new XMLHelper();
 		
 		this.initParams();
 		this.initDensities();
-		this.initRule();
+		this.initNeighbors();
 	}
 	
 	protected XMLReader getReader() {
@@ -117,35 +112,15 @@ public class ConfigDoc {
 		}
 	}
 	
-	private void initRule() throws XMLException {
-    	Map<Triple,Integer> myNextStateMap;
-    	Map<Integer, Double> transitionProbabilities;
-    	Collection<Point> myNeighborOffsets;
-    	
+	private void initNeighbors() {
     	try {
-    		String nsmFullText = myReader.getString("nextStateMap", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-    		myNextStateMap = myMapMaker.getNextStateMap(nsmFullText);
-    	} catch(XMLException e) {
-    		myNextStateMap = null;
-    	}
-    	
-    	try {
-        	String probFullText = myReader.getString("transitionProbabilitiesMap", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-    		transitionProbabilities = myMapMaker.getProbabilitiesMap(probFullText);
-    	} catch(XMLException e) {
-    		transitionProbabilities = null;
-    	}
-    	
-    	try {
-    		String noFullText = myReader.getString("neighborOffsets", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-    		myNeighborOffsets = myMapMaker.getNeighborOffsets(noFullText);
+    		String fullText = myReader.getString("neighborOffsets", XMLReader.FIRST_OCCURRENCE_IN_FILE);
+    		myNeighborOffsets = myHelper.getNeighborOffsets(fullText);
     	} catch(XMLException e) {
     		//TODO: fix this
     		Point[] defaultNeighbors = new Point[]{new Point(0,1), new Point(0,-1), new Point(1,0), new Point(-1,0)};
     		myNeighborOffsets = Arrays.asList(defaultNeighbors);
     	}
-    	
-    	myRule = new Rule(this, myNeighborOffsets, transitionProbabilities, myNextStateMap);
 	}
 	
 	public String getSimulationName() {
@@ -172,8 +147,8 @@ public class ConfigDoc {
     public int getGridHeight() {
     	return myGridHeight;
     }
-    public Rule getRule() {
-    	return myRule;
+    public Collection<Point> getNeighborOffsets() {
+    	return myNeighborOffsets;
     }
     public Double getInitialStateDensity(int state) {
     	return myInitialDensities.get(state);
@@ -207,26 +182,18 @@ public class ConfigDoc {
     	return params;
     }
     
-    public String getRuleAsXML() {
-    	String rule = "";
-    	rule += formatAsXMLList("nextStateMap", "ns");
-    	rule += formatAsXMLList("transitionProbabilitiesMap", "prob");
-    	rule += formatAsXMLList("neighborOffsets", "nbr");
-    	return rule;
-    }
-    
-    private String formatAsXMLList(String listTag, String elemTag) {
-    	String result = String.format("\t<%s>\n", listTag);
+    public String getNeighborsAsXML() {
+    	String result = "\t<neighborOffsets>\n";
     	try {
-    		String fullText = myReader.getString(listTag, XMLReader.FIRST_OCCURRENCE_IN_FILE);
+    		String fullText = myReader.getString("neighborOffsets", XMLReader.FIRST_OCCURRENCE_IN_FILE);
     		String[] lines = fullText.trim().replaceAll("[\t]", "").split("[\n]");
     		for(String s : lines) {
-    			result += formatWithXMLTags(elemTag,s);
+    			result += formatWithXMLTags("nbr",s);
     		}
     	} catch(XMLException e) {
-    		//Ignore. In this case there is nothing in the file to reproduce
+    		//TODO: make neighbors from list
     	}
-    	result += String.format("\t</%s>\n", listTag);
+    	result += "\t</neighborOffsets>\n";
     	return result;
     }
     

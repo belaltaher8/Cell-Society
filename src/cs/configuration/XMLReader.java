@@ -15,7 +15,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import cs.configuration.configs.FireDoc;
 import cs.configuration.configs.PredatorPreyDoc;
+import cs.configuration.configs.SegregationDoc;
 
 
 public class XMLReader {
@@ -49,24 +51,14 @@ public class XMLReader {
         }
     }
     
-    public void writeToFile(String params, String rule, String states) throws XMLException {
-    	Writer writer = null;
-    	try  {
-    		writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(System.getProperty("user.dir") + "/data/snapshot.xml"), "utf-8"));
-    		writer.write(formatAsXMLDoc(params, rule, states));
-    	} catch(IOException e) {
-    		throw new XMLException(e);
-    	} finally {
-    		if(writer != null) {
-    			try {writer.close();} catch(IOException e) {/*ignore exception*/}
-    		}
-    	}
-    }
-    
     public ConfigDoc getConfigDoc() throws XMLException {
     	//ugly if-statement to choose what kind of ConfigDoc to return
     	if(mySimType.equals(ConfigDoc.SIM_TYPE_PRED_PREY)){
     		return new PredatorPreyDoc(this);
+    	} else if(mySimType.equals(ConfigDoc.SIM_TYPE_FIRE_SPREAD)) {
+    		return new FireDoc(this);
+    	} else if(mySimType.equals(ConfigDoc.SIM_TYPE_SEGREGATION)) {
+    		return new SegregationDoc(this);
     	} else {
     		return new ConfigDoc(this);
     	}
@@ -99,8 +91,18 @@ public class XMLReader {
     	throw new XMLException("XMLReader could not find the simulation parameter: %s", tag);
     }
     
-    private boolean isValidDataFile(Element root) {
-    	return root.getAttribute("type").equals("CellSociety");
+    public void writeToFile(String params, String neighbors, String states) throws XMLException {
+    	Writer writer = null;
+    	try  {
+    		writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(System.getProperty("user.dir") + "/data/snapshot.xml"), "utf-8"));
+    		writer.write(formatAsXMLDoc(params, neighbors, states));
+    	} catch(IOException e) {
+    		throw new XMLException(e);
+    	} finally {
+    		if(writer != null) {
+    			try {writer.close();} catch(IOException e) {/*TODO:can ignore?*/}
+    		}
+    	}
     }
     
     private String formatAsXMLDoc(String params, String rule, String gridStates) {
@@ -119,6 +121,10 @@ public class XMLReader {
     
     private String formatAsXMLElement(String tag, String contents) {
     	return String.format("\n\t<%s>\n%s\t</%s>\n\n", tag, contents, tag);
+    }
+    
+    private boolean isValidDataFile(Element root) {
+    	return root.getAttribute("type").equals("CellSociety");
     }
     
     private static DocumentBuilder getDocumentBuilder() throws RuntimeException {

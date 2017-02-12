@@ -3,7 +3,7 @@
 	<general>
 		<SIM_NAME>Segregation</SIM_NAME>
 		<NUM_STATES>3</NUM_STATES>
-		<SIM_TYPE>MovingSim</SIM_TYPE>
+		<SIM_TYPE>SegregationSim</SIM_TYPE>
 		<GRID_SHAPE>Square</GRID_SHAPE>
 		<GRID_EDGE>Finite</GRID_EDGE>
 		<INIT_STYLE>Random</INIT_STYLE>
@@ -12,6 +12,7 @@
 	</general>
 
 	<simiulation_specific>
+		<PERCENT_TOLERANCE>0.25</PERCENT_TOLERANCE>>
 	</simiulation_specific>
 
 	<initialGridStates>
@@ -21,20 +22,10 @@
 		<INITIAL_STATE_0_0></INITIAL_STATE_0_0>			
 	</initialGridStates>
 	
-	<Rule>
-		<nextStateMap>
-			<ns>(1,2,2) -> 0</ns>
-			<ns>(1,2,3) -> 0</ns>
-			<ns>(1,2,4) -> 0</ns>
-			<ns>(2,1,2) -> 0</ns>
-			<ns>(2,1,3) -> 0</ns>
-			<ns>(2,1,4) -> 0</ns>
-		</nextStateMap>
-		<neighborOffsets>
-			<nbr>(1,0)</nbr>
-			<nbr>(0,1)</nbr>
-			<nbr>(0,-1)</nbr>
-			<nbr>(-1,0)</nbr>
-		</neighborOffsets>
-	</Rule>
+	<neighborOffsets>
+		<nbr>(1,0)</nbr>
+		<nbr>(0,1)</nbr>
+		<nbr>(0,-1)</nbr>
+		<nbr>(-1,0)</nbr>
+	</neighborOffsets>
 </data>
