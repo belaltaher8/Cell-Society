@@ -25,6 +25,8 @@ public class ConfigDoc {
 	public static final String INIT_STYLE_RAND = "Random";
 	public static final String INIT_STYLE_PROB = "Probability";
 	
+	public static final String TURN_OFF_GRID_LINES = "Hide";
+	
 	private XMLReader myReader;
 	private XMLHelper myHelper;
 	
@@ -32,9 +34,9 @@ public class ConfigDoc {
 	private String myGridShape;
 	private String myGridEdge;
 	private String myInitializationStyle;
-	private int myNumStates;
 	private int myGridWidth;
 	private int myGridHeight;
+	private boolean myGridLinesEnabled;
 	
 	private Collection<Point> myNeighborOffsets;
 	private List<Double> myInitialDensities;
@@ -44,7 +46,6 @@ public class ConfigDoc {
 		myHelper = new XMLHelper();
 		
 		this.initParams();
-		this.initDensities();
 		this.initNeighbors();
 	}
 	
@@ -53,13 +54,6 @@ public class ConfigDoc {
 	}
 	
 	protected void initParams() throws XMLException {
-		try {
-			myNumStates = myReader.getInt("NUM_STATES", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-		} catch(XMLException e) {
-			myNumStates = 0;
-			throw new XMLException("Unspecified number of cell states for this simulation in the XML file.", e);
-		}
-			
 		try {
 			mySimName = myReader.getString("SIM_NAME", XMLReader.FIRST_OCCURRENCE_IN_FILE);
 		} catch(XMLException e) {
@@ -86,28 +80,31 @@ public class ConfigDoc {
 		
 		try {
 			myGridWidth = myReader.getInt("GRID_WIDTH", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-		} catch(XMLException e) {
+		} catch(XMLException | NumberFormatException e) {
 			myGridWidth = 50;
 		}
 		
 		try {
 			myGridHeight = myReader.getInt("GRID_HEIGHT", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-		} catch(XMLException e) {
+		} catch(XMLException | NumberFormatException e) {
 			myGridHeight = 50;
+		}
+		
+		try {
+			String gridLines = myReader.getString("GRID_LINES", XMLReader.FIRST_OCCURRENCE_IN_FILE);
+			myGridLinesEnabled = !gridLines.equals(TURN_OFF_GRID_LINES);
+		} catch(XMLException e) {
+			myGridLinesEnabled = true;
 		}
 	}
 	
-	private void initDensities() throws XMLException {
+	private void initDensities(int numStates) {
 		myInitialDensities = new ArrayList<Double>();
-		for(int state = 0; state < myNumStates; state++) {
+		for(int state = 0; state < numStates; state++) {
 			try {
 				myInitialDensities.add(myReader.getDouble(String.format("DENSITY_STATE_%d", state), XMLReader.FIRST_OCCURRENCE_IN_FILE));
 			} catch(XMLException | NumberFormatException e) {
-				if(myInitializationStyle.equals("Probability")) {
-					throw new XMLException("Unspecified population densities in the XML file.",e);
-				} else {
-					myInitialDensities.add(0.0);
-				}
+				myInitialDensities.add(0.0);
 			}
 		}
 	}
@@ -129,9 +126,6 @@ public class ConfigDoc {
     public String getSimType() {
     	return myReader.getSimType();
     }
-    public int getNumStates() {
-    	return myNumStates;
-    }
     public String getGridShape() {
     	return myGridShape;
     }
@@ -151,7 +145,13 @@ public class ConfigDoc {
     	return myNeighborOffsets;
     }
     public Double getInitialStateDensity(int state) {
+    	if(myInitialDensities == null || !myInitialDensities.contains(state)){
+    		this.initDensities(state + 1);
+    	}
     	return myInitialDensities.get(state);
+    }
+    public boolean hasGridLines() {
+    	return myGridLinesEnabled;
     }
     
     public void setGridWidth(int width) {
@@ -166,8 +166,11 @@ public class ConfigDoc {
     public void setGridShape(String shape) {
     	myGridShape = shape;
     }
+    public void setGridLines(boolean show) {
+    	myGridLinesEnabled = show;
+    }
     
-    public int getInitialStateAt(Point point) {
+    public int getInitialStateAt(Point point, int numStates) {
     	int state;
     	try {
     		state = myReader.getInt(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);
@@ -175,7 +178,7 @@ public class ConfigDoc {
     		state = Cell.DEFAULT_STATE;
     	}
     	
-    	if(state < Cell.DEFAULT_STATE || state >= myNumStates) {
+    	if(state < Cell.DEFAULT_STATE || state >= numStates) {
     		state = Cell.DEFAULT_STATE;
     	}
     	
@@ -186,7 +189,6 @@ public class ConfigDoc {
     	String params = "";
     	params += formatWithXMLTags("SIM_NAME", mySimName);
     	params += formatWithXMLTags("SIM_TYPE", this.getSimType());
-    	params += formatWithXMLTags("NUM_STATES", Integer.toString(myNumStates));
     	params += formatWithXMLTags("GRID_SHAPE", myGridShape);
     	params += formatWithXMLTags("GRID_EDGE", myGridEdge);
     	params += formatWithXMLTags("INIT_STYLE", INIT_STYLE_SPECIFIC);

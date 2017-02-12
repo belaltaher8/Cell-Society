@@ -46,7 +46,7 @@ public abstract class Simulation {
 		for(int x = 0; x < myConfig.getGridWidth(); x++) {
 			for(int y = 0; y < myConfig.getGridHeight(); y++) {
 				Point point = new Point(x, y);
-				int randomState = myRand.nextInt(myConfig.getNumStates());
+				int randomState = myRand.nextInt(this.getNumStates());
 				Cell cell = placeCell(randomState, point);
 				myGrid.put(point, cell);
 			}
@@ -144,12 +144,12 @@ public abstract class Simulation {
 		}
 		
 		if(myConfig.getInitializationStyle().equals(ConfigDoc.INIT_STYLE_SPECIFIC)) {
-			return myConfig.getInitialStateAt(point);
+			return myConfig.getInitialStateAt(point, this.getNumStates());
 		} else if(myConfig.getInitializationStyle().equals(ConfigDoc.INIT_STYLE_PROB)) {
 			int result = Cell.DEFAULT_STATE;
 			double rand = myRand.nextDouble();
 			double threshold = 0.0;
-			for(int state = 0; state < myConfig.getNumStates(); state++) {
+			for(int state = 0; state < this.getNumStates(); state++) {
 				threshold += myConfig.getInitialStateDensity(state);
 				if(rand <= threshold) {
 					result = state;
@@ -158,7 +158,7 @@ public abstract class Simulation {
 			}
 			return result;
 		} else {
-			return myRand.nextInt(myConfig.getNumStates());
+			return myRand.nextInt(this.getNumStates());
 		}
 	}
 	

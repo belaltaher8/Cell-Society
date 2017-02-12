@@ -2,10 +2,10 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Fire Spreading</SIM_NAME>
-		<NUM_STATES>3</NUM_STATES>
 		<SIM_TYPE>FireSpreadSim</SIM_TYPE>
 		<GRID_SHAPE>Triangle</GRID_SHAPE>
 		<GRID_EDGE>Toroidal</GRID_EDGE>
+		<GRID_LINES>Hide</GRID_LINES>
 		<INIT_STYLE>Specific</INIT_STYLE>
 		<GRID_WIDTH>45</GRID_WIDTH>
 		<GRID_HEIGHT>45</GRID_HEIGHT>

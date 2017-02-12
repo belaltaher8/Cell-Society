@@ -20,6 +20,7 @@ import cs.model.sims.PredatorPreySim;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.Chart;
 import javafx.scene.control.Alert;
@@ -226,22 +227,27 @@ public class GUIController {
         return alert.showAndWait().get();
 	}
 	
-	private void detachDisplay() {
+	private void detachGridDisplay() {
 		myGridPane.getChildren().remove(myGridDisplay.getGridView()); 
+	}
+	private void attachGridDisplay() {
+		myGridPane.getChildren().add(myGridDisplay.getGridView()); 
+	}
+	private void detachControlsDisplay() {
 		myControlPane.getChildren().remove(myControlDisplay.getControlView());
 	}
-	
-	private void attachDisplay() {
-		myGridPane.getChildren().add(myGridDisplay.getGridView()); 
+	private void attachControlsDisplay() {
 		myControlPane.getChildren().add(myControlDisplay.getControlView());
 	}
 	
 	public void loadNewFile() {
 		animation.stop();
 		animationSpeed = DEFAULT_ANIMATION_SPEED;
-		detachDisplay();
+		detachGridDisplay();
+		detachControlsDisplay();
 		resetAll();
-		attachDisplay();
+		attachGridDisplay();
+		attachControlsDisplay();
 	}
 	
 	public void saveSnapshot() {
@@ -293,13 +299,18 @@ public class GUIController {
 	public void updateGridShapeType(String shape) {
 		myConfigDoc.setGridShape(shape);
 		try {
-			myGridPane.getChildren().remove(myGridDisplay.getGridView()); 
+			detachGridDisplay();
 			myGridDisplay = makeGridDisplay(mySimulation, myConfigDoc);
-			myGridPane.getChildren().add(myGridDisplay.getGridView()); 
+			attachGridDisplay();
 		} catch(XMLException e) {
 			/*Ignore. Since this value is set by a ComboBox, it's impossible to specify an invalid shape */
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public void toggleGridLines(boolean show) {
+		myConfigDoc.setGridLines(show);
+		myGridDisplay.drawGridDisplay();
 	}
 	
 	public void stepAnimation() {
