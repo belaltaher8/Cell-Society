@@ -1,4 +1,6 @@
 package cs.view;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import cs.configuration.ConfigDoc;
@@ -23,16 +25,33 @@ public class GridDisplay {
 	private ResourceBundle myResources; 
 	private Simulation myGrid; 
 	private ConfigDoc myConfig;
-
+	
+	private HashMap <Integer, Integer> stateCounts; // map of each state to number of cells in that state 
+	
 	
 	public GridDisplay(Simulation grid, ConfigDoc config){
 		gridRoot = new Group();
 		myGrid = grid;
 		myConfig = config;
-		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "CellColors");
+		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "CellColors");	
 		drawGridDisplay();
 	}
-	
+	public Map<Integer, Integer> getStateMap(){
+		return stateCounts; 
+	}
+	private void initializeStateCounts() {
+		stateCounts = new HashMap<Integer, Integer>(); 
+		int numStates = myConfig.getNumStates(); 
+		// initialize hashMap keys to zero
+		for (int i=0; i<numStates; i++){
+			if (!stateCounts.containsKey(i)){
+				stateCounts.put(i, 0);
+			}
+		}
+		
+
+	}
+
 	protected Group getGridRoot(){
 		return gridRoot;
 	}
@@ -51,6 +70,7 @@ public class GridDisplay {
 	
 	protected void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
+		initializeStateCounts(); 
 		int cellWidth = DISPLAY_WIDTH/myConfig.getGridWidth(); 
 		int cellHeight = DISPLAY_HEIGHT/myConfig.getGridHeight();
 		
@@ -58,10 +78,16 @@ public class GridDisplay {
 			for (int y = 0; y < myConfig.getGridHeight(); y++){
 				Point p = new Point(x,y);
 				Cell c = myGrid.getCellAtPoint(p);
+				updateStateCounts(c);
 				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
 				gridRoot.getChildren().add(gridCell);
 			}
 		}
+	}
+
+	private void updateStateCounts(Cell c) {
+		int currentCount = stateCounts.get(c.getState());
+		stateCounts.put(c.getState(), currentCount+1);
 	}
 
 	/**
