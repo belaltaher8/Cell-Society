@@ -21,6 +21,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.chart.Chart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -44,6 +45,9 @@ public class GUIController {
 	public static final int SCENE_HEIGHT = 800; 
 	public static final int CONTROLS_HEIGHT = 200; 
 	
+	public static final int GRAPH_WIDTH = 600; 
+	public static final int GRAPH_HEIGHT = 200; 
+	
 	private ResourceBundle myResources; 
 	
 	private XMLReader myXMLReader;
@@ -51,19 +55,33 @@ public class GUIController {
 	private Simulation mySimulation;
 	private GridDisplay myGridDisplay; 
 	private ControlDisplay myControlDisplay;
+	private GraphDisplay myGraphDisplay; 
+	
+	private Chart myGraph; 
 	
 	private Timeline animation; 
 	private Stage myStage;
+	private Stage graphStage; 
 	private Pane myGridPane;
 	private Pane myControlPane;
 	private double animationSpeed; 
+	
+	private int stepCount; 
 
 	public GUIController(Stage primaryStage){
 		myStage = primaryStage;
 		animationSpeed = DEFAULT_ANIMATION_SPEED; 
 		configureAnimation();
-		
+	
 		resetAll();
+		
+		graphStage = new Stage();
+		Scene graphScene = configureGraphScene(); 
+		graphStage.setTitle("Graph"); // GET FROM RESOURCE BUNDLE 
+		graphStage.setScene(graphScene);
+		graphStage.show();
+		
+		stepCount = 0; 
 		
 		Scene mainScene = configureScene();
 		primaryStage.setTitle(myConfigDoc.getSimulationName());
@@ -71,14 +89,23 @@ public class GUIController {
 		primaryStage.show();
 	} 
 	
+	private Scene configureGraphScene() {
+		Group graphView = new Group(); 
+		graphView.getChildren().add(myGraph);
+		Scene graph = new Scene(graphView, GRAPH_WIDTH, GRAPH_HEIGHT);
+		return graph;	
+	}
+
 	private void resetAll() {
 		try {
 			File xmlFile = promptForFile(myStage);
 			myXMLReader = makeXMLReader(xmlFile);
 			myConfigDoc = makeConfigDoc(myXMLReader);
 			mySimulation = makeSimulation(myConfigDoc);
-			myGridDisplay = makeGridDisplay(mySimulation, myConfigDoc);
-			myControlDisplay = makeControlDisplay(myConfigDoc, this);
+			myGridDisplay = new GridDisplay(mySimulation, myConfigDoc);
+			myControlDisplay = new ControlDisplay(myConfigDoc, this);
+			myGraphDisplay = new GraphDisplay(myGridDisplay);
+			myGraph = myGraphDisplay.getChart();
 		} catch(XMLException e) {
 			resetAll();
 		}
@@ -276,7 +303,10 @@ public class GUIController {
 	}
 	
 	public void stepAnimation() {
+		stepCount++; 
 		myGridDisplay.step();
+		myGraphDisplay.createGraph(myGridDisplay, stepCount);
+		myGraph = myGraphDisplay.getChart();
 	}
 
 	public void stopAnimation() {
