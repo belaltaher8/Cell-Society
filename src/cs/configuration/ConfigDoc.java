@@ -163,6 +163,9 @@ public class ConfigDoc {
     public void setGridEdge(String type) {
     	myGridEdge = type;
     }
+    public void setGridShape(String shape) {
+    	myGridShape = shape;
+    }
     
     public int getInitialStateAt(Point point) {
     	int state;

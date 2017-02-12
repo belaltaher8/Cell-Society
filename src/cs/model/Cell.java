@@ -35,8 +35,7 @@ public class Cell {
 	public Collection<Point> getNeighborCoords() {
 		Collection<Point> neighbors = new ArrayList<Point>();
 		for(Point offset : myConfig.getNeighborOffsets()) {
-			Point neighbor = new Point(myCoords.getX() + offset.getX(),
-									   myCoords.getY() + offset.getY());
+			Point neighbor = this.applyOffset(offset);
 			
 			if(isWithinXBounds(neighbor) && isWithinYBounds(neighbor)) {
 				neighbors.add(neighbor);
@@ -66,6 +65,18 @@ public class Cell {
 	
 	protected Simulation getSimulation() {
 		return mySim;
+	}
+	
+	private Point applyOffset(Point offset) {
+		if(myConfig.getGridShape().equals(ConfigDoc.GRID_SHAPE_TRIANGLE)) {
+			if(((myCoords.getX() + myCoords.getY()) % 2) == 0) {
+				return new Point(myCoords.getX() + offset.getX(),myCoords.getY() - offset.getY());
+			} else {
+				return new Point(myCoords.getX() + offset.getX(),myCoords.getY() + offset.getY());
+			}
+		} else {
+			return new Point(myCoords.getX() + offset.getX(),myCoords.getY() - offset.getY());
+		}
 	}
 	
 	/**
