@@ -38,7 +38,7 @@ public class GUIController {
 	public static final String DATA_FILE_EXTENSION = "*.xml";
 
 	public static final double SPEED_UP_FACTOR = 2.0;
-	public static final double DEFAULT_ANIMATION_SPEED = 250;
+	public static final double DEFAULT_ANIMATION_SPEED = 275;
 	
 	public static final int SCENE_WIDTH = 600; 
 	public static final int SCENE_HEIGHT = 800; 
@@ -77,7 +77,7 @@ public class GUIController {
 			myXMLReader = makeXMLReader(xmlFile);
 			myConfigDoc = makeConfigDoc(myXMLReader);
 			mySimulation = makeSimulation(myConfigDoc);
-			myGridDisplay = new TriangleDisplay(mySimulation, myConfigDoc);
+			myGridDisplay = makeGridDisplay(mySimulation, myConfigDoc);
 			myControlDisplay = new ControlDisplay(myConfigDoc, this);
 		} catch(XMLException e) {
 			resetAll();
@@ -92,8 +92,8 @@ public class GUIController {
 		if(dataFile != null) {
 			return dataFile;
 		} else {
-			//TODO: clean this up
-			ButtonType response = alertAndWait("Error","No file selected. Press OK to choose another file.");
+			//TODO: resource pack
+			ButtonType response = alertAndWait("Error","No file selected. Press OK to choose another file or Cancel to exit.");
 	        if(response == ButtonType.OK) {
 	        	return promptForFile(primaryStage);
 	        } else {
@@ -141,6 +141,18 @@ public class GUIController {
 	        throw new XMLException("Invalid simulation type specified in the XML input file.");
 		}
 	}
+	
+	private GridDisplay makeGridDisplay(Simulation sim, ConfigDoc config) throws XMLException {
+		if(config.getGridShape().equals(ConfigDoc.GRID_SHAPE_SQUARE)){
+			return new GridDisplay(sim, config);
+		} else if(config.getGridShape().equals(ConfigDoc.GRID_SHAPE_TRIANGLE)) {
+			return new TriangleDisplay(sim,config);
+		} else {
+			//TODO: use resource pack
+			alertAndWait("Error", "Invalid grid shape specified in the XML input file.");
+	        throw new XMLException("Invalid grid shape specified in the XML input file.");
+		}
+	}
 
 	private void configureAnimation() {
 		animation = new Timeline();
@@ -184,45 +196,61 @@ public class GUIController {
 	}
 	
 	public void loadNewFile() {
-		System.out.println("hi");
 		animation.stop();
 		animationSpeed = DEFAULT_ANIMATION_SPEED;
 		myGridPane.getChildren().remove(myGridDisplay.getGridView()); 
+		myControlPane.getChildren().remove(myControlDisplay.getControlView());
 		resetAll();
 		myGridPane.getChildren().add(myGridDisplay.getGridView()); 
+		myControlPane.getChildren().add(myControlDisplay.getControlView());
 	}
 	
 	public void saveSnapshot() {
-		myXMLReader.writeToFile(myConfigDoc.getParamsAsXML(), myConfigDoc.getNeighborsAsXML(), mySimulation.getContentsAsXML());
+		try {
+			myXMLReader.writeToFile(myConfigDoc.getParamsAsXML(), myConfigDoc.getNeighborsAsXML(), mySimulation.getContentsAsXML());
+		} catch(XMLException e) {
+			alertAndWait("Error", String.format("Encountered I/O exception while attempting to write the file: ", e.getMessage()));
+		}
 	}
 	
 	public void randomizeGrid() {
-		animation.stop();
-		myGridDisplay.randomizeGrid();
+		animation.pause();
+		mySimulation.randomizeGrid();
+		myGridDisplay.drawGridDisplay();
 	}
 	
 	public void resetGrid() {
-		animation.stop();
-		animationSpeed = DEFAULT_ANIMATION_SPEED;
-		configureAnimation();
-		myGridDisplay.reset();
+		animation.pause();
+		mySimulation.reset();
+		myGridDisplay.drawGridDisplay();
 	}
 	
-	public void speedAnimation() {
+	public void speedAnimation(double value) {
 		boolean wasPlaying = animation.getCurrentRate() > 0;
 		animation.pause();
-		animationSpeed = myControlDisplay.getAnimationSpeed() * -10 + 1050;
+		animationSpeed = value * -3 + 350;
 		configureAnimation();
 		if(wasPlaying) {
 			animation.play();
 		}
 	}
 	
-	public void updateParameters(int width, int height) {
+	public void updateWidth(int width) {
+		animation.pause();
 		myConfigDoc.setGridWidth(width);
+		mySimulation.buildGrid();
+		myGridDisplay.drawGridDisplay();
+	}
+	
+	public void updateHeight(int height) {
+		animation.pause();
 		myConfigDoc.setGridHeight(height);
-		mySimulation.reset();
-		myGridDisplay.reset();
+		mySimulation.buildGrid();
+		myGridDisplay.drawGridDisplay();
+	}
+	
+	public void updateGridEdgeType(String type) {
+		myConfigDoc.setGridEdge(type);
 	}
 	
 	public void stepAnimation() {
