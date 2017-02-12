@@ -83,6 +83,16 @@ public class Simulation {
 		swapPairs.add(new Cell[] {a,b});
 	}
 	
+	public String getContentsAsXML() {
+		String contents = "";
+		for(Cell c : myGrid.values()) {
+			String tag = String.format("INITIAL_STATE_%s_%s", c.getCoords().getX(), c.getCoords().getY());
+			String state = Integer.toString(c.getState());
+			contents += myConfig.formatWithXMLTags(tag, state);
+		}
+		return contents;
+	}
+	
 	private void swapCells(Cell a, Cell b) {
 		Point pointA = a.getCoords();
 		Point pointB = b.getCoords();

@@ -3,12 +3,13 @@ package cs.view;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-import cs.configuration.PredatorPreyDoc;
 import cs.configuration.ConfigDoc;
 import cs.configuration.XMLException;
 import cs.configuration.XMLReader;
+import cs.configuration.configs.PredatorPreyDoc;
 import cs.model.Simulation;
 import cs.model.sims.MovingSim;
 import cs.model.sims.PredatorPreySim;
@@ -87,9 +88,8 @@ public class GUIController{
 			return dataFile;
 		} else {
 			//TODO: clean this up
-			Alert alert = new Alert(AlertType.ERROR, "No file selected. Press OK to choose another file.",ButtonType.OK, ButtonType.CANCEL);
-	        alert.setTitle("Error");
-	        if(alert.showAndWait().get() == ButtonType.OK) {
+			ButtonType response = alertAndWait("Error","No file selected. Press OK to choose another file.");
+	        if(response == ButtonType.OK) {
 	        	return promptForFile(primaryStage);
 	        } else {
 	        	//TODO: solve this in a better way
@@ -100,31 +100,27 @@ public class GUIController{
 		}
 	}
 	
-	private XMLReader makeXMLReader(File file) {
+	private XMLReader makeXMLReader(File file) throws XMLException {
 		try {
 			return new XMLReader(file);
 		} catch(XMLException e) {
-			//TODO: clean this up
-			Alert alert = new Alert(AlertType.ERROR, String.format("Error constructing the XML parser: %s", e.getMessage()),ButtonType.OK, ButtonType.CANCEL);
-	        alert.setTitle("Error");
-	        alert.showAndWait();
+			//TODO: use resource pack
+			alertAndWait("Error",  String.format("Error constructing the XML parser: %s", e.getMessage()));
 	        throw e;
 		}
 	}
 	
-	private ConfigDoc makeConfigDoc(XMLReader reader) {
+	private ConfigDoc makeConfigDoc(XMLReader reader) throws XMLException {
 		try {
 			return reader.getConfigDoc();
 		} catch(XMLException e) {
-			//TODO: clean this up
-			Alert alert = new Alert(AlertType.ERROR, String.format("Error parsing the XML configuration parameters : %s", e.getMessage()),ButtonType.OK, ButtonType.CANCEL);
-	        alert.setTitle("Error");
-	        alert.showAndWait();
+			//TODO: use resource pack
+			alertAndWait("Error", String.format("Error parsing the XML configuration parameters : %s", e.getMessage()));
 			throw e;
 		}
 	}
 	
-	private Simulation makeSimulation(ConfigDoc config) {
+	private Simulation makeSimulation(ConfigDoc config) throws XMLException {
 		//ugly if-statement to choose what kind of Simulation to return
 		if(config.getSimType().equals(ConfigDoc.SIM_TYPE_DEFAULT)) {
 			return new Simulation(config);
@@ -133,10 +129,8 @@ public class GUIController{
 		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_PRED_PREY)) {
 			return new PredatorPreySim((PredatorPreyDoc)config); 
 		} else {
-			//TODO: clean this up
-			Alert alert = new Alert(AlertType.ERROR, "Invalid simulation type specified in the XML input file.",ButtonType.OK, ButtonType.CANCEL);
-	        alert.setTitle("Error");
-	        alert.showAndWait();
+			//TODO: use resource pack
+			alertAndWait("Error", "Invalid simulation type specified in the XML input file.");
 	        throw new XMLException("Invalid simulation type specified in the XML input file.");
 		}
 	}
@@ -203,6 +197,12 @@ public class GUIController{
 		return controlPane;
 	}
 
+	private ButtonType alertAndWait(String title, String message) {
+		Alert alert = new Alert(AlertType.ERROR, message ,ButtonType.OK, ButtonType.CANCEL);
+        alert.setTitle(title);
+        return alert.showAndWait().get();
+	}
+	
 	private void loadNewFile() {
 		animation.stop();
 		animationSpeed = DEFAULT_ANIMATION_SPEED;
@@ -238,6 +238,7 @@ public class GUIController{
 
 	private void stopAnimation() {
 		animation.pause();
+		//myXMLReader.writeToFile(myConfigDoc.getParamsAsXML(), myConfigDoc.getRuleAsXML(), mySimulation.getContentsAsXML());
 	}
 
 	private void animate() {

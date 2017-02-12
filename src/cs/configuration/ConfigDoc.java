@@ -193,4 +193,44 @@ public class ConfigDoc {
     	
     	return state;
     }
+    
+    public String getParamsAsXML() {
+    	String params = "";
+    	params += formatWithXMLTags("SIM_NAME", mySimName);
+    	params += formatWithXMLTags("SIM_TYPE", this.getSimType());
+    	params += formatWithXMLTags("NUM_STATES", Integer.toString(myNumStates));
+    	params += formatWithXMLTags("GRID_SHAPE", myGridShape);
+    	params += formatWithXMLTags("GRID_EDGE", myGridEdge);
+    	params += formatWithXMLTags("INIT_STYLE", INIT_STYLE_SPECIFIC);
+    	params += formatWithXMLTags("GRID_WIDTH", Integer.toString(myGridWidth));
+    	params += formatWithXMLTags("GRID_HEIGHT", Integer.toString(myGridHeight));
+    	return params;
+    }
+    
+    public String getRuleAsXML() {
+    	String rule = "";
+    	rule += formatAsXMLList("nextStateMap", "ns");
+    	rule += formatAsXMLList("transitionProbabilitiesMap", "prob");
+    	rule += formatAsXMLList("neighborOffsets", "nbr");
+    	return rule;
+    }
+    
+    private String formatAsXMLList(String listTag, String elemTag) {
+    	String result = String.format("\t<%s>\n", listTag);
+    	try {
+    		String fullText = myReader.getString(listTag, XMLReader.FIRST_OCCURRENCE_IN_FILE);
+    		String[] lines = fullText.trim().replaceAll("[\t]", "").split("[\n]");
+    		for(String s : lines) {
+    			result += formatWithXMLTags(elemTag,s);
+    		}
+    	} catch(XMLException e) {
+    		//Ignore. In this case there is nothing in the file to reproduce
+    	}
+    	result += String.format("\t</%s>\n", listTag);
+    	return result;
+    }
+    
+    public String formatWithXMLTags(String tag, String content) {
+    	return String.format("<%s>%s</%s>\n", tag, content, tag);
+    }
 }

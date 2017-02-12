@@ -1,6 +1,6 @@
 package cs.model.sims;
 
-import cs.configuration.PredatorPreyDoc;
+import cs.configuration.configs.PredatorPreyDoc;
 import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;

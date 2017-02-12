@@ -1,4 +1,8 @@
-package cs.configuration;
+package cs.configuration.configs;
+
+import cs.configuration.ConfigDoc;
+import cs.configuration.XMLException;
+import cs.configuration.XMLReader;
 
 public class PredatorPreyDoc extends ConfigDoc {
 
