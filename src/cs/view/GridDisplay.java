@@ -68,7 +68,7 @@ public class GridDisplay {
 	 * creates the grid part of the display where the simulation occurs
 	 */
 	
-	protected void drawGridDisplay(){  
+	public void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
 		initializeStateCounts(); 
 		int cellWidth = DISPLAY_WIDTH/myConfig.getGridWidth(); 
@@ -76,11 +76,11 @@ public class GridDisplay {
 		
 		for (int x = 0; x < myConfig.getGridWidth(); x++){
 			for (int y = 0; y < myConfig.getGridHeight(); y++){
-				Point p = new Point(x,y);
-				Cell c = myGrid.getCellAtPoint(p);
-				updateStateCounts(c);
-				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
-				gridRoot.getChildren().add(gridCell);
+				Cell c = myGrid.getCellAtPoint(new Point(x,y));
+				if(c != null) {
+					Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
+					gridRoot.getChildren().add(gridCell);
+				}
 			}
 		}
 	}
@@ -112,22 +112,6 @@ public class GridDisplay {
 	 */
 	public void step() {
 		myGrid.stepGrid();
-		drawGridDisplay();
-	}
-	
-	/**
-	 * resets grid to original state
-	 */
-	public void reset() {
-		myGrid.reset();
-		drawGridDisplay();
-	}
-	
-	/**
-	 * randomizes the grid 
-	 */
-	public void randomizeGrid() {
-		myGrid.randomizeGrid();
 		drawGridDisplay();
 	}
 }

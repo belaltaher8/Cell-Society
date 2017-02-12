@@ -5,7 +5,7 @@ package cs.configuration;
  * 
  * @author Robert C. Duvall
  */
-public class XMLException extends RuntimeException {
+public class XMLException extends Exception {
     // for serialization
     private static final long serialVersionUID = 1L;
 

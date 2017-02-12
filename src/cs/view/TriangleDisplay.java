@@ -18,50 +18,53 @@ public class TriangleDisplay extends GridDisplay{
 	// lot of duplicated code, figure out refactor for this
 
 	@Override
-	protected void drawGridDisplay(){
+	public void drawGridDisplay(){
 		this.getGridRoot().getChildren().clear(); 
 
 		int cellWidth = GridDisplay.DISPLAY_WIDTH / ((this.getConfig().getGridWidth()/2)+1); 
 		int cellHeight = GridDisplay.DISPLAY_HEIGHT / this.getConfig().getGridHeight();
 		
-		for (int y = 0; y < this.getConfig().getGridHeight(); y++){
-			for (int x = 0; x < this.getConfig().getGridWidth(); x++){
+		for (int x = 0; x < this.getConfig().getGridWidth(); x++){
+			for (int y = 0; y < this.getConfig().getGridHeight(); y++){
 				Cell c = this.getGrid().getCellAtPoint(new Point(x,y));
-				ArrayList<GUIPoint> trianglePoints = createTriangleCoordinates(new Point(x,y), cellWidth, cellHeight);
-				Triangle myTriangle = new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2));
-				Shape gridCell = setColor(myTriangle.getTriangle(),c);
-				this.getGridRoot().getChildren().add(gridCell);
+				if(c != null) {
+					ArrayList<GUIPoint> trianglePoints = createTriangleCoordinates(new Point(x,y), cellWidth, cellHeight);
+					Triangle myTriangle = new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2));
+					Shape gridCell = setColor(myTriangle.getTriangle(),c);
+					this.getGridRoot().getChildren().add(gridCell);
+				}
 			}
 		}
 	}
 
 	private ArrayList<GUIPoint> createTriangleCoordinates(Point point, int width, int height) {
 		ArrayList<GUIPoint> triangleCoords = new ArrayList<GUIPoint>(); 
-		int x = point.getX(); 
-		int y = point.getY(); 
+		//Flip x and y intentionally to make the math work
+		int x = point.getY(); 
+		int y = point.getX(); 
 		GUIPoint p1 = new GUIPoint();
 		GUIPoint p2 = new GUIPoint(); 
 		GUIPoint p3 = new GUIPoint(); 
-		if (point.getX()%2==0 && (point.getX()+point.getY())%2==0){
+		if (x%2==0 && (x+y)%2==0){
 			// triangle is in even row and points upwards 
 			p1 = new GUIPoint(((y+1)/2.0)*width, x*height);
 			p2 = new GUIPoint((y/2.0)*width,(x+1)*height);
 			p3 = new GUIPoint(((y/2.0)+1.0)*width, (x+1)*height);	
 		}
-		if (point.getX()%2==0 && (point.getX()+point.getY())%2!=0){
+		if (x%2==0 && (x+y)%2!=0){
 			// triangle is in even row and points downwards
 			p1 = new GUIPoint((y/2.0)*width, x*height); 
 			p2 = new GUIPoint(((y/2.0)+1)*width, x*height);
 			p3 = new GUIPoint((Math.floor(y/2.0)+1)*width, (x+1)*height);
 
 		}
-		if (point.getX()%2!=0 && (point.getX()+point.getY())%2==0){
+		if (x%2!=0 && (x+y)%2==0){
 			// triangle is in odd row and points upwards 
 			p1 = new GUIPoint((y/2.0)*width, (x+1)*height);
 			p2 = new GUIPoint(((y/2.0)+1)*width, (x+1)*height);
 			p3 = new GUIPoint((Math.floor(y/2.0)+1)*width, x*height);
 		}
-		if (point.getX()%2!=0 && (point.getX()+point.getY())%2!=0){
+		if (x%2!=0 && (x+y)%2!=0){
 			// triangle is in odd row and points downwards
 			p1 = new GUIPoint(((y+1)/2.0)*width, (x+1)*height);
 			p2 = new GUIPoint((y/2.0)*width, x*height);
