@@ -49,7 +49,7 @@ public class Cell {
 	public int getState() {
 		return currentState;
 	}
-	protected void setNextState(int state) {
+	public void setNextState(int state) {
 		nextState = state;
 	}
 	public Point getCoords() {

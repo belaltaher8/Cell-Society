@@ -58,7 +58,9 @@ public class GridDisplay {
 			for (int y = 0; y < myConfig.getGridHeight(); y++){
 				Cell c = myGrid.getCellAtPoint(new Point(x,y));
 				if(c != null) {
-					Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);
+					Rectangle r = new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
+					r.setOnMouseClicked(e->this.handleClick(c));
+					Shape gridCell = setColor(r, c);
 					gridRoot.getChildren().add(gridCell);
 				}
 			}
@@ -88,5 +90,15 @@ public class GridDisplay {
 	public void step() {
 		myGrid.stepGrid();
 		drawGridDisplay();
+	}
+	
+	protected void handleClick(Cell c) {
+		int nextState = c.getState() +1;
+		if(nextState >= myConfig.getNumStates()) {
+			nextState = Cell.DEFAULT_STATE;
+		}
+		c.setNextState(nextState);
+		c.advanceState();
+		this.drawGridDisplay();
 	}
 }

@@ -30,6 +30,7 @@ public class TriangleDisplay extends GridDisplay{
 				if(c != null) {
 					ArrayList<GUIPoint> trianglePoints = createTriangleCoordinates(new Point(x,y), cellWidth, cellHeight);
 					Triangle myTriangle = new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2));
+					myTriangle.getTriangle().setOnMouseClicked(e->this.handleClick(c));
 					Shape gridCell = setColor(myTriangle.getTriangle(),c);
 					this.getGridRoot().getChildren().add(gridCell);
 				}
