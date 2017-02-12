@@ -49,7 +49,7 @@ public class Cell {
 	public int getState() {
 		return currentState;
 	}
-	protected void setNextState(int state) {
+	public void setNextState(int state) {
 		nextState = state;
 	}
 	public Point getCoords() {
@@ -88,7 +88,7 @@ public class Cell {
 	 * @return array whose entries are the number of times each state appears 
 	 */
 	protected List<Integer> getStateCounts(Collection<Integer> states) {
-		List<Integer> stateCounts = new ArrayList<Integer>(Collections.nCopies(myConfig.getNumStates(), 0));
+		List<Integer> stateCounts = new ArrayList<Integer>(Collections.nCopies(mySim.getNumStates(), 0));
 		for(Integer st : states) {
 			//Increments the counter for each state
 			stateCounts.set(st, (stateCounts.get(st) + 1));

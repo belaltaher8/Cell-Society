@@ -2,10 +2,10 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Segregation</SIM_NAME>
-		<NUM_STATES>3</NUM_STATES>
 		<SIM_TYPE>SegregationSim</SIM_TYPE>
 		<GRID_SHAPE>Square</GRID_SHAPE>
 		<GRID_EDGE>Finite</GRID_EDGE>
+		<GRID_LINES>true</GRID_LINES>
 		<INIT_STYLE>Random</INIT_STYLE>
 		<GRID_WIDTH>45</GRID_WIDTH>
 		<GRID_HEIGHT>45</GRID_HEIGHT>

@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import cs.configuration.ConfigDoc;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -84,6 +85,7 @@ public class ControlDisplay {
 		Label heightLabel = new Label("Height:");
 		Label edgeLabel = new Label( "Edge: ");
 		Label shapeLabel = new Label(" Shape: ");
+		Label enableLabel = new Label(" Grid: ");
 		
 		final Spinner<Integer> widthSpinner = makeSpinner(1,100,myConfig.getGridWidth());
 		widthSpinner.valueProperty().addListener(e->myController.updateWidth((int)widthSpinner.getValue()));
@@ -92,12 +94,18 @@ public class ControlDisplay {
 		heightSpinner.valueProperty().addListener(e->myController.updateHeight((int)heightSpinner.getValue()));
 		
 		ComboBox<String> edgeSelect = makeComboBox(Arrays.asList(new String[] {ConfigDoc.GRID_EDGE_FINITE,ConfigDoc.GRID_EDGE_TOROIDAL}));
+		edgeSelect.setValue(myConfig.getGridEdge());
 		edgeSelect.valueProperty().addListener(e->myController.updateGridEdgeType(edgeSelect.getValue()));
 		
 		ComboBox<String> shapeSelect = makeComboBox(Arrays.asList(new String[] {ConfigDoc.GRID_SHAPE_SQUARE,ConfigDoc.GRID_SHAPE_TRIANGLE}));
+		shapeSelect.setValue(myConfig.getGridShape());
 		shapeSelect.valueProperty().addListener(e->myController.updateGridShapeType(shapeSelect.getValue()));
 		
-		myInputFieldsRow1.getChildren().addAll(widthLabel, widthSpinner, edgeLabel, edgeSelect, shapeLabel, shapeSelect);
+		CheckBox enableGrid = new CheckBox();
+		enableGrid.setSelected(myConfig.hasGridLines());
+		enableGrid.selectedProperty().addListener(e->myController.toggleGridLines(enableGrid.selectedProperty().get()));
+		
+		myInputFieldsRow1.getChildren().addAll(widthLabel, widthSpinner, edgeLabel, edgeSelect, shapeLabel, shapeSelect, enableLabel, enableGrid);
 		myInputFieldsRow2.getChildren().addAll(heightLabel, heightSpinner);
 	}
 	
@@ -119,7 +127,7 @@ public class ControlDisplay {
 	
 	private ComboBox<String> makeComboBox(List<String> entries) {
 		ComboBox<String> combo = new ComboBox<String>();
-		combo.setPrefWidth(90);
+		combo.setPrefWidth(100);
 		for(String s: entries) {
 			combo.getItems().add(s);
 		}
