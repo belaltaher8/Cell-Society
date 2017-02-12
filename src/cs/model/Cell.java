@@ -10,14 +10,14 @@ public class Cell {
 	private int nextState;
 	private Point myCoords;
 	private Rule myRule;
-	private Simulation myGrid;
+	private Simulation mySim;
 	
-	public Cell(int initialState, Point coordinates, Rule rule, Simulation grid) {
+	public Cell(int initialState, Point coordinates, Rule rule, Simulation simulation) {
 		currentState = initialState;
 		nextState = initialState;
 		myCoords = coordinates;
 		myRule = rule;
-		myGrid = grid;
+		mySim = simulation;
 	}
 	
 	public void advanceState() {
@@ -48,7 +48,7 @@ public class Cell {
 		return myRule;
 	}
 	
-	protected Simulation getGrid() {
-		return myGrid;
+	protected Simulation getSimulation() {
+		return mySim;
 	}
 }

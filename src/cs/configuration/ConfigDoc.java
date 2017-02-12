@@ -12,12 +12,30 @@ import cs.model.Rule;
 import cs.model.Triple;
 
 public class ConfigDoc {
+	public static final String SIM_TYPE_DEFAULT = "Default";
+	public static final String SIM_TYPE_MOVING = "MovingSim";
+	public static final String SIM_TYPE_PRED_PREY = "PredatorPreySim";
+	
+	public static final String GRID_SHAPE_SQUARE = "Square";
+	public static final String GRID_SHAPE_TRIANGLE = "Triangle";
+	public static final String GRID_SHAPE_HEXAGON = "Hexagon";
+	
+	public static final String GRID_EDGE_FINITE = "Finite";
+	public static final String GRID_EDGE_TOROIDAL = "Toroidal";
+	public static final String GRID_EDGE_INFINITE = "Infinite";
+	
+	public static final String INIT_STYLE_SPECIFIC = "Specific";
+	public static final String INIT_STYLE_RAND = "Random";
+	public static final String INIT_STYLE_PROB = "Probability";
+	
+	
+	
 	private XMLReader myReader;
 	private MapMaker myMapMaker;
 	
-	private String mySimType;
 	private String mySimName;
 	private String myGridShape;
+	private String myGridEdge;
 	private String myInitializationStyle;
 	private int myNumStates;
 	private int myGridWidth;
@@ -40,25 +58,35 @@ public class ConfigDoc {
 	}
 	
 	protected void initParams() throws XMLException {
-		mySimType = myReader.getString("SIM_TYPE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-		myNumStates = myReader.getInt("NUM_STATES", XMLReader.FIRST_OCCURRENCE_IN_FILE);
-
+		try {
+			myNumStates = myReader.getInt("NUM_STATES", XMLReader.FIRST_OCCURRENCE_IN_FILE);
+		} catch(XMLException e) {
+			myNumStates = 0;
+			throw new XMLException("Unspecified number of cell states for this simulation in the XML file.", e);
+		}
+			
 		try {
 			mySimName = myReader.getString("SIM_NAME", XMLReader.FIRST_OCCURRENCE_IN_FILE);
 		} catch(XMLException e) {
-			mySimName = mySimType;
+			mySimName = "Cell Society";
 		}
 		
 		try {
 			myGridShape = myReader.getString("GRID_SHAPE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
 		} catch(XMLException e) {
-			myGridShape = "Square";
+			myGridShape = GRID_SHAPE_SQUARE;
+		}
+		
+		try {
+			myGridEdge = myReader.getString("GRID_EDGE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
+		} catch(XMLException e) {
+			myGridEdge = GRID_EDGE_FINITE;
 		}
 		
 		try {
 			myInitializationStyle = myReader.getString("INIT_STYLE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
 		} catch(XMLException e) {
-			myInitializationStyle = "Random";
+			myInitializationStyle = INIT_STYLE_RAND;
 		}
 		
 		try {
@@ -79,9 +107,9 @@ public class ConfigDoc {
 		for(int state = 0; state < myNumStates; state++) {
 			try {
 				myInitialDensities.add(myReader.getDouble(String.format("DENSITY_STATE_%d", state), XMLReader.FIRST_OCCURRENCE_IN_FILE));
-			} catch(XMLException e) {
+			} catch(XMLException | NumberFormatException e) {
 				if(myInitializationStyle.equals("Probability")) {
-					throw e;
+					throw new XMLException("Unspecified population densities in the XML file.",e);
 				} else {
 					myInitialDensities.add(0.0);
 				}
@@ -117,17 +145,23 @@ public class ConfigDoc {
     		myNeighborOffsets = Arrays.asList(defaultNeighbors);
     	}
     	
-    	myRule = new Rule(myNumStates, myGridWidth, myGridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
+    	myRule = new Rule(this, myNeighborOffsets, transitionProbabilities, myNextStateMap);
 	}
 	
 	public String getSimulationName() {
     	return mySimName;
     }
     public String getSimType() {
-    	return mySimType;
+    	return myReader.getSimType();
+    }
+    public int getNumStates() {
+    	return myNumStates;
     }
     public String getGridShape() {
     	return myGridShape;
+    }
+    public String getGridEdge() {
+    	return myGridEdge;
     }
     public String getInitializationStyle() {
     	return myInitializationStyle;
@@ -152,6 +186,51 @@ public class ConfigDoc {
     	} catch (XMLException e) {
     		state = Cell.DEFAULT_STATE;
     	}
+    	
+    	if(state < Cell.DEFAULT_STATE || state >= myNumStates) {
+    		state = Cell.DEFAULT_STATE;
+    	}
+    	
     	return state;
+    }
+    
+    public String getParamsAsXML() {
+    	String params = "";
+    	params += formatWithXMLTags("SIM_NAME", mySimName);
+    	params += formatWithXMLTags("SIM_TYPE", this.getSimType());
+    	params += formatWithXMLTags("NUM_STATES", Integer.toString(myNumStates));
+    	params += formatWithXMLTags("GRID_SHAPE", myGridShape);
+    	params += formatWithXMLTags("GRID_EDGE", myGridEdge);
+    	params += formatWithXMLTags("INIT_STYLE", INIT_STYLE_SPECIFIC);
+    	params += formatWithXMLTags("GRID_WIDTH", Integer.toString(myGridWidth));
+    	params += formatWithXMLTags("GRID_HEIGHT", Integer.toString(myGridHeight));
+    	return params;
+    }
+    
+    public String getRuleAsXML() {
+    	String rule = "";
+    	rule += formatAsXMLList("nextStateMap", "ns");
+    	rule += formatAsXMLList("transitionProbabilitiesMap", "prob");
+    	rule += formatAsXMLList("neighborOffsets", "nbr");
+    	return rule;
+    }
+    
+    private String formatAsXMLList(String listTag, String elemTag) {
+    	String result = String.format("\t<%s>\n", listTag);
+    	try {
+    		String fullText = myReader.getString(listTag, XMLReader.FIRST_OCCURRENCE_IN_FILE);
+    		String[] lines = fullText.trim().replaceAll("[\t]", "").split("[\n]");
+    		for(String s : lines) {
+    			result += formatWithXMLTags(elemTag,s);
+    		}
+    	} catch(XMLException e) {
+    		//Ignore. In this case there is nothing in the file to reproduce
+    	}
+    	result += String.format("\t</%s>\n", listTag);
+    	return result;
+    }
+    
+    public String formatWithXMLTags(String tag, String content) {
+    	return String.format("<%s>%s</%s>\n", tag, content, tag);
     }
 }

@@ -12,14 +12,9 @@ public class MovingSim extends Simulation {
 	public MovingSim(ConfigDoc config){
 		super(config);
 	}
-
-	@Override
-	protected void intializeGrid() {
-		this.randomizeGrid();
-	}
 	
 	@Override
 	protected Cell placeCell(int initialState, Point point) {
-		return new MovingCell(initialState, point, this.getRule(), this);
+		return new MovingCell(initialState, point, this.getConfig().getRule(), this);
 	}
 }
