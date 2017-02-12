@@ -7,6 +7,7 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
 public class TriangleDisplay extends GridDisplay{
@@ -31,6 +32,9 @@ public class TriangleDisplay extends GridDisplay{
 					ArrayList<GUIPoint> trianglePoints = createTriangleCoordinates(new Point(x,y), cellWidth, cellHeight);
 					Triangle myTriangle = new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2));
 					myTriangle.getTriangle().setOnMouseClicked(e->this.handleClick(c));
+					if(this.getConfig().hasGridLines()) {
+						myTriangle.getTriangle().setStroke(Color.BLACK);
+					}
 					Shape gridCell = setColor(myTriangle.getTriangle(),c);
 					this.getGridRoot().getChildren().add(gridCell);
 				}

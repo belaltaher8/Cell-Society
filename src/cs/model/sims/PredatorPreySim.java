@@ -8,6 +8,8 @@ import cs.model.cells.FishCell;
 import cs.model.cells.SharkCell;
 
 public class PredatorPreySim extends Simulation {
+	public static final int NUM_STATES = 3;
+	
 	public PredatorPreySim(PredatorPreyDoc config) {
 		super(config);
 	}
@@ -21,5 +23,10 @@ public class PredatorPreySim extends Simulation {
 		} else {
 			return new Cell(initialState, point, this.getConfig(), this);
 		}
+	}
+	
+	@Override
+	public int getNumStates() {
+		return PredatorPreySim.NUM_STATES;
 	}
 }

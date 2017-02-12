@@ -281,6 +281,11 @@ public class GUIController {
 		}
 	}
 	
+	public void toggleGridLines(boolean show) {
+		myConfigDoc.setGridLines(show);
+		myGridDisplay.drawGridDisplay();
+	}
+	
 	public void stepAnimation() {
 		myGridDisplay.step();
 	}

@@ -6,6 +6,7 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -58,15 +59,23 @@ public class GridDisplay {
 			for (int y = 0; y < myConfig.getGridHeight(); y++){
 				Cell c = myGrid.getCellAtPoint(new Point(x,y));
 				if(c != null) {
-					Rectangle r = new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
-					r.setOnMouseClicked(e->this.handleClick(c));
-					Shape gridCell = setColor(r, c);
+					Shape gridCell = makeShape(c,x, y, cellWidth, cellHeight);
 					gridRoot.getChildren().add(gridCell);
 				}
 			}
 		}
 	}
 
+	private Shape makeShape(Cell c, double x, double y, double width, double height) {
+		Rectangle r = new Rectangle(x*width, y*height, width, height);
+		r.setOnMouseClicked(e->this.handleClick(c));
+		if(myConfig.hasGridLines()) {
+			r.setStroke(Color.BLACK);
+		}
+		Shape gridCell = setColor(r, c);
+		return gridCell;
+	}
+	
 	/**
 	 * @param Shape gridCell
 	 * @param Cell c
@@ -94,7 +103,7 @@ public class GridDisplay {
 	
 	protected void handleClick(Cell c) {
 		int nextState = c.getState() + 1;
-		if(nextState >= myConfig.getNumStates()) {
+		if(nextState >= myGrid.getNumStates()) {
 			nextState = Cell.DEFAULT_STATE;
 		}
 		myGrid.replaceCell(c, myGrid.placeCell(nextState, c.getCoords()));

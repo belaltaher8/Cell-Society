@@ -7,6 +7,8 @@ import cs.model.Simulation;
 import cs.model.cells.FireCell;
 
 public class FireSpreadSim extends Simulation {
+	public static final int NUM_STATES = 3;
+	
 	public FireSpreadSim(FireDoc config) {
 		super(config);
 		// TODO Auto-generated constructor stub
@@ -15,5 +17,10 @@ public class FireSpreadSim extends Simulation {
 	@Override
 	public Cell placeCell(int initialState, Point point) {
 		return new FireCell(initialState, point, ((FireDoc)this.getConfig()), this);
+	}
+	
+	@Override
+	public int getNumStates() {
+		return FireSpreadSim.NUM_STATES;
 	}
 }
