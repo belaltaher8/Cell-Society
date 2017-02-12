@@ -1,12 +1,11 @@
 package cs.configuration;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,24 +15,29 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import cs.model.Cell;
-import cs.model.Point;
-import cs.model.Rule;
-import cs.model.Triple;
+import cs.configuration.configs.FireDoc;
+import cs.configuration.configs.PredatorPreyDoc;
+import cs.configuration.configs.SegregationDoc;
+
 
 public class XMLReader {
-	private static final int FIRST_OCCURRENCE_IN_FILE = 0;
+	public static final int FIRST_OCCURRENCE_IN_FILE = 0;
 	
     private static final DocumentBuilder DOCUMENT_BUILDER = getDocumentBuilder();
     private Element rootElement;
-    private MapMaker myMapMaker;
+    private String mySimType;
     
-    public XMLReader(File file) {
-    	myMapMaker = new MapMaker();
-    	loadNewFile(file);
+    public XMLReader(File file) throws XMLException {
+    	this.loadNewFile(file);
+    	try {
+    		mySimType = getString("SIM_TYPE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
+    	} catch(XMLException e) {
+			mySimType = "";
+			throw new XMLException("No simulation type specified in the XML input file.", e);
+		}
     }
     
-    public void loadNewFile(File file) {
+    public void loadNewFile(File file) throws XMLException {
     	try {
             DOCUMENT_BUILDER.reset();
             Document xmlDocument = DOCUMENT_BUILDER.parse(file);
@@ -47,97 +51,88 @@ public class XMLReader {
         }
     }
     
-    
-    
-    public String getSimulationName() {
-    	return getString("SIM_NAME", FIRST_OCCURRENCE_IN_FILE);
-    }
-    public String getGridType() {
-    	return getString("GRID_TYPE", FIRST_OCCURRENCE_IN_FILE);
-    }
-    public int getGridWidth() {
-    	return getInt("GRID_WIDTH", FIRST_OCCURRENCE_IN_FILE);
-    }
-    public int getGridHeight() {
-    	return getInt("GRID_HEIGHT", FIRST_OCCURRENCE_IN_FILE);
-    }
-    
-    public Rule getRule() {
-    	int myNumStates = getInt("NUM_STATES", FIRST_OCCURRENCE_IN_FILE);
-    	int gridWidth = getGridWidth();
-    	int gridHeight = getGridHeight();
-    	
-    	Map<Triple,Integer> myNextStateMap = myMapMaker.getNextStateMap(getTextByTag("nextStateMap", FIRST_OCCURRENCE_IN_FILE));
-    	Collection<Point> myNeighborOffsets = myMapMaker.getNeighborOffsets(getTextByTag("neighborOffsets", FIRST_OCCURRENCE_IN_FILE));
-
-    	Map<Integer, Double> transitionProbabilities = null;
-    	if(getTextByTag("transitionProbabilitiesMap", FIRST_OCCURRENCE_IN_FILE) != null) {
-    		transitionProbabilities = myMapMaker.getProbabilitiesMap(getTextByTag("transitionProbabilitiesMap", FIRST_OCCURRENCE_IN_FILE));
-    	} 
-    	
-    	return new Rule(myNumStates, gridWidth, gridHeight, myNeighborOffsets, transitionProbabilities, myNextStateMap);
-    }
-    
-    //TODO: this is poor design. Requires simulation to know xml tags
-    public int getIntParameter(String name) {
-    	return getInt(name, FIRST_OCCURRENCE_IN_FILE);
-    }
-    public double getDoubleParameter(String name) {
-    	return getDouble(name, FIRST_OCCURRENCE_IN_FILE);
-    }
-    
-    public int getInitialState(Point point) {
-    	int state;
-    	try {
-    		state = getInt(String.format("INITIAL_STATE_%s_%s", point.getX(), point.getY()), 0);
-    	} catch (XMLException e) {
-    		state = Cell.DEFAULT_STATE;
+    public ConfigDoc getConfigDoc() throws XMLException {
+    	//ugly if-statement to choose what kind of ConfigDoc to return
+    	if(mySimType.equals(ConfigDoc.SIM_TYPE_PRED_PREY)){
+    		return new PredatorPreyDoc(this);
+    	} else if(mySimType.equals(ConfigDoc.SIM_TYPE_FIRE_SPREAD)) {
+    		return new FireDoc(this);
+    	} else if(mySimType.equals(ConfigDoc.SIM_TYPE_SEGREGATION)) {
+    		return new SegregationDoc(this);
+    	} else {
+    		return new ConfigDoc(this);
     	}
-    	return state;
     }
     
-    private String getString(String tag, int index) {
-    	String myString = getTextByTag(tag, index);
-    	if(myString == null) {
-    		//throw new XMLException("XMLReader could not find: getString(%s, %d)", tag, index);
-    	}
-    	return myString;
+    public String getSimType() {
+    	return mySimType;
+    }
+    public void setSimType(String type) {
+    	mySimType = type;
     }
     
-    private int getInt(String tag, int index) throws XMLException{
-    	String myInt = getTextByTag(tag, index);
-    	if(myInt == null) {
-    		throw new XMLException("XMLReader could not find: getInt(%s, %d)", tag, index);
-    	}
-    	return Integer.parseInt(myInt);
+    public String getString(String tag, int index) throws XMLException {
+    	return getTextByTag(tag, index);
     }
     
-    private double getDouble(String tag, int index) {
-    	String myDouble = getTextByTag(tag, index);
-    	if(myDouble == null) {
-    		//throw new XMLException("XMLReader could not find: getDouble(%s, %d)", tag, index);
-    	}
-    	return Double.parseDouble(myDouble);
+    public int getInt(String tag, int index) throws XMLException {
+    	return Integer.parseInt(getTextByTag(tag, index));
     }
     
-    private String getTextByTag(String tag, int index) {
+    public double getDouble(String tag, int index) throws XMLException {
+    	return Double.parseDouble(getTextByTag(tag, index));
+    }
+    
+    private String getTextByTag(String tag, int index) throws XMLException {
     	NodeList nodeList = rootElement.getElementsByTagName(tag);
     	if (nodeList != null && nodeList.getLength() > index) {
             return nodeList.item(index).getTextContent();
         }
-    	return null;
+    	throw new XMLException("XMLReader could not find the simulation parameter: %s", tag);
     }
-
+    
+    public void writeToFile(String params, String neighbors, String states) throws XMLException {
+    	Writer writer = null;
+    	try  {
+    		writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(System.getProperty("user.dir") + "/data/snapshot.xml"), "utf-8"));
+    		writer.write(formatAsXMLDoc(params, neighbors, states));
+    	} catch(IOException e) {
+    		throw new XMLException(e);
+    	} finally {
+    		if(writer != null) {
+    			try {writer.close();} catch(IOException e) {/*TODO:can ignore?*/}
+    		}
+    	}
+    }
+    
+    private String formatAsXMLDoc(String params, String rule, String gridStates) {
+    	String result = "";
+    	String prefix = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> \n"
+    				  + "<data type=\"CellSociety\">\n";
+    	String suffix = "</data>";
+    	
+    	result += prefix;
+    	result += formatAsXMLElement("parameters", params);
+    	result += formatAsXMLElement("Rule", rule);
+    	result += formatAsXMLElement("initialGridStates", gridStates);
+    	result += suffix;
+    	return result;
+    }
+    
+    private String formatAsXMLElement(String tag, String contents) {
+    	return String.format("\n\t<%s>\n%s\t</%s>\n\n", tag, contents, tag);
+    }
+    
     private boolean isValidDataFile(Element root) {
     	return root.getAttribute("type").equals("CellSociety");
     }
     
-    private static DocumentBuilder getDocumentBuilder() {
+    private static DocumentBuilder getDocumentBuilder() throws RuntimeException {
         try {
             return DocumentBuilderFactory.newInstance().newDocumentBuilder();
         }
         catch (ParserConfigurationException e) {
-            throw new XMLException(e);
+        	throw new RuntimeException(e);
         }
     }
 }

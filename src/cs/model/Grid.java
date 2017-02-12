@@ -1,5 +1,5 @@
 package cs.model;
 
-public class Grid {
+public abstract class Grid {
 
 }

@@ -2,21 +2,20 @@ package cs.model.cells;
 
 import java.util.Collection;
 
+import cs.configuration.ConfigDoc;
+import cs.configuration.configs.PredatorPreyDoc;
 import cs.model.Cell;
 import cs.model.Point;
-import cs.model.Rule;
 import cs.model.Simulation;
 
 public class SharkCell extends FishCell {
 	public static final int SHARK_STATE = 2;
 	
-	private int starveInterval;
 	private int starveTimer;
 	private boolean alive = true;
 
-	public SharkCell(int initialState, Point coordinates, Rule rule, Simulation grid, int breedtime, int starvetime) {
-		super(initialState, coordinates, rule, grid, breedtime);
-		starveInterval = starvetime;
+	public SharkCell(int initialState, Point coordinates, ConfigDoc config, Simulation sim) {
+		super(initialState, coordinates, config, sim);
 		starveTimer = 0;
 	}
 	
@@ -39,7 +38,7 @@ public class SharkCell extends FishCell {
 	
 	@Override
 	protected Cell getOffspring(Point coords) {
-		return new SharkCell(this.getState(), coords, this.getRule(), this.getGrid(), this.getBreedInterval(), starveInterval);
+		return new SharkCell(this.getState(), coords, this.getConfig(), this.getSimulation());
 	}
 	
 	@Override
@@ -49,15 +48,15 @@ public class SharkCell extends FishCell {
 	}
 	
 	private void eat(Cell sharkFood) {
-		Cell replacement = new Cell(Cell.DEFAULT_STATE, sharkFood.getCoords(), this.getRule(), this.getGrid());
-		this.getGrid().replaceCell(sharkFood, replacement);
+		Cell replacement = new Cell(Cell.DEFAULT_STATE, sharkFood.getCoords(), this.getConfig(), this.getSimulation());
+		this.getSimulation().replaceCell(sharkFood, replacement);
 		starveTimer = 0;
 	}
 	
 	private void starve() {
-		if(starveTimer >= starveInterval) {
-			Cell empty = new Cell(Cell.DEFAULT_STATE, this.getCoords(), this.getRule(), this.getGrid());
-			this.getGrid().replaceCell(this, empty);
+		if(starveTimer >= ((PredatorPreyDoc)this.getConfig()).getSharkStarveInterval()) {
+			Cell empty = new Cell(Cell.DEFAULT_STATE, this.getCoords(), this.getConfig(), this.getSimulation());
+			this.getSimulation().replaceCell(this, empty);
 			alive = false;
 		}
 	}

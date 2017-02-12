@@ -2,16 +2,22 @@
 <data type="CellSociety">
 	<general>
 		<SIM_NAME>Game of Life</SIM_NAME>
-		<GRID_TYPE>Grid</GRID_TYPE>
+		<NUM_STATES>2</NUM_STATES>
+		<SIM_TYPE>GameOfLifeSim</SIM_TYPE>
+		<GRID_SHAPE>Square</GRID_SHAPE>
+		<GRID_EDGE>Toroidal</GRID_EDGE>
+		<INIT_STYLE>Specific</INIT_STYLE>
+		<GRID_WIDTH>40</GRID_WIDTH>
+		<GRID_HEIGHT>40</GRID_HEIGHT>
 	</general>
 	
 	<simiulation_specific>
 	</simiulation_specific>
 
 	<Grid>
-		<GRID_WIDTH>40</GRID_WIDTH>
-		<GRID_HEIGHT>40</GRID_HEIGHT>
 		<initialGridStates>
+			<DENSITY_STATE_0>0.30</DENSITY_STATE_0>
+			<DENSITY_STATE_1>0.70</DENSITY_STATE_1>
 			<INITIAL_STATE_1_5>1</INITIAL_STATE_1_5>
 			<INITIAL_STATE_2_5>1</INITIAL_STATE_2_5>
 			<INITIAL_STATE_1_6>1</INITIAL_STATE_1_6>
@@ -52,17 +58,6 @@
 	</Grid>
 	
 	<Rule>
-		<NUM_STATES>2</NUM_STATES>
-		<nextStateMap>
-			<ns>(0,1,3) -> 1</ns>
-			<ns>(1,1,0) -> 0</ns>
-			<ns>(1,1,1) -> 0</ns>
-			<ns>(1,1,4) -> 0</ns>
-			<ns>(1,1,5) -> 0</ns>
-			<ns>(1,1,6) -> 0</ns>
-			<ns>(1,1,7) -> 0</ns>
-			<ns>(1,1,8) -> 0</ns>
-		</nextStateMap>
 		<neighborOffsets>
 			<nbr>(1,1)</nbr>
 			<nbr>(1,0)</nbr>

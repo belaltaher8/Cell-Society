@@ -30,8 +30,8 @@ public class GridDisplay {
 		gridRoot = new Group();
 		myGrid = grid;
 		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "CellColors");
-		myGridWidth = grid.getWidth();
-		myGridHeight = grid.getHeight();
+		myGridWidth = grid.getConfig().getGridWidth();
+		myGridHeight = grid.getConfig().getGridHeight();
 		drawGridDisplay();
 	}
 	
