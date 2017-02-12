@@ -9,9 +9,13 @@ import java.util.ResourceBundle;
 import cs.configuration.ConfigDoc;
 import cs.configuration.XMLException;
 import cs.configuration.XMLReader;
+import cs.configuration.configs.FireDoc;
 import cs.configuration.configs.PredatorPreyDoc;
+import cs.configuration.configs.SegregationDoc;
 import cs.model.Simulation;
-import cs.model.sims.MovingSim;
+import cs.model.sims.FireSpreadSim;
+import cs.model.sims.GameOfLifeSim;
+import cs.model.sims.SegregationSim;
 import cs.model.sims.PredatorPreySim;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -122,10 +126,12 @@ public class GUIController{
 	
 	private Simulation makeSimulation(ConfigDoc config) throws XMLException {
 		//ugly if-statement to choose what kind of Simulation to return
-		if(config.getSimType().equals(ConfigDoc.SIM_TYPE_DEFAULT)) {
-			return new Simulation(config);
-		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_MOVING)) {
-			return new MovingSim(config);
+		if(config.getSimType().equals(ConfigDoc.SIM_TYPE_GAME_OF_LIFE)) {
+			return new GameOfLifeSim(config);
+		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_FIRE_SPREAD)) {
+			return new FireSpreadSim((FireDoc)config);
+		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_SEGREGATION)) {
+			return new SegregationSim((SegregationDoc)config);
 		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_PRED_PREY)) {
 			return new PredatorPreySim((PredatorPreyDoc)config); 
 		} else {
@@ -238,7 +244,7 @@ public class GUIController{
 
 	private void stopAnimation() {
 		animation.pause();
-		//myXMLReader.writeToFile(myConfigDoc.getParamsAsXML(), myConfigDoc.getRuleAsXML(), mySimulation.getContentsAsXML());
+		//myXMLReader.writeToFile(myConfigDoc.getParamsAsXML(), myConfigDoc.getNeighborsAsXML(), mySimulation.getContentsAsXML());
 	}
 
 	private void animate() {

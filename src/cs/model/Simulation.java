@@ -9,10 +9,9 @@ import java.util.Map;
 import java.util.Random;
 import cs.configuration.ConfigDoc;
 
-public class Simulation {	
+public abstract class Simulation {	
 	private Map<Point, Cell> myGrid;
 	private ConfigDoc myConfig;
-	
 	private Random myRand;
 	private Collection<Cell[]> swapPairs;
 
@@ -81,16 +80,6 @@ public class Simulation {
 	
 	public void requestSpecificSwap(Cell a, Cell b) {
 		swapPairs.add(new Cell[] {a,b});
-	}
-	
-	public String getContentsAsXML() {
-		String contents = "";
-		for(Cell c : myGrid.values()) {
-			String tag = String.format("INITIAL_STATE_%s_%s", c.getCoords().getX(), c.getCoords().getY());
-			String state = Integer.toString(c.getState());
-			contents += myConfig.formatWithXMLTags(tag, state);
-		}
-		return contents;
 	}
 	
 	private void swapCells(Cell a, Cell b) {
@@ -169,7 +158,15 @@ public class Simulation {
 		}
 	}
 	
-	protected Cell placeCell(int initialState, Point point) {
-		return new Cell(initialState, point, myConfig.getRule(), this);
+	public String getContentsAsXML() {
+		String contents = "";
+		for(Cell c : myGrid.values()) {
+			String tag = String.format("INITIAL_STATE_%s_%s", c.getCoords().getX(), c.getCoords().getY());
+			String state = Integer.toString(c.getState());
+			contents += myConfig.formatWithXMLTags(tag, state);
+		}
+		return contents;
 	}
+	
+	abstract protected Cell placeCell(int initialState, Point point);
 }

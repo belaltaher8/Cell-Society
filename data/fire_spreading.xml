@@ -3,7 +3,7 @@
 	<general>
 		<SIM_NAME>Fire Spreading</SIM_NAME>
 		<NUM_STATES>3</NUM_STATES>
-		<SIM_TYPE>Default</SIM_TYPE>
+		<SIM_TYPE>FireSpreadSim</SIM_TYPE>
 		<GRID_SHAPE>Square</GRID_SHAPE>
 		<GRID_EDGE>Toroidal</GRID_EDGE>
 		<INIT_STYLE>Specific</INIT_STYLE>
@@ -12,35 +12,17 @@
 	</general>
 	
 	<simiulation_specific>
+		<PROB_CATCH>0.55</PROB_CATCH>
 	</simiulation_specific>
 	
 	<initialGridStates>
 		<INITIAL_STATE_0_22>1</INITIAL_STATE_0_22>			
 	</initialGridStates>
 	
-	<Rule>
-		
-		<nextStateMap>
-			<ns>(0,1,1) -> 1</ns>
-			<ns>(0,1,2) -> 1</ns>
-			<ns>(0,1,3) -> 1</ns>
-			<ns>(0,1,4) -> 1</ns>
-			<ns>(1,0,0) -> 2</ns>
-			<ns>(1,0,1) -> 2</ns>
-			<ns>(1,0,2) -> 2</ns>
-			<ns>(1,0,3) -> 2</ns>
-			<ns>(1,0,4) -> 2</ns>
-		</nextStateMap>
-		<transitionProbabilitiesMap>
-			<prob>0 -> 1.0</prob>
-			<prob>1 -> 0.55</prob>
-			<prob>2 -> 1.0</prob>			
-		</transitionProbabilitiesMap>
-		<neighborOffsets>
-			<nbr>(1,0)</nbr>
-			<nbr>(0,1)</nbr>
-			<nbr>(0,-1)</nbr>
-			<nbr>(-1,0)</nbr>
-		</neighborOffsets>
-	</Rule>
+	<neighborOffsets>
+		<nbr>(1,0)</nbr>
+		<nbr>(0,1)</nbr>
+		<nbr>(0,-1)</nbr>
+		<nbr>(-1,0)</nbr>
+	</neighborOffsets>
 </data>
