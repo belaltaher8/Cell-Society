@@ -4,7 +4,7 @@
 		<SIM_NAME>Fire Spreading</SIM_NAME>
 		<NUM_STATES>3</NUM_STATES>
 		<SIM_TYPE>FireSpreadSim</SIM_TYPE>
-		<GRID_SHAPE>Square</GRID_SHAPE>
+		<GRID_SHAPE>Triangle</GRID_SHAPE>
 		<GRID_EDGE>Toroidal</GRID_EDGE>
 		<INIT_STYLE>Specific</INIT_STYLE>
 		<GRID_WIDTH>45</GRID_WIDTH>
@@ -16,13 +16,13 @@
 	</simiulation_specific>
 	
 	<initialGridStates>
-		<INITIAL_STATE_0_22>1</INITIAL_STATE_0_22>			
+		<INITIAL_STATE_22_22>1</INITIAL_STATE_22_22>	
 	</initialGridStates>
 	
 	<neighborOffsets>
-		<nbr>(1,0)</nbr>
-		<nbr>(0,1)</nbr>
 		<nbr>(0,-1)</nbr>
+		<nbr>(0,1)</nbr>
+		<nbr>(1,0)</nbr>
 		<nbr>(-1,0)</nbr>
 	</neighborOffsets>
 </data>

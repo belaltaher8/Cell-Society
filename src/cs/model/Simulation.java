@@ -28,7 +28,18 @@ public abstract class Simulation {
 	
 	public void reset() {
 		myGrid = new HashMap<Point, Cell>();
-		intializeGrid();
+		buildGrid();
+	}
+	
+	public void buildGrid() {
+		for(int x = 0; x < myConfig.getGridWidth(); x++) {
+			for(int y = 0; y < myConfig.getGridHeight(); y++) {
+				Point point = new Point(x, y);
+				int initialState = determineInitialStateAt(point);
+				Cell cell = placeCell(initialState, point);
+				myGrid.put(point, cell);
+			}
+		}
 	}
 	
 	public void randomizeGrid() {
@@ -127,18 +138,11 @@ public abstract class Simulation {
 		}
 	}
 	
-	private void intializeGrid() {
-		for(int x = 0; x < myConfig.getGridWidth(); x++) {
-			for(int y = 0; y < myConfig.getGridHeight(); y++) {
-				Point point = new Point(x, y);
-				int initialState = determineInitialStateAt(point);
-				Cell cell = placeCell(initialState, point);
-				myGrid.put(point, cell);
-			}
-		}
-	}
-	
 	private int determineInitialStateAt(Point point) {
+		if(myGrid.containsKey(point)){
+			return myGrid.get(point).getState();
+		}
+		
 		if(myConfig.getInitializationStyle().equals(ConfigDoc.INIT_STYLE_SPECIFIC)) {
 			return myConfig.getInitialStateAt(point);
 		} else if(myConfig.getInitializationStyle().equals(ConfigDoc.INIT_STYLE_PROB)) {
