@@ -4,7 +4,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import cs.model.Point;
 
+/**
+ * @author jaydoherty
+ * The purpose of this class is just to aid in the readability of the XML file. It converts
+ * the XML formatted neighbor list into an actual list of points. This functionality was extracted
+ * because it is just used here and is not critical for understanding the rest of the XML parsing.
+ */
 public class XMLHelper {
+	
+	/**
+	 * @param fullText : a plain string representation of the neighbor offsets
+	 * @return a list of Points corresponding to each of the neighbor offsets
+	 * @throws XMLException
+	 * This is the one public method for this class that other classes can call. It just
+	 * translates a properly formatted String into a list of points, or else throws an exception.
+	 */
 	public Collection<Point> getNeighborOffsets(String fullText) throws XMLException {
 		Collection<Point> result;
 		try {
