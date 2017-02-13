@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
  * @author tahiaemran
  * Display class creates control pane and grid view 
  */
+
 public class GridDisplay {
 	public static final int DISPLAY_WIDTH = 600; 
 	public static final int DISPLAY_HEIGHT = 600;
@@ -30,8 +32,10 @@ public class GridDisplay {
 	private Simulation mySim; 
 	private ConfigDoc myConfig;
 	
-	// map of each state to number of cells in that state 
-	private HashMap <Integer, Integer> stateCounts; 
+
+	private HashMap <Integer, Integer> stateCounts; // map of each state to number of cells in that state 
+
+
 	
 	public GridDisplay(Simulation sim, ConfigDoc config){
 		gridRoot = new Group();

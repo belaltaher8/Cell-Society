@@ -15,6 +15,12 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.HBox;
 
+/**
+ * @author tahiaemran
+ *  class that configures all of the control pane's buttons and sets event handlers for each control 
+ *  to use: create a new control display object, retrieve the root and add the root to the scene 
+ *  	to display the control pane 
+ */
 public class ControlDisplay {
 	public static final double SPEED_UP_FACTOR = 2.0;
 	public static final double DEFAULT_ANIMATION_SPEED = 250;
@@ -43,6 +49,10 @@ public class ControlDisplay {
 		controlRoot.getChildren().addAll(myBasicControls,myInputFieldsRow1, myInputFieldsRow2);
 	}
 	
+	/**
+	 * @return the root node that contains all of the controls 
+	 * for use by other classes 
+	 */
 	public Group getControlView() {
 		return controlRoot;
 	}

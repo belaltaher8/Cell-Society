@@ -13,7 +13,11 @@ public class Triangle {
 				c.getX(), c.getY()});
 
 	}
-	
+
+	/**
+	 * @return the polygon associated with the Triangle object
+	 */
+
 	public Shape getTriangle(){
 		return t; 
 	}

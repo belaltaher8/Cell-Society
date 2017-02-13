@@ -12,11 +12,21 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
+/**
+ * @author tahiaemran
+ * class for creating a grid with triangular cells 
+ * 
+ * dependencies: Simulaiton and ConfigDoc classes 
+ * 
+ * to use: create a new TriangleDisplay object in the GUI class 
+ *
+ */
 public class TriangleDisplay extends GridDisplay{
 
 	public TriangleDisplay(Simulation grid, ConfigDoc config) {
 		super(grid, config);
 	}
+
 	
 	@Override
 	protected Shape makeShape(Cell c, double x, double y) {
