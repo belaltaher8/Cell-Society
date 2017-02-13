@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ResourceBundle;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,24 +19,35 @@ import org.xml.sax.SAXException;
 import cs.configuration.configs.FireDoc;
 import cs.configuration.configs.PredatorPreyDoc;
 import cs.configuration.configs.SegregationDoc;
+import cs.view.GUIController;
 
 
+/**
+ * @author jaydoherty
+ * This class takes an XML file and starts the process of parsing it. It contains methods for getting 
+ * Strings, integers, and doubles from the file. It throws XMLExceptions if any of these methods are unable
+ * to find the tag in the XML file.
+ */
 public class XMLReader {
 	public static final int FIRST_OCCURRENCE_IN_FILE = 0;
 	
+	private ResourceBundle myResources;
     private static final DocumentBuilder DOCUMENT_BUILDER = getDocumentBuilder();
+    
     private Element rootElement;
     private String mySimType;
     
     public XMLReader(File file) throws XMLException {
+    	myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "GUI");	
     	this.loadNewFile(file);
     	try {
     		mySimType = getString("SIM_TYPE", XMLReader.FIRST_OCCURRENCE_IN_FILE);
     	} catch(XMLException e) {
 			mySimType = "";
-			throw new XMLException("No simulation type specified in the XML input file.", e);
+			throw new XMLException(myResources.getString("ErrorNoSim"), e);
 		}
     }
+    
     
     public void loadNewFile(File file) throws XMLException {
     	try {
@@ -43,7 +55,7 @@ public class XMLReader {
             Document xmlDocument = DOCUMENT_BUILDER.parse(file);
             rootElement = xmlDocument.getDocumentElement();
             if(!isValidDataFile(rootElement)) {
-            	throw new XMLException("Invalid input file for Cell Society.");
+            	throw new XMLException(myResources.getString("ErrorInvalidFile"));
             }
         }
         catch (SAXException | IOException e) {
@@ -88,7 +100,7 @@ public class XMLReader {
     	if (nodeList != null && nodeList.getLength() > index) {
             return nodeList.item(index).getTextContent();
         }
-    	throw new XMLException("XMLReader could not find the simulation parameter: %s", tag);
+    	throw new XMLException(String.format(myResources.getString("ErrorTagNotFound"), tag));
     }
     
     public void writeToFile(String params, String neighbors, String states) throws XMLException {
@@ -124,7 +136,7 @@ public class XMLReader {
     }
     
     private boolean isValidDataFile(Element root) {
-    	return root.getAttribute("type").equals("CellSociety");
+    	return root.getAttribute("type").equals(myResources.getString("ValidDataFile"));
     }
     
     private static DocumentBuilder getDocumentBuilder() throws RuntimeException {
