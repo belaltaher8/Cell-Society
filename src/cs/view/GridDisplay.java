@@ -29,65 +29,38 @@ public class GridDisplay {
 	private Group gridRoot; 
 
 	private ResourceBundle myResources; 
-	private Simulation myGrid; 
+	private Simulation mySim; 
 	private ConfigDoc myConfig;
 	
+
 	private HashMap <Integer, Integer> stateCounts; // map of each state to number of cells in that state 
 
+
 	
-	public GridDisplay(Simulation grid, ConfigDoc config){
+	public GridDisplay(Simulation sim, ConfigDoc config){
 		gridRoot = new Group();
-		myGrid = grid;
+		mySim = sim;
 		myConfig = config;
-		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "CellColors");	
-		initializeStateCounts();
+		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + myConfig.getSimType());	
+		clearStateCounts();
 		drawGridDisplay();
 	}
 	
-	public Map<Integer, Integer> getStateMap(){
-		return stateCounts; 
-	}
-	
-	protected void initializeStateCounts() {
-		stateCounts = new HashMap<Integer, Integer>(); 
-		int numStates = myGrid.getNumStates(); 
-		// initialize hashMap keys to zero
-		for (int i=0; i<numStates; i++){
-			if (!stateCounts.containsKey(i)){
-				stateCounts.put(i, 0);
-			}
-		}
-	}
-
-	protected Group getGridRoot(){
-		return gridRoot;
-	}
-	protected Simulation getGrid(){
-		return myGrid; 
-	}
-	protected ConfigDoc getConfig() {
-		return myConfig;
-	}
-	public boolean clickIsHandled(){
-		return false; 
-	}
 	/**
 	 * @param cellsPerRow 
 	 * @param cellsPerColumn
 	 * creates the grid part of the display where the simulation occurs
 	 */
-	
 	public void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
-		int cellWidth = DISPLAY_WIDTH/myConfig.getGridWidth(); 
-		int cellHeight = DISPLAY_HEIGHT/myConfig.getGridHeight();
+		clearStateCounts();
 		
 		for (int x = 0; x < myConfig.getGridWidth(); x++){
 			for (int y = 0; y < myConfig.getGridHeight(); y++){
-				Cell c = myGrid.getCellAtPoint(new Point(x,y));
+				Cell c = mySim.getCellAtPoint(new Point(x,y));
 				if(c != null) {
 					updateStateCounts(c);
-					Shape gridCell = makeShape(c,x, y, cellWidth, cellHeight);
+					Shape gridCell = makeShape(c,x, y);
 					gridRoot.getChildren().add(gridCell);
 				}
 
@@ -95,19 +68,22 @@ public class GridDisplay {
 		}
 	}
 
-	private Shape makeShape(Cell c, double x, double y, double width, double height) {
-		Rectangle r = new Rectangle(x*width, y*height, width, height);
+	protected Shape makeShape(Cell c, double x, double y) {
+		int cellWidth = DISPLAY_WIDTH/myConfig.getGridWidth(); 
+		int cellHeight = DISPLAY_HEIGHT/myConfig.getGridHeight();
+		
+		Rectangle r = new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight);
 		r.setOnMouseClicked(e->this.handleClick(c));
 		if(myConfig.hasGridLines()) {
-			r.setStroke(Color.BLACK);
+			r.setStroke(Paint.valueOf(myResources.getString("GridLines")));
 		}
+		
 		Shape gridCell = setColor(r, c);
 		return gridCell;
 	}
 	
-	private void updateStateCounts(Cell c) {
-		int currentCount = stateCounts.get(c.getState());
-		stateCounts.put(c.getState(), currentCount+1);
+	protected ResourceBundle getResources() {
+		return myResources;
 	}
 	
 	/**
@@ -121,26 +97,53 @@ public class GridDisplay {
 	}
 	
 	/**
+	 * advances the grid to the next state
+	 */
+	public void step() {
+		mySim.stepGrid();
+		drawGridDisplay();
+	}
+	
+	/**
 	 * @return grid view for use by other classes
 	 */
 	public Group getGridView(){
 		return gridRoot; 
 	}
 	
-	/**
-	 * advances the grid to the next state
-	 */
-	public void step() {
-		myGrid.stepGrid();
-		drawGridDisplay();
+	protected Simulation getGrid(){
+		return mySim; 
+	}
+	protected ConfigDoc getConfig() {
+		return myConfig;
+	}
+	
+	public Map<Integer, Integer> getStateCounts(){
+		return stateCounts; 
+	}
+	
+	protected void clearStateCounts() {
+		stateCounts = new HashMap<Integer, Integer>(); 
+		int numStates = mySim.getNumStates(); 
+		// initialize hashMap keys to zero
+		for (int i=0; i<numStates; i++){
+			if (!stateCounts.containsKey(i)){
+				stateCounts.put(i, 0);
+			}
+		}
+	}
+
+	protected void updateStateCounts(Cell c) {
+		int currentCount = stateCounts.get(c.getState());
+		stateCounts.put(c.getState(), currentCount+1);
 	}
 	
 	protected void handleClick(Cell c) {
 		int nextState = c.getState() + 1;
-		if(nextState >= myGrid.getNumStates()) {
+		if(nextState >= mySim.getNumStates()) {
 			nextState = Cell.DEFAULT_STATE;
 		}
-		myGrid.replaceCell(c, myGrid.placeCell(nextState, c.getCoords()));
+		mySim.replaceCell(c, mySim.placeCell(nextState, c.getCoords()));
 		this.drawGridDisplay();
 	}
 }

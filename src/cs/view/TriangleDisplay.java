@@ -8,6 +8,8 @@ import cs.model.Point;
 import cs.model.Simulation;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /**
@@ -25,32 +27,21 @@ public class TriangleDisplay extends GridDisplay{
 		super(grid, config);
 	}
 
-	/* (non-Javadoc)
-	 * @see cs.view.GridDisplay#drawGridDisplay()
-	 */
+	
 	@Override
-	public void drawGridDisplay(){
-		this.getGridRoot().getChildren().clear(); 
-		initializeStateCounts();
-
+	protected Shape makeShape(Cell c, double x, double y) {
 		int cellWidth = GridDisplay.DISPLAY_WIDTH / ((this.getConfig().getGridWidth()/2)+1); 
 		int cellHeight = GridDisplay.DISPLAY_HEIGHT / this.getConfig().getGridHeight();
-
-		for (int x = 0; x < this.getConfig().getGridWidth(); x++){
-			for (int y = 0; y < this.getConfig().getGridHeight(); y++){
-				Cell c = this.getGrid().getCellAtPoint(new Point(x,y));
-				if(c != null) {
-					ArrayList<GUIPoint> trianglePoints = createTriangleCoordinates(new Point(x,y), cellWidth, cellHeight);
-					Triangle myTriangle = new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2));
-					myTriangle.getTriangle().setOnMouseClicked(e->this.handleClick(c));
-					if(this.getConfig().hasGridLines()) {
-						myTriangle.getTriangle().setStroke(Color.BLACK);
-					}
-					Shape gridCell = setColor(myTriangle.getTriangle(),c);
-					this.getGridRoot().getChildren().add(gridCell);
-				}
-			}
+		
+		ArrayList<GUIPoint> trianglePoints = createTriangleCoordinates(c.getCoords(), cellWidth, cellHeight);
+		Triangle myTriangle = new Triangle(trianglePoints.get(0), trianglePoints.get(1), trianglePoints.get(2));
+		myTriangle.getTriangle().setOnMouseClicked(e->this.handleClick(c));
+		if(this.getConfig().hasGridLines()) {
+			myTriangle.getTriangle().setStroke(Paint.valueOf(this.getResources().getString("GridLines")));
 		}
+		
+		Shape gridCell = setColor(myTriangle.getTriangle(),c);
+		return gridCell;
 	}
 
 	private ArrayList<GUIPoint> createTriangleCoordinates(Point point, int width, int height) {

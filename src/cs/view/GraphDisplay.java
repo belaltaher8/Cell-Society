@@ -2,6 +2,7 @@ package cs.view;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.scene.chart.Chart;
@@ -22,29 +23,27 @@ import javafx.scene.chart.XYChart.Series;
  */
 
 public class GraphDisplay {
-
 	final NumberAxis xAxis; 
 	final NumberAxis yAxis;  
 
+	private ResourceBundle myResources;
 	private LineChart<Number,Number> lineChart; 
-
-	private ArrayList<XYChart.Series<Number, Number>> mySeries; 
-	private XYChart.Series<Number, Number> stateSeries; 
-
+	private ArrayList<Series<Number, Number>> mySeries; 
 
 	public GraphDisplay(GridDisplay myGridDisplay){
+
+		myResources = ResourceBundle.getBundle(GUIController.DEFAULT_RESOURCE_PACKAGE + "GUI");	
 		xAxis = new NumberAxis(); 
 		yAxis = new NumberAxis();
-		xAxis.setLabel("Time");
-		yAxis.setLabel("Cell Count");		
+		xAxis.setLabel(myResources.getString("GraphXAxisLabel"));
+		yAxis.setLabel(myResources.getString("GraphYAxisLabel"));		
 		mySeries = new ArrayList<XYChart.Series<Number, Number>>();
 		initializeMySeries(myGridDisplay);
 		createGraph(myGridDisplay, 0);
 	}
-	
 
 	private void initializeMySeries(GridDisplay g) {
-		Map <Integer, Integer> initialStates = g.getStateMap();
+		Map <Integer, Integer> initialStates = g.getStateCounts();
 		for (Integer state: initialStates.keySet()){
 			XYChart.Series<Number, Number> stateSeries = new XYChart.Series<Number, Number> ();
 			stateSeries.setName(Integer.toString(state));
@@ -62,16 +61,13 @@ public class GraphDisplay {
 	 */
 	public void createGraph(GridDisplay myGridDisplay, int stepCount) {
 		ArrayList<Series<Number, Number>> mySeriesCopy = new ArrayList<Series<Number, Number>>(mySeries);
-		ArrayList<Series<Number, Number>> placeHolder = new ArrayList<Series<Number, Number>>();
-		Map <Integer, Integer> currentStates = myGridDisplay.getStateMap();
+		Map <Integer, Integer> currentStates = myGridDisplay.getStateCounts();
 		for (XYChart.Series<Number, Number> s: mySeriesCopy){
 			int state = Integer.parseInt(s.getName());
 			int count = currentStates.get(state);
 			XYChart.Data<Number, Number> newPoint = new XYChart.Data<Number, Number>(stepCount, count);
 			s.getData().add(newPoint);
-			placeHolder.add(s);
 		}
-		mySeries = placeHolder; 
 		lineChart = new LineChart<Number, Number>(xAxis, yAxis, FXCollections.observableArrayList(mySeries));
 	}
 
@@ -82,7 +78,4 @@ public class GraphDisplay {
 	public Chart getChart(){
 		return lineChart; 
 	}
-
-
-
 }
