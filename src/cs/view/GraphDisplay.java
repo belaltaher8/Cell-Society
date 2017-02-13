@@ -30,6 +30,12 @@ public class GraphDisplay {
 		initializeMySeries(myGridDisplay);
 		createGraph(myGridDisplay, 0);
 	}
+	
+	public void reset() {
+		for(XYChart.Series<Number, Number> s : mySeries) {
+			s.getData().clear();
+		}
+	}
 
 	private void initializeMySeries(GridDisplay g) {
 		Map <Integer, Integer> initialStates = g.getStateCounts();
@@ -38,7 +44,6 @@ public class GraphDisplay {
 			stateSeries.setName(Integer.toString(state));
 			mySeries.add(stateSeries);
 		}
-
 	}
 
 	public void createGraph(GridDisplay myGridDisplay, int stepCount) {

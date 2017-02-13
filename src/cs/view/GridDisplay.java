@@ -7,6 +7,7 @@ import cs.configuration.ConfigDoc;
 import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
+import cs.model.sims.SugarScapeSim;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -58,6 +59,12 @@ public class GridDisplay {
 					updateStateCounts(c);
 					Shape gridCell = makeShape(c,x, y);
 					gridRoot.getChildren().add(gridCell);
+				} else if(mySim instanceof SugarScapeSim) {
+					Cell b = ((SugarScapeSim) mySim).getBackgroundCellAtPoint(new Point(x,y));
+					if(b != null) {
+						Shape gridCell = makeShape(b,x, y);
+						gridRoot.getChildren().add(gridCell);
+					}
 				}
 
 			}

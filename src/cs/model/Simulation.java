@@ -18,6 +18,7 @@ public abstract class Simulation {
 	public Simulation(ConfigDoc config){
 		myConfig = config;
 		myRand = new Random();
+		myGrid = new HashMap<Point, Cell>();
 		swapPairs = new ArrayList<Cell[]>();
 		reset();
 	}
@@ -97,14 +98,18 @@ public abstract class Simulation {
 		Point pointA = a.getCoords();
 		Point pointB = b.getCoords();
 		
-		myGrid.remove(pointA);
-		myGrid.remove(pointB);
+		a = myGrid.remove(pointA);
+		b = myGrid.remove(pointB);
 		
-		a.setCoords(pointB);
-		b.setCoords(pointA);
+		if(a != null) {
+			a.setCoords(pointB);
+			myGrid.put(pointB, a);
+		}
 		
-		myGrid.put(pointB, a);
-		myGrid.put(pointA, b);
+		if(b != null) {
+			b.setCoords(pointA);
+			myGrid.put(pointA, b);
+		}
 	}
 	
 	private void applyAllSwaps() {
@@ -118,28 +123,33 @@ public abstract class Simulation {
 		for(int x = 0; x < myConfig.getGridWidth(); x++){
 			for(int y = 0; y < myConfig.getGridHeight(); y++){
 				Cell myCell = myGrid.get(new Point(x, y));
-				
-				Collection<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
-				List<Integer> myNeighborStates = new ArrayList<Integer>();
-				
-				for(Point currentPoint : myCellNeighborsCoords) {
-					Cell cell = getCellAtPoint(currentPoint);
-					myNeighborStates.add(cell.getState());
+				if(myCell != null) {
+					Collection<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
+					List<Integer> myNeighborStates = new ArrayList<Integer>();
+					
+					for(Point currentPoint : myCellNeighborsCoords) {
+						Cell cell = getCellAtPoint(currentPoint);
+						if(cell != null) {
+							myNeighborStates.add(cell.getState());
+						}
+					}
+					
+					myCell.computeNextState(myNeighborStates);
 				}
-				
-				myCell.computeNextState(myNeighborStates);
 			}
 		}
 	}
 	
 	private void advanceGrid(){
 		for(Cell c : myGrid.values()) {
-			c.advanceState();
+			if(c != null) {
+				c.advanceState();
+			}
 		}
 	}
 	
 	private int determineInitialStateAt(Point point) {
-		if(myGrid.containsKey(point)){
+		if(myGrid.containsKey(point) && myGrid.get(point) != null){
 			return myGrid.get(point).getState();
 		}
 		
