@@ -8,6 +8,10 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 
+/**
+ * @author jaydoherty
+ * This class defines the behavior for all of the cells in the Fire Spreading Simulation.
+ */
 public class FireCell extends Cell {
 	public static final int LIVE_STATE = 0;
 	public static final int BURN_STATE = 1;
@@ -19,7 +23,10 @@ public class FireCell extends Cell {
 		super(initialState, coordinates, config, simulation);
 		myRand = new Random();
 	}
-
+	
+	/**
+	 * This method is overridden to define the fire simulation cell's behavior
+	 */
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {
 		int nextState = this.getState();

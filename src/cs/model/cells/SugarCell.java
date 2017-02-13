@@ -8,6 +8,10 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 
+/**
+ * @author jaydoherty
+ * This class represents the Sugar in Sugar Scape Simulation.
+ */
 public class SugarCell extends Cell {
 	public static final int SUGAR_CELL_STATE = 1;
 	public static final int SUGAR_GROWTH_AMOUNT = 1;
@@ -23,6 +27,9 @@ public class SugarCell extends Cell {
 		mySugar = maxSugarCapacity;
 	}
 
+	/**
+	 * This method defines the cell's behavior at each time step.
+	 */
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {		
 		if(mySugar < maxSugarCapacity &&
@@ -31,15 +38,25 @@ public class SugarCell extends Cell {
 		}
 	}
 	
+	/**
+	 * This method returns a modified state to display the sugar on the GridDisplay
+	 */
 	@Override
 	public int getState() {
 		return super.getState() + mySugar;
 	}
 	
+	/**
+	 * @return the amount of sugar in this cell
+	 */
 	public int getSugar() {
 		return mySugar;
 	}
 	
+	/**
+	 * This method is called by agents to eat the sugar.
+	 * @return the amount of sugar taken
+	 */
 	public int takeSugar() {
 		int sugar = mySugar;
 		mySugar = 0;

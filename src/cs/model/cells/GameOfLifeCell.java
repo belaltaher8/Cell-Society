@@ -10,6 +10,10 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 
+/**
+ * @author jaydoherty
+ * This class defines the behavior of cells in the Game of Life.
+ */
 public class GameOfLifeCell extends Cell {
 	public static final int DEAD_STATE = 0;
 	public static final int ALIVE_STATE = 1;
@@ -22,6 +26,9 @@ public class GameOfLifeCell extends Cell {
 		super(initialState, coordinates, config, sim);
 	}
 
+	/**
+	 * This method is overridden to define the Game of Life rules.
+	 */
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {
 		int nextState = this.getState();
