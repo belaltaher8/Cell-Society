@@ -31,6 +31,16 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Duration;
 
+/**
+ * @author tahiaemran
+ *
+ * assembles all of the elements of the GUI (controls, grid, Graph)
+ *  animates the grid and updates the graph accordingly
+ *  
+ * to use: create a new GUIController object in Main 
+ *
+ */
+
 public class GUIController {
 	public static final String DEFAULT_RESOURCE_PACKAGE = "resources/";
 	public static final String DATA_FILE_EXTENSION = "*.xml";
@@ -155,7 +165,7 @@ public class GUIController {
 	
 	private GridDisplay makeGridDisplay(Simulation sim, ConfigDoc config) throws XMLException {
 		if(config.getGridShape().equals(ConfigDoc.GRID_SHAPE_SQUARE)){
-			return new GridDisplay(sim, config);
+			return new HexagonDisplay(sim, config);
 		} else if(config.getGridShape().equals(ConfigDoc.GRID_SHAPE_TRIANGLE)) {
 			return new TriangleDisplay(sim,config);
 		} else {
@@ -230,6 +240,9 @@ public class GUIController {
 		myControlPane.getChildren().add(myControlDisplay.getControlView());
 	}
 	
+	/**
+	 * allows for the user to load a new simulation and display it 
+	 */
 	public void loadNewFile() {
 		animation.stop();
 		animationSpeed = DEFAULT_ANIMATION_SPEED;
@@ -240,6 +253,10 @@ public class GUIController {
 		attachControlsDisplay();
 	}
 	
+	/**
+	 * allows the user to save the current state of the simulation and reload it later bt using the load file button and 
+	 * loading snapshot.xml
+	 */
 	public void saveSnapshot() {
 		try {
 			myXMLReader.writeToFile(myConfigDoc.getParamsAsXML(), myConfigDoc.getNeighborsAsXML(), mySimulation.getContentsAsXML());
@@ -248,18 +265,30 @@ public class GUIController {
 		}
 	}
 	
+	/**
+	 * sets the grid to a random configuration of cells and states 
+	 */
 	public void randomizeGrid() {
 		animation.pause();
 		mySimulation.randomizeGrid();
 		myGridDisplay.drawGridDisplay();
 	}
 	
+	/**
+	 * resets the grid to its original state 
+	 */
 	public void resetGrid() {
 		animation.pause();
 		mySimulation.reset();
 		myGridDisplay.drawGridDisplay();
 	}
 	
+	/**
+	 * @param value - the value by which the animation is sped up 
+	 * 
+	 * method speeds up the animation according to the specified value 
+	 * 
+	 */
 	public void speedAnimation(double value) {
 		boolean wasPlaying = animation.getCurrentRate() > 0;
 		animation.pause();
@@ -270,22 +299,40 @@ public class GUIController {
 		}
 	}
 	
+	/**
+	 * @param width - the desired with for the grid 
+	 * updates grid width according to the specified value 
+	 */
 	public void updateWidth(int width) {
 		myConfigDoc.setGridWidth(width);
 		mySimulation.buildGrid();
 		myGridDisplay.drawGridDisplay();
 	}
 	
+	/**
+	 * @param height - the desired height for the grid 
+	 * updates the grid height according to the specified value 
+	 */
 	public void updateHeight(int height) {
 		myConfigDoc.setGridHeight(height);
 		mySimulation.buildGrid();
 		myGridDisplay.drawGridDisplay();
 	}
 	
+	/**
+	 * @param type - the desired type of grid edge 
+	 * 
+	 * updates the grid edge type to the specified type 
+	 */
 	public void updateGridEdgeType(String type) {
 		myConfigDoc.setGridEdge(type);
 	}
 	
+	/**
+	 * @param shape - the desired shape of the grid
+	 * 
+	 * updates the grid shape type to the specified type 
+	 */
 	public void updateGridShapeType(String shape) {
 		myConfigDoc.setGridShape(shape);
 		try {
@@ -298,11 +345,18 @@ public class GUIController {
 		}
 	}
 	
+	/**
+	 * @param show specifies whether or not to show the grid lines 
+	 * shows/ hides grid lsines based on value of the boolean show 
+	 */
 	public void toggleGridLines(boolean show) {
 		myConfigDoc.setGridLines(show);
 		myGridDisplay.drawGridDisplay();
 	}
 	
+	/**
+	 *  steps the animation by updating the grid with new states and updating the graph with the new data 
+	 */
 	public void stepAnimation() {
 		stepCount++; 
 		myGridDisplay.step();
@@ -312,10 +366,16 @@ public class GUIController {
 		graphView.getChildren().add(myGraph);
 	}
 
+	/**
+	 * stops the animation from playing but does not reset it 
+	 */
 	public void stopAnimation() {
 		animation.pause();
 	}
 
+	/**
+	 *  plays the animation 
+	 */
 	public void animate() {
 		animation.play();
 	}

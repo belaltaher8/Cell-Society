@@ -19,7 +19,14 @@ import javafx.stage.Stage;
 
 /**
  * @author tahiaemran
- * Display class creates control pane and grid view 
+ * superclass for all the different display types 
+ * default will draw a square configuration 
+ * 
+ * dependencies: dependent upon the Simulation and ConfigDoc classes for data 
+ * 
+ * to use: create a new GridDisplay object for a rectangular configuration of cells, 
+ * 	for other configurations use those classes 
+ * 
  */
 
 public class GridDisplay {
@@ -118,6 +125,10 @@ public class GridDisplay {
 		return myConfig;
 	}
 	
+	/**
+	 * @return a map of each state to the number of cells in that state 
+	 * 	used by the Graph class to graph the appropriate data 
+	 */
 	public Map<Integer, Integer> getStateCounts(){
 		return stateCounts; 
 	}
