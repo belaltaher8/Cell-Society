@@ -10,22 +10,32 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
+/**
+ * @author tahiaemran
+ * class for creating a grid with triangular cells 
+ * 
+ * dependencies: Simulaiton and ConfigDoc classes 
+ * 
+ * to use: create a new TriangleDisplay object in the GUI class 
+ *
+ */
 public class TriangleDisplay extends GridDisplay{
 
 	public TriangleDisplay(Simulation grid, ConfigDoc config) {
 		super(grid, config);
 	}
 
-	// lot of duplicated code, figure out refactor for this
-
+	/* (non-Javadoc)
+	 * @see cs.view.GridDisplay#drawGridDisplay()
+	 */
 	@Override
 	public void drawGridDisplay(){
 		this.getGridRoot().getChildren().clear(); 
 		initializeStateCounts();
-		
+
 		int cellWidth = GridDisplay.DISPLAY_WIDTH / ((this.getConfig().getGridWidth()/2)+1); 
 		int cellHeight = GridDisplay.DISPLAY_HEIGHT / this.getConfig().getGridHeight();
-		
+
 		for (int x = 0; x < this.getConfig().getGridWidth(); x++){
 			for (int y = 0; y < this.getConfig().getGridHeight(); y++){
 				Cell c = this.getGrid().getCellAtPoint(new Point(x,y));

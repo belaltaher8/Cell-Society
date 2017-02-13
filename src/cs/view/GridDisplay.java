@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
  * @author tahiaemran
  * Display class creates control pane and grid view 
  */
+
 public class GridDisplay {
 	public static final int DISPLAY_WIDTH = 600; 
 	public static final int DISPLAY_HEIGHT = 600;
@@ -31,7 +33,7 @@ public class GridDisplay {
 	private ConfigDoc myConfig;
 	
 	private HashMap <Integer, Integer> stateCounts; // map of each state to number of cells in that state 
-	private HashMap <Shape, Cell> gridToCells; 
+
 	
 	public GridDisplay(Simulation grid, ConfigDoc config){
 		gridRoot = new Group();
@@ -77,23 +79,12 @@ public class GridDisplay {
 	
 	public void drawGridDisplay(){  
 		gridRoot.getChildren().clear();
-		initializeStateCounts(); 
-		gridToCells = new HashMap<Shape, Cell>();
 		int cellWidth = DISPLAY_WIDTH/myConfig.getGridWidth(); 
 		int cellHeight = DISPLAY_HEIGHT/myConfig.getGridHeight();
 		
 		for (int x = 0; x < myConfig.getGridWidth(); x++){
 			for (int y = 0; y < myConfig.getGridHeight(); y++){
-
-				Point p = new Point(x,y);
-				Cell c = myGrid.getCellAtPoint(p);
-				updateStateCounts(c);
-				Shape gridCell = setColor(new Rectangle(x*cellWidth, y*cellHeight, cellWidth, cellHeight), c);	
-				gridToCells.put(gridCell, c);
-				gridCell.setOnMouseClicked(e->handleClick(gridCell,c));
-				gridRoot.getChildren().add(gridCell);
-
-				Cell c1 = myGrid.getCellAtPoint(new Point(x,y));
+				Cell c = myGrid.getCellAtPoint(new Point(x,y));
 				if(c != null) {
 					updateStateCounts(c);
 					Shape gridCell = makeShape(c,x, y, cellWidth, cellHeight);

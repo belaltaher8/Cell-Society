@@ -10,6 +10,17 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 
+/**
+ * @author tahiaemran
+ * this class creates graph part of the display, which displays the amounts of cells in each state and 
+ * 	updates each time the grid is updated 
+ * 
+ *  dependent upon the simulation class to get aggregate numbers of cells in each state 
+ *  
+ *  to use: create a new GraphDisplay object in your GUI class, and every time you update the grid call
+ *  createGraph on the GraphDisplay object to update the graph
+ */
+
 public class GraphDisplay {
 
 	final NumberAxis xAxis; 
@@ -22,13 +33,10 @@ public class GraphDisplay {
 
 
 	public GraphDisplay(GridDisplay myGridDisplay){
-
-		// initialize axes + graph title 
 		xAxis = new NumberAxis(); 
 		yAxis = new NumberAxis();
 		xAxis.setLabel("Time");
 		yAxis.setLabel("Cell Count");		
-		// initialize myseries 
 		mySeries = new ArrayList<XYChart.Series<Number, Number>>();
 		initializeMySeries(myGridDisplay);
 		createGraph(myGridDisplay, 0);
@@ -45,6 +53,13 @@ public class GraphDisplay {
 
 	}
 
+	/**
+	 * @param myGridDisplay - the display passed to the Graph by the GUI class 
+	 * @param stepCount - this corresponds to the time value for the graph (x coordinate) 
+	 * 
+	 * This method is used to add points to the series in the graph display every time the grid is updated 
+	 * 
+	 */
 	public void createGraph(GridDisplay myGridDisplay, int stepCount) {
 		ArrayList<Series<Number, Number>> mySeriesCopy = new ArrayList<Series<Number, Number>>(mySeries);
 		ArrayList<Series<Number, Number>> placeHolder = new ArrayList<Series<Number, Number>>();
@@ -60,6 +75,10 @@ public class GraphDisplay {
 		lineChart = new LineChart<Number, Number>(xAxis, yAxis, FXCollections.observableArrayList(mySeries));
 	}
 
+	/**
+	 * @return returns the chart associated with the GraphDisplay, required to actually see the graph 
+	 * 		when a GraphDisplay object is created
+	 */
 	public Chart getChart(){
 		return lineChart; 
 	}

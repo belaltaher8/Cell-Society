@@ -6,15 +6,18 @@ import javafx.scene.shape.Shape;
 
 public class Hexagon extends Polygon {
 	Polygon h;  
-	public Hexagon (Point a, Point b, Point c, Point d, Point e, Point f){
+	public Hexagon (GUIPoint a, GUIPoint b, GUIPoint c, GUIPoint d, GUIPoint e, GUIPoint f){
 		h = new Polygon(); 
-		h.getPoints().addAll(new Double[]{(double) a.getX(), (double) a.getY(),
-				(double) b.getX(), (double) b.getY(),
-				(double) c.getX(), (double) c.getY(),
-				(double) d.getX(), (double) d.getY(),
-				(double) e.getX(), (double) e.getY(),
-				(double) f.getX(), (double) f.getY(),}); 
+		h.getPoints().addAll(new Double[]{ a.getX(),a.getY(),
+				b.getX(), b.getY(),
+				c.getX(), c.getY(),
+				d.getX(), d.getY(), 
+				e.getX(), e.getY(), 
+				f.getX(), f.getY()}); 
 	}
+	/**
+	 * @return the polygon associated with the Hexagon object
+	 */
 	public Shape getHexagon(){
 		return h; 
 	}
