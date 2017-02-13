@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import cs.configuration.ConfigDoc;
 
+
+/**
+ * @author jaydoherty
+ * This is the base class for the cells inside the grid. Cells have a state and an ability to transition between
+ * states in a multi-step process that can be synchronized across the gird. Subclasses can overwrite computeNextState
+ * to modify behavior. They also contain methods to find their neighbors based on info from the ConfigDoc. 
+ */
 public class Cell {
 	public static final int DEFAULT_STATE = 0;
 	
@@ -24,14 +30,26 @@ public class Cell {
 		mySim = simulation;
 	}
 	
+	/**
+	 * Switch from current state to calculated state.
+	 */
 	public void advanceState() {
 		currentState = nextState;
 	}
 	
+	
+	/**
+	 * Computes next state. Default Cells do not change state.
+	 * @param neighborStates : collection of the states of all of this cell's neighbors
+	 */
 	public void computeNextState(Collection<Integer> neighborStates) {
 		nextState = currentState;
 	}
 	
+	
+	/**
+	 * @return : returns a collection of points that represents this Cell's neighborhood
+	 */
 	public Collection<Point> getNeighborCoords() {
 		Collection<Point> neighbors = new ArrayList<Point>();
 		for(Point offset : myConfig.getNeighborOffsets()) {
@@ -46,15 +64,31 @@ public class Cell {
 		return neighbors;
 	}
 	
+	/**
+	 * @return the state of this cell
+	 */
 	public int getState() {
 		return currentState;
 	}
-	public void setNextState(int state) {
+	
+	/**
+	 * Allows sub-classes to modify their states
+	 * @param state : new state
+	 */
+	protected void setNextState(int state) {
 		nextState = state;
 	}
+	
+	/**
+	 * @return the location of this cell in the grid
+	 */
 	public Point getCoords() {
 		return myCoords;
 	}
+	
+	/**
+	 * @param newCoords : new location of this cell in the grid
+	 */
 	public void setCoords(Point newCoords) {
 		myCoords = newCoords;
 	}

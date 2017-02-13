@@ -11,6 +11,10 @@ import cs.model.Point;
 import cs.model.Simulation;
 import cs.model.sims.SugarScapeSim;
 
+/**
+ * @author jaydoherty
+ * This class represents the Agent in Sugar Scape Simulation.
+ */
 public class AgentCell extends Cell {
 	public static final int AGENT_CELL_STATE = 0;
 	//public static final int SUGAR_MIN = 5;
@@ -28,6 +32,10 @@ public class AgentCell extends Cell {
 		myMetabolism = 1 + myRand.nextInt(4);
 	}
 	
+	
+	/**
+	 * This method is overridden to define the agent's behavior
+	 */
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {		
 		this.move();

@@ -8,10 +8,12 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 import cs.model.cells.AgentCell;
-import cs.model.cells.FishCell;
-import cs.model.cells.SharkCell;
 import cs.model.cells.SugarCell;
 
+/**
+ * @author jaydoherty
+ * This class defines the Segregation simulation
+ */
 public class SugarScapeSim extends Simulation {
 	private Map<Point, SugarCell> myBackgroundGrid;
 	
@@ -19,12 +21,19 @@ public class SugarScapeSim extends Simulation {
 		super(config);
 	}
 
+	/**
+	 * This method resets the normal grid and the background grid
+	 */
 	@Override
 	public void reset() {
 		super.reset();
 		this.buildGrid();
 	}
 	
+	/**
+	 * Overrides this method to build both grids
+	 */
+	@Override
 	public void buildGrid() {
 		super.buildGrid();
 		if(myBackgroundGrid == null) {
@@ -40,6 +49,9 @@ public class SugarScapeSim extends Simulation {
 		}
 	}
 	
+	/**
+	 * @return cell at a point in the background grid
+	 */
 	public SugarCell getBackgroundCellAtPoint(Point myPoint){
 		if(!myBackgroundGrid.containsKey(myPoint)) {
 			return null;
@@ -47,6 +59,9 @@ public class SugarScapeSim extends Simulation {
 		return myBackgroundGrid.get(myPoint);
 	}
 	
+	/**
+	 * This method defines AgentCell and SugarCell as the cells to use in this simulation
+	 */
 	@Override
 	public Cell placeCell(int initialState, Point point) {
 		if(initialState == AgentCell.AGENT_CELL_STATE) {
@@ -56,6 +71,9 @@ public class SugarScapeSim extends Simulation {
 		} 
 	}
 
+	/**
+	 * @return number of states (number of colors to show in the grid)
+	 */
 	@Override
 	public int getNumStates() {
 		return 7;

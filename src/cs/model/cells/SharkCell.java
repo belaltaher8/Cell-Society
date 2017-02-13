@@ -8,6 +8,10 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 
+/**
+ * @author jaydoherty
+ * This class represents the sharks in Predator Prey Simulation.
+ */
 public class SharkCell extends FishCell {
 	public static final int SHARK_STATE = 2;
 	
@@ -19,6 +23,9 @@ public class SharkCell extends FishCell {
 		starveTimer = 0;
 	}
 	
+	/**
+	 * This method is overridden to define the cell's behavior
+	 */
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {	
 		this.reproduce();
