@@ -168,7 +168,7 @@ public class GUIController {
 	
 	private GridDisplay makeGridDisplay(Simulation sim, ConfigDoc config) throws XMLException {
 		if(config.getGridShape().equals(ConfigDoc.GRID_SHAPE_SQUARE)){
-			return new HexagonDisplay(sim, config);
+			return new GridDisplay(sim, config);
 		} else if(config.getGridShape().equals(ConfigDoc.GRID_SHAPE_TRIANGLE)) {
 			return new TriangleDisplay(sim,config);
 		} else {
