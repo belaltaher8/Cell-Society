@@ -7,6 +7,10 @@ import cs.model.Simulation;
 import cs.model.cells.FishCell;
 import cs.model.cells.SharkCell;
 
+/**
+ * @author jaydoherty
+ * This class defines the Predator-Prey simulation
+ */
 public class PredatorPreySim extends Simulation {
 	public static final int NUM_STATES = 3;
 	
@@ -14,6 +18,10 @@ public class PredatorPreySim extends Simulation {
 		super(config);
 	}
 	
+	/**
+	 * This method defines FishCell, SharkCell, and Cell as the cells to populate the grid.
+	 * Which cells get placed depends on the the value of initialState
+	 */
 	@Override
 	public Cell placeCell(int initialState, Point point) {
 		if(initialState == FishCell.FISH_STATE) {
@@ -25,6 +33,9 @@ public class PredatorPreySim extends Simulation {
 		}
 	}
 	
+	/**
+	 * @return number of states
+	 */
 	@Override
 	public int getNumStates() {
 		return PredatorPreySim.NUM_STATES;

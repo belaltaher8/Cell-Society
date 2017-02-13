@@ -1,5 +1,10 @@
 package cs.model;
 
+/**
+ * @author jaydoherty
+ * This class packages together x and y coordinates in a convenient object. Overrides equals and hashcode to
+ * be used in maps. Every cell in the grid has a Point object associated with it.
+ */
 public class Point {
 	private int myX;
 	private int myY;

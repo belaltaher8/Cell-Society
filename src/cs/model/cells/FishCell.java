@@ -11,6 +11,10 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 
+/**
+ * @author jaydoherty
+ * This class represents the Fish in Predator-Prey Simulation.
+ */
 public class FishCell extends Cell {
 	public static final int FISH_STATE = 1;
 	
@@ -21,6 +25,9 @@ public class FishCell extends Cell {
 		breedTimer = 0;
 	}
 
+	/**
+	 * This method is overridden to define fish behavior.
+	 */
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {		
 		this.reproduce();

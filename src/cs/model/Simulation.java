@@ -9,6 +9,14 @@ import java.util.Map;
 import java.util.Random;
 import cs.configuration.ConfigDoc;
 
+/**
+ * @author jaydoherty
+ * This class contains the model for the cell society grid. It contains methods to initialize
+ * and track the state of the grid as it advances. It contains methods to present the state of
+ * the grid to the front-end.
+ * Its subclasses must override placeCell, which tells the simulation what kind of cells it should
+ * use to populate the grid.
+ */
 public abstract class Simulation {	
 	private Map<Point, Cell> myGrid;
 	private ConfigDoc myConfig;
@@ -18,19 +26,32 @@ public abstract class Simulation {
 	public Simulation(ConfigDoc config){
 		myConfig = config;
 		myRand = new Random();
+		myGrid = new HashMap<Point, Cell>();
 		swapPairs = new ArrayList<Cell[]>();
 		reset();
 	}
 	
+	
+	/**
+	 * @return the ConfigDoc for this simulation
+	 */
 	public ConfigDoc getConfig() {
 		return myConfig;
 	}
 	
+	/**
+	 * Resets the grid.
+	 */
 	public void reset() {
 		myGrid = new HashMap<Point, Cell>();
 		buildGrid();
 	}
 	
+	/**
+	 * Builds the grid based on rules from the xml file. If the grid is already built,
+	 * then it just replaces them. It also leverages placeCell to pick the right subclasses
+	 * of Cell to fill the grid with.
+	 */
 	public void buildGrid() {
 		for(int x = 0; x < myConfig.getGridWidth(); x++) {
 			for(int y = 0; y < myConfig.getGridHeight(); y++) {
@@ -42,6 +63,9 @@ public abstract class Simulation {
 		}
 	}
 	
+	/**
+	 * Fill the grid with random cells.
+	 */
 	public void randomizeGrid() {
 		for(int x = 0; x < myConfig.getGridWidth(); x++) {
 			for(int y = 0; y < myConfig.getGridHeight(); y++) {
@@ -53,6 +77,11 @@ public abstract class Simulation {
 		}
 	}
 
+	/**
+	 * Returns the Cell in the grid for use by the front-end classes.
+	 * @param myPoint : the grid location to check
+	 * @return the cell in the grid at that point
+	 */
 	public Cell getCellAtPoint(Point myPoint){
 		if(!myGrid.containsKey(myPoint)) {
 			return null;
@@ -60,18 +89,32 @@ public abstract class Simulation {
 		return myGrid.get(myPoint);
 	}
 	
+	/**
+	 * Replaces an old cell with a new one in the grid
+	 * @param old : cell to replace
+	 * @param replacement : replacement cell
+	 */
 	public void replaceCell(Cell old, Cell replacement) {
 		Point coords = old.getCoords();
 		myGrid.remove(coords);
 		myGrid.put(coords, replacement);
 	}
 	
+	/**
+	 * Advances the grid one cycle by first updating the grid, then advancing all the states and
+	 * applying all of the movement requests.
+	 */
 	public void stepGrid(){
 		computeNextGrid();
 		advanceGrid();
 		applyAllSwaps();
 	}
 	
+	/**
+	 * Allows cells to request a swap with a random cell of a particular state.
+	 * @param swapper : cell that wants to move
+	 * @param desiredSwappee : state of the cell it wants to swap with
+	 */
 	public void requestRandomSwap(Cell swapper, int desiredSwappee) {
 		ArrayList<Cell> swapCandidates = new ArrayList<Cell>(myGrid.values());
 		Collections.shuffle(swapCandidates);
@@ -89,6 +132,12 @@ public abstract class Simulation {
 		} 
 	}
 	
+	/**
+	 * Allows cells to request a swap with another cell. The swap will be applied at the
+	 * next update.
+	 * @param a : 1st cell to swap
+	 * @param b : 2nd cell to swap
+	 */
 	public void requestSpecificSwap(Cell a, Cell b) {
 		swapPairs.add(new Cell[] {a,b});
 	}
@@ -97,14 +146,18 @@ public abstract class Simulation {
 		Point pointA = a.getCoords();
 		Point pointB = b.getCoords();
 		
-		myGrid.remove(pointA);
-		myGrid.remove(pointB);
+		a = myGrid.remove(pointA);
+		b = myGrid.remove(pointB);
 		
-		a.setCoords(pointB);
-		b.setCoords(pointA);
+		if(a != null) {
+			a.setCoords(pointB);
+			myGrid.put(pointB, a);
+		}
 		
-		myGrid.put(pointB, a);
-		myGrid.put(pointA, b);
+		if(b != null) {
+			b.setCoords(pointA);
+			myGrid.put(pointA, b);
+		}
 	}
 	
 	private void applyAllSwaps() {
@@ -118,28 +171,33 @@ public abstract class Simulation {
 		for(int x = 0; x < myConfig.getGridWidth(); x++){
 			for(int y = 0; y < myConfig.getGridHeight(); y++){
 				Cell myCell = myGrid.get(new Point(x, y));
-				
-				Collection<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
-				List<Integer> myNeighborStates = new ArrayList<Integer>();
-				
-				for(Point currentPoint : myCellNeighborsCoords) {
-					Cell cell = getCellAtPoint(currentPoint);
-					myNeighborStates.add(cell.getState());
+				if(myCell != null) {
+					Collection<Point> myCellNeighborsCoords = myCell.getNeighborCoords();
+					List<Integer> myNeighborStates = new ArrayList<Integer>();
+					
+					for(Point currentPoint : myCellNeighborsCoords) {
+						Cell cell = getCellAtPoint(currentPoint);
+						if(cell != null) {
+							myNeighborStates.add(cell.getState());
+						}
+					}
+					
+					myCell.computeNextState(myNeighborStates);
 				}
-				
-				myCell.computeNextState(myNeighborStates);
 			}
 		}
 	}
 	
 	private void advanceGrid(){
 		for(Cell c : myGrid.values()) {
-			c.advanceState();
+			if(c != null) {
+				c.advanceState();
+			}
 		}
 	}
 	
 	private int determineInitialStateAt(Point point) {
-		if(myGrid.containsKey(point)){
+		if(myGrid.containsKey(point) && myGrid.get(point) != null){
 			return myGrid.get(point).getState();
 		}
 		
@@ -162,6 +220,11 @@ public abstract class Simulation {
 		}
 	}
 	
+	
+	/**
+	 * @return a single long string specifying the current state of every grid cell in xml format.
+	 * Used for writing the current state to a file. Provides a full "snapshot" of the grid.
+	 */
 	public String getContentsAsXML() {
 		String contents = "";
 		for(Cell c : myGrid.values()) {
@@ -172,10 +235,29 @@ public abstract class Simulation {
 		return contents;
 	}
 	
+	
+	/**
+	 * Simulations override this method to specify how they want to populate their simulations.
+	 * @param initialState : state of the cell to place
+	 * @param point : coords of the cell to place
+	 * @return a Cell or subclass-Cell to put into the grid
+	 */
 	abstract public Cell placeCell(int initialState, Point point);
 
+	/**
+	 * This is simply a convenience method that simulations have to specify so the rest of the
+	 * back-end knows how many states there are.
+	 * @return the total number of cell states in this simulation
+	 */
 	abstract public int getNumStates();
 	
+	
+	/**
+	 * This is used for graphing population over time. This method returns the total number of cells
+	 * at a particular state.
+	 * @param i : state to count
+	 * @return the total number of cells in the grid at a given state
+	 */
 	public int calculateNumInState(int i) {
 		int count = 0; 
 		for (Point p: myGrid.keySet()){

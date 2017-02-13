@@ -8,6 +8,10 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 
+/**
+ * @author jaydoherty
+ * This class defines the behavior of the cells in a Segregation simulation.
+ */
 public class SegregationCell extends Cell {
 	public static final int EMPTY_STATE = 0;
 	public static final int STATE_1 = 1;
@@ -17,6 +21,9 @@ public class SegregationCell extends Cell {
 		super(initialState, coordinates, config, sim);
 	}
 
+	/**
+	 * This method is overridden to define the behavior.
+	 */
 	@Override
 	public void computeNextState(Collection<Integer> neighborStates) {		
 		List<Integer> neighborCounts = getStateCounts(neighborStates);

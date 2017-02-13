@@ -14,15 +14,12 @@ import cs.model.Point;
  * the change immediately, without having to be reset. This class communicates with the XMLReader
  * to initialize all of the simulation parameters.
  */
-/**
- * @author jaydoherty
- *
- */
 public class ConfigDoc {
 	public static final String SIM_TYPE_GAME_OF_LIFE = "GameOfLifeSim";
 	public static final String SIM_TYPE_FIRE_SPREAD = "FireSpreadSim";
 	public static final String SIM_TYPE_SEGREGATION = "SegregationSim";
 	public static final String SIM_TYPE_PRED_PREY = "PredatorPreySim";
+	public static final String SIM_TYPE_SUGAR_SCAPE = "SugarScapeSim";
 	
 	public static final String GRID_SHAPE_SQUARE = "Square";
 	public static final String GRID_SHAPE_TRIANGLE = "Triangle";

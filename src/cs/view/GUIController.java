@@ -14,6 +14,7 @@ import cs.model.Simulation;
 import cs.model.sims.FireSpreadSim;
 import cs.model.sims.GameOfLifeSim;
 import cs.model.sims.SegregationSim;
+import cs.model.sims.SugarScapeSim;
 import cs.model.sims.PredatorPreySim;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -157,6 +158,8 @@ public class GUIController {
 			return new SegregationSim((SegregationDoc)config);
 		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_PRED_PREY)) {
 			return new PredatorPreySim((PredatorPreyDoc)config); 
+		} else if(config.getSimType().equals(ConfigDoc.SIM_TYPE_SUGAR_SCAPE)) {
+			return new SugarScapeSim(config); 
 		} else {
 			alertAndWait(myResources.getString("ErrorTitle"), myResources.getString("ErrorSim"));
 	        throw new XMLException(myResources.getString("ErrorSim"));
@@ -359,6 +362,10 @@ public class GUIController {
 	 */
 	public void stepAnimation() {
 		stepCount++; 
+		if(stepCount > 100) {
+			myGraphDisplay.reset();
+			stepCount = 0;
+		}
 		myGridDisplay.step();
 		myGraphDisplay.createGraph(myGridDisplay, stepCount);
 		graphView.getChildren().remove(myGraph);
