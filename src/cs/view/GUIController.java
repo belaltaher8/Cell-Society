@@ -8,6 +8,8 @@ import cs.configuration.XMLReader;
 import cs.configuration.configs.FireDoc;
 import cs.configuration.configs.PredatorPreyDoc;
 import cs.configuration.configs.SegregationDoc;
+import cs.model.Cell;
+import cs.model.Point;
 import cs.model.Simulation;
 import cs.model.sims.FireSpreadSim;
 import cs.model.sims.GameOfLifeSim;
@@ -194,6 +196,7 @@ public class GUIController {
 		return new Scene(sceneRoot, SCENE_WIDTH, SCENE_HEIGHT);
 	}
 	
+
 	private Pane configureDisplay(){
 		Pane gridPane = new Pane();
 		gridPane.setPrefSize(GridDisplay.DISPLAY_WIDTH, GridDisplay.DISPLAY_HEIGHT);

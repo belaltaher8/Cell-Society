@@ -8,10 +8,13 @@ import cs.model.Cell;
 import cs.model.Point;
 import cs.model.Simulation;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.Stage;
 
 /**
  * @author tahiaemran
@@ -56,6 +59,7 @@ public class GridDisplay {
 					Shape gridCell = makeShape(c,x, y);
 					gridRoot.getChildren().add(gridCell);
 				}
+
 			}
 		}
 	}
