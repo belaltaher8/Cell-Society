@@ -19,11 +19,11 @@ The primary functions of the user interface are to provide a means of loading th
 Design Details
 ===
 
-The visualization component of the design will include the input and output. For output, we will have a Display class that contains the method printGrid().
-printGrid() will print out the current state of the grid by getting that information from the Grid class.
+The visualization component of the design will include the input and output. For output of the grid, we have a GridDisplay class that contains the method drawGrid(). This superclass is extended by TriangleDisplay.java, which makes the shape of the cells into triangles instead of rectangles by overriding the makeShape() method called in drawGrid. 
+drawGrid() prints out the current state of the grid by getting relevant information from the ConfigDoc.
+For output of the graph, we have a GraphDisplay class that uses information from the Simulation and the ConfigDoc to update the series' being graphed at each step. The GraphDisplay and GridDisplay are both instantiated in the GUIController. 
+For input, we have a ControlDisplay class that contains all elements (buttons, sliders) that  trigger events when clicked. This is instantiated in the GUIController class that connects them to the rest of the program. It also requires a GUIController object to be passed to it in order to be able to control the animation. 
 
-For input, we will have a Button class that can trigger events when clicked. Both of these objects will be instantiated in a GUIController class that connects them to the rest of the program. Button will probably be an abstract class with the abstract method onMouseClick().
-Every extension of Button will have different functionality by implementing onMouseClick() differently.
 
 We will have a FileReader class that is responsible for translating the XML input files. This class will read in the data from the XML file and hand it off to the classes that need it. Specifically, the name and title of the simulation will be handed to the display, the configuration parameters will be handed to the grid and display, and the initial configuration of states will also be handed to the grid class. The rule will be handed to the cell class. 
 
@@ -44,13 +44,13 @@ The Cell class will contain the current and next states of each cell, coordinate
 4. Set a simulation parameter
 	This will be done by the FileReader. When the user loads a file, it will set an instance variable that the Cells can get later on when they are trying to determine how often to follow the rule.
 5. Switch Simulations:
-	This should be entirely done by the FileReader. Hopefully the simulations will be entirely described in XML so that when the input file is loaded, the simulation will be completely set up.
+	To switch a simulation, simply click the load file button and choose the file you want. The XMLReader then loads the simulation and all the necessary changes take place. This is entirely done by the FileReader. The simulations are entirely described in XML so that when the input file is loaded, the simulation will be completely set up. 
 
 Design Considerations
 ===
 
 We have considered adding separate classes for cells on the edge of the simulation, but we think that probably reduces flexibility too much because it would directly limit cells from moving around the grid if they are not all of the same type.
-We have also considered different solutions for how the cells figure out their neighboring cells. We think that this is something that can be handled in the Cell class, but it is possible we might have to move this up to the Grid class if it is too complicated to store this information in the Cell class.
+We have also considered different solutions for how the cells figure out their neighboring cells. We think that this is something that can be handled in the Cell class, but it is possible we might have to move this up to the Grid class if it is too complicated to store this information in the Cell class. 
 
 Team Responsibilities
 ===
