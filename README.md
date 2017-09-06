@@ -23,12 +23,12 @@ Cell Society is a 2D grid used to simulate cellular automata. Cellular Automata,
 
 ## Logistics
 
-### Team Members:
+### Team Members
 * Jay
 * Tahia
 * Belal 
 
-### Time Taken:
+### Time Taken
 
 Date Started: January 28, 2017
 
